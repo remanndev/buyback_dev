@@ -1,0 +1,52 @@
+<?php
+if($this->uri->segment(1,'') == 'auth') {
+	$footer_wrap_pt = '';
+}
+else {
+	//$footer_wrap_pt = 'padding-top:60px;';
+	$footer_wrap_pt = '';
+
+		$latest_notice = array();
+		$result_latest_notice = $this->basic_model->latest_bbs('notice',1);
+		foreach($result_latest_notice as $i => $row) {
+			$latest_notice[$i] = new stdClass();
+			$latest_notice[$i]->subject = $row->subject;
+			$latest_notice[$i]->href = $row->href;
+		}
+?>
+
+	<div class="py-1" style="width:100%; border-bottom:1px solid #eeeeee; background-color:#ffffff;">
+		<div class="footer_wrap py-4 wrap_limit">
+			<h6 style="margin:0; display:inline-block; font-weight:bold;">공지사항</h6>
+			<div class="notice_wrap">
+				<?php foreach($latest_notice as $i => $notice) { ?>
+				<div class="ellipsis"><a href="<?php echo $notice->href ?>"><?php echo $notice->subject ?></a></div>
+				<?php } ?>
+			</div>
+		</div>
+	</div>
+<?php 
+}
+?>
+	<div class="footer_wrap py-3" style="<?php echo $footer_wrap_pt ?>">
+		<div class="footer_wrap py-4 wrap_limit">
+
+			<div class="footer_info">
+				<h3 class="font_nunitosans" style="font-weight:bold; color:#000000; margin-bottom:20px;">Replus</h3>
+
+				<ul class="footer_info_list">
+					<li class="footer_info_item"><a href="/page/term_use">이용약관</a></li>
+					<li class="footer_info_item"><a href="/page/term_privacy"><strong>개인정보처리방침</strong></a></li>
+					<li class="footer_info_item"><a href="/board/faq/lists">고객센터</a></li>
+				</ul>
+					
+				<ul class="footer_info_list" style="margin-bottom:0px;"><li class="footer_info_item">사단법인 비영리IT지원센터 (대표자 김성기)</li><li class="footer_info_item">사업자 등록번호 : 110-82-17575</li><li class="footer_info_item">Email npoit@npoit.kr</li></ul>
+				
+				<address class="footer_info_address">서울특별시 은평구 통일로 684, 서울혁신파크 9동 3층 312호 </address>
+				<div class="footer_info_copyright font_nunitosans">Copyright © Replus All Rights Reserved.</div>
+
+			</div>
+		</div>
+	</div>
+
+

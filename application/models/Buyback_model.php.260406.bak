@@ -1,0 +1,178 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+/**
+ * 매입 신청 관련 모든 DB 처리를 담당하는 모델
+ *
+ * 역할:
+ * - request_no 생성
+ * - buyback_requests 저장
+ * - buyback_request_devices 저장
+ * - 트랜잭션 관리
+ */
+class Buyback_model extends CI_Model
+{
+    protected $table_requests = 'buyback_requests';
+    protected $table_devices = 'buyback_request_devices';
+
+    /**
+     * 접수번호 생성
+     * 형식: YYMMDD + 6자리 랜덤
+     */
+    private function generate_request_no()
+    {
+        $date = date('ymd');
+        $rand = mt_rand(100000, 999999);
+
+        return $date . $rand;
+    }
+
+    /**
+     * 매입 신청 저장 (핵심)
+     *
+     * @param int $partner_id
+     * @param int $member_user_id
+     * @param array $form_data (pickup form 데이터)
+     * @param array $devices (sell에서 넘어온 기기 목록)
+     *
+     * @return int|false request_id
+     */
+    public function create_request($partner_id, $member_user_id, $form_data, $devices)
+    {
+        // ==========================
+        // 트랜잭션 시작
+        // ==========================
+        $this->db->trans_begin();
+
+        // --------------------------
+        // 1. 접수번호 생성
+        // --------------------------
+        $request_no = $this->generate_request_no();
+
+        // --------------------------
+        // 2. 총 금액 계산
+        // --------------------------
+        $total_price = 0;
+
+        foreach ($devices as $d) {
+            $total_price += ((int)$d['unit_price_value'] * (int)$d['qty']);
+        }
+
+        // --------------------------
+        // 3. 신청 마스터 저장
+        // --------------------------
+        $request_data = array(
+            'request_no' => $request_no,
+            'partner_id' => $partner_id,
+            'member_user_id' => $member_user_id,
+
+            // snapshot (중요)
+            'applicant_name' => $form_data['name'],
+            'phone' => $form_data['phone'],
+            'zipcode' => $form_data['zipcode'],
+            'address1' => $form_data['address1'],
+            'address2' => $form_data['address2'],
+
+            'visit_date' => $form_data['visit_date'],
+            'visit_time' => $form_data['visit_time'],
+            'pickup_location' => $form_data['pickup_location'],
+            'pickup_memo' => $form_data['pickup_memo'],
+
+            'bank_name' => $form_data['bank_name'],
+            'account_number' => $form_data['account_number'],
+
+            'total_price_text' => number_format($total_price),
+            'total_price_value' => $total_price,
+
+            'request_status' => 'REQUESTED',
+            'api_send_status' => 'READY',
+
+            'reg_ip' => $this->input->ip_address(),
+            'created_at' => date('Y-m-d H:i:s')
+        );
+
+        $this->db->insert($this->table_requests, $request_data);
+
+        $request_id = $this->db->insert_id();
+
+        // --------------------------
+        // 4. 기기 상세 저장
+        // --------------------------
+        $sort = 1;
+
+        foreach ($devices as $d) {
+
+            $device_data = array(
+                'request_id' => $request_id,
+
+                'device_type' => $d['device_type'],
+                'manufacturer' => $d['manufacturer'],
+                'model_name' => $d['model_name'],
+                'part_type' => $d['part_type'],
+                'category_name' => $d['category_name'],
+                'condition_grade' => $d['condition_grade'],
+
+                'qty' => (int)$d['qty'],
+                'unit_price_value' => (int)$d['unit_price_value'],
+                'unit_price_text' => $d['unit_price_text'],
+
+                // JSON 원본 그대로 저장 (추후 분석용)
+                'spec_json' => json_encode($d, JSON_UNESCAPED_UNICODE),
+
+                'sort_order' => $sort++
+            );
+
+            $this->db->insert($this->table_devices, $device_data);
+        }
+
+        // --------------------------
+        // 5. 트랜잭션 체크
+        // --------------------------
+        if ($this->db->trans_status() === FALSE) {
+
+            $this->db->trans_rollback();
+            return false;
+
+        } else {
+
+            $this->db->trans_commit();
+            return $request_id;
+        }
+    }
+
+    /**
+     * 회원사별 목록 조회
+     */
+    public function get_list_by_partner($partner_id)
+    {
+        return $this->db
+            ->where('partner_id', $partner_id)
+            ->order_by('id', 'DESC')
+            ->get($this->table_requests)
+            ->result();
+    }
+
+    /**
+     * 상세 조회 (중요: partner_id 같이 체크)
+     */
+    public function get_detail($partner_id, $request_id)
+    {
+        return $this->db
+            ->where('id', $request_id)
+            ->where('partner_id', $partner_id)
+            ->get($this->table_requests)
+            ->row();
+    }
+
+    /**
+     * 기기 목록 조회
+     */
+    public function get_devices($request_id)
+    {
+        return $this->db
+            ->where('request_id', $request_id)
+            ->order_by('sort_order', 'ASC')
+            ->get($this->table_devices)
+            ->result();
+    }
+}

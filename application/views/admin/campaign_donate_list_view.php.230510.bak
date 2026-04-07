@@ -1,0 +1,107 @@
+<style type="text/css">
+.dn_list { width: 100%; max-width: 1200px;}
+.dn_list tr th { background-color: #6d6d6d; color:#ffffff; }
+.dn_list tr.dn_list_row td { background-color: #fafafa; color: #474747; font-size: 15px;}
+
+.dn_detail_list {}
+.dn_detail_list tr th, .dn_detail_list tr td { font-size: 15px; }
+.dn_detail_list tr th { line-height: 20px !important; padding:5px 10px !important; background-color: #f8f8f8; border-top: 1px solid #ccc; color:#363636;  font-size: 15px;}
+.dn_detail_list tr td { line-height: 15px !important; padding:3px 10px !important;  font-size: 14px; border-bottom: 1px dashed #ccc; }
+
+</style>
+
+<h1>기부 목록</h1>
+
+<h2 class="mb_40" style="color:#353535;">캠페인별 기부 목록</h2>
+
+<div class="tbl_frm" style="border:none;">
+	<table class="dn_list">
+	<tr>
+	  <th class='text-center'>NO</th>
+	  <th class='text-center'>캠페인명</th>
+	  <th class='text-center'>주관단체</th>
+	  <th class='text-center'>생성일</th>
+	  <th class='text-center'>기간</th>
+	  <!-- <th class='text-center'>기부 상세</th> -->
+	</tr>
+	<?php foreach($list as $i => $o) { ?>
+	<tr class="dn_list_row">
+	  <td class="text-center"><?php echo $o->num ?></td>
+	  <td><div class="ellipsis" style="font-weight:bold;"><?php echo $o->cmp_title ?></div></td>
+	  <td class="text-center"><?php echo $o->cmp_org_name ?></td>
+	  <td class="text-center"><?php echo $o->reg_date ?></td>
+	  <td class="text-center"><?php echo $o->cmp_term ?></td>
+	  <!-- <td style="width:40%;">
+		
+			<table class="table-hover" style="width:100%;">
+			<tr>
+			  <th class='text-center'>NO</th>
+			  <!- - <th class='text-center'>아이디</th> - ->
+			  <th class='text-center'>이메일</th>
+			  <th class='text-center'>이름</th>
+			  <th class='text-center'>기부일자</th>
+			  <th class='text-center'>기부내용</th>
+			  <th class='text-center' style="width:62px;">내역</th>
+			  <th class='text-center' style="width:62px;">관리</th>
+			</tr>
+			<?php foreach($o->dn_list as $j => $dn) { ?>
+			<tr>
+			  <td class="text-center"><?php echo $dn->num ?></td>
+			  <!- - <td><div class="ellipsis"><?php //echo ($dn->user_idx > 0) ? $dn->user_username : '(비회원)' ?></div></td> - ->
+			  <td><div class="ellipsis"><?php echo (isset($dn->user_idx) && $dn->user_idx > 0) ? $dn->user_email : '(비회원)' ?></div></td>
+			  <td class="text-center"><?php echo $dn->donor_name ?></td>
+			  <td class="text-center"><?php echo $dn->reg_date ?></td>
+			  <td class="text-center"><?php echo $dn->state_good_proc ?></td>
+			  <td class="text-center"><a href="/admin/campaign/donate/donor/<?php echo $o->cmp_code ?>/<?php echo $dn->idx ?>/<?php echo $dn->user_idx ?>"><button type="button" class="btn btn-default-flat btn-xs">보기</button></a></td>
+			  <td class="text-center">
+				<!- - <a href="/admin/campaign/donate/donor_del/<?php echo $o->cmp_code ?>/<?php echo $dn->idx ?>"><button type="button" class="btn btn-danger-flat btn-xs">삭제</button></a> - ->
+				<a href="#" onclick="del_confirm('admin/campaign/donate/donor_del/<?php echo $o->cmp_code ?>/<?php echo $dn->idx ?>'); return false;"><button class="btn btn-danger-flat btn-xs">삭제</button></a>
+			  </td>
+			</tr>
+			<?php } ?>
+			</table>
+			
+	  </td> -->
+
+	</tr>
+
+	<?php if( isset($o->dn_list[0]) ) { ?>
+	<tr>
+		<td colspan="5" style="padding:10px 0 35px 15px;">
+		  <div style="display:flex;">
+			<div style="font-size:16px; width: 140px;">기부 상세 내역</div>
+			<table class="table-hover dn_detail_list" style="width:100%;">
+				<tr>
+				  <th class='text-center'>NO</th>
+				  <!-- <th class='text-center'>아이디</th> -->
+				  <th class='text-center'>이메일</th>
+				  <th class='text-center'>이름</th>
+				  <th class='text-center'>기부일자</th>
+				  <th class='text-center'>기부내용</th>
+				  <th class='text-center' style="width:62px;">내역</th>
+				  <th class='text-center' style="width:62px;">관리</th>
+				</tr>
+				<?php foreach($o->dn_list as $j => $dn) { ?>
+				<tr>
+				  <td class="text-center"><?php echo $dn->num ?></td>
+				  <!-- <td><div class="ellipsis"><?php //echo ($dn->user_idx > 0) ? $dn->user_username : '(비회원)' ?></div></td> -->
+				  <td><div class="ellipsis"><?php echo (isset($dn->user_idx) && $dn->user_idx > 0) ? $dn->user_email : '(비회원)' ?></div></td>
+				  <td class="text-center"><?php echo $dn->donor_name ?></td>
+				  <td class="text-center"><?php echo $dn->reg_date ?></td>
+				  <td class="text-center"><?php echo $dn->state_good_proc ?></td>
+				  <td class="text-center"><a href="/admin/campaign/donate/donor/<?php echo $o->cmp_code ?>/<?php echo $dn->idx ?>/<?php echo $dn->user_idx ?>"><button type="button" class="btn btn-default-flat btn-xs">보기</button></a></td>
+				  <td class="text-center">
+					<!-- <a href="/admin/campaign/donate/donor_del/<?php echo $o->cmp_code ?>/<?php echo $dn->idx ?>"><button type="button" class="btn btn-danger-flat btn-xs">삭제</button></a> -->
+					<a href="#" onclick="del_confirm('admin/campaign/donate/donor_del/<?php echo $o->cmp_code ?>/<?php echo $dn->idx ?>'); return false;"><button class="btn btn-danger-flat btn-xs">삭제</button></a>
+				  </td>
+				</tr>
+				<?php } ?>
+			</table>
+		  </div>
+		</td>
+	</tr>
+	<?php } ?>
+	<?php } ?>
+	</table>
+</div>
+

@@ -1,0 +1,428 @@
+
+/* o series - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
+
+	/* 게시판 상단 패딩 처리 */
+		.bbs_top_padding { padding-top:60px; }
+		@media screen and (min-width: 768px) {
+			.bbs_top_padding { padding-top:80px; }
+		}
+
+		a {text-decoration:none; color:#333; padding:0;margin:0;}
+		a:link:hover, a:active {text-decoration:none; color:#333333;}
+
+
+
+
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 * board
+	 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 */
+
+		.page_ttl {position: relative; }
+
+		.bbs_basic_list {border-top:1px solid #000000;}
+		.bbs_basic_list table thead th { font-size:14px; line-height:24px; border-bottom:1px solid #ababab !important; background-color:#f2f2f2;}
+		.bbs_basic_list table tbody td { line-height:22px; }
+		.bbs_basic_list table td, .bbs_basic_list table td a { font-size:14px; color:#333333; text-decoration:none;}
+
+		.bbs_sliver_list {border-top:1px solid #000000;}
+		.bbs_sliver_list table thead th { font-size:14px; line-height:30px; border-bottom:1px solid #ababab !important; background-color:#fafafa;}
+		.bbs_sliver_list table tbody td { line-height:30px; border-bottom:1px dashed #dfdfdf !important; }
+		.bbs_sliver_list table td, .bbs_basic_list table td a { font-size:14px; color:#333333; text-decoration:none;}
+
+		.bbs_white_list {border-top:2px solid #4b4b4b;}
+		.bbs_white_list table thead th { font-size:14px; line-height:30px; border-bottom:1px solid #ececec !important; background-color:#ffffff;}
+		.bbs_white_list table tbody td { line-height:30px; border-bottom:1px solid #ececec !important; }
+		.bbs_white_list table td, .bbs_basic_list table td a { font-size:14px; color:#333333; text-decoration:none;}
+
+		.bbs_faq_list {border-top:2px solid #4b4b4b;}
+		.bbs_faq_list table thead th { font-size:14px; line-height:30px; border-bottom:1px solid #ececec !important; background-color:#f5f5f5;}
+		.bbs_faq_list table tbody td { line-height:30px; border-bottom:1px solid #ececec !important; }
+		.bbs_faq_list table td, .bbs_basic_list table td a { font-size:14px; color:#333333; text-decoration:none;}
+
+		.bbs_faq_list table tr.faq_ans { display: none; background-color:#f5f5f5; width:100%;}
+		.bbs_faq_list table td img {max-width: 100%; }
+
+		.bbs_basic_detail {}
+		.bbs_basic_detail .bbs_header {border-top:2px solid rgba(51,51,51,1); border-bottom:1px solid rgba(11,11,11,.12);background-color:#FBFBFB;}
+		.bbs_basic_detail .bbs_header .bbs_ttl {margin:0; font-size:22px; font-weight:500;}
+		.bbs_basic_detail .bbs_header .bbs_info {text-align:right; font-size:14px; background-color:#ffffff; border-top:1px dashed rgba(11,11,11,.12); padding-top:3px; padding-bottom:3px;}
+
+
+
+		.bbs_basic .bo_title {font-weight:normal; font-size:32px; margin-bottom:10px;}
+
+		.bbs_basic .bbs_search_wrap { display:block; width:100%;}
+		.bbs_basic .bbs_search {display:none; width:100%; margin: 3px 0; padding:7px; line-height:28px; background-color:#EFEFEF; border-top:1px solid #000000;}
+		.bbs_basic .bbs_search.srh_show {display:block; position:relative;}
+
+		.bbs_basic .bbs_search > input[type=text] {height:32px; width:calc(100% - 38px); padding:0px 5px; vertical-align:bottom; margin-bottom:2px;}
+		.bbs_basic .bbs_search > button {border:none; padding:0; vertical-align:middle; margin-bottom:2px;}
+		.bbs_basic .bbs_search > button > img {height:32px; }
+		
+		@media screen and (min-width: 768px) {
+		
+			.bbs_basic .bbs_search_wrap { display:inline-block; width:auto;}
+			.bbs_basic .bbs_search {display:none; width:50%; max-width:200px; margin:0px; background-color:#FFFFFF; border-top:0px solid #000000;   padding:0 7px; line-height:100%; }
+			.bbs_basic .bbs_search.srh_show {display:inline-block;}
+
+			.bbs_basic .bbs_search > input[type=text] {height:28px; width:calc(100% - 34px); padding:0px 5px; vertical-align:bottom; margin-bottom:2px;}
+			.bbs_basic .bbs_search > button > img {height:28px; }
+		}
+
+	/* 2022-12-18 */
+	/* 2024-02-21 */
+		.bo_title strong {
+			font-size: 30px;font-weight: 700; color: #353535;
+			/* font-family:'Nanum Gothic','NanumGothic','나눔고딕','나눔 고딕', 'Noto Sans KR', AppleSDGothicNeo-Regular,'맑은 고딕','Malgun Gothic',dotum,'돋움',sans-serif; */
+			/* font-stretch: normal;font-style: normal; line-height: 0.85;letter-spacing: normal;text-align: left; -* 
+		}
+
+		/* 모바일 */
+		@media (max-width: 768px){
+		
+			.bbs_basic .bo_title { margin-bottom: 5px; }
+			.bbs_basic .bo_title strong {font-weight:800; font-size:28px; margin-bottom:0px;}
+			.bbs_basic_detail .bbs_header .bbs_ttl {margin:0; font-size:20px; font-weight:500;}
+		}
+
+
+
+	/** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	* input, select, checkbox
+	*/
+
+		/*
+		input:hover,input:active,input:focus,
+		select:hover,select:active,select:focus,
+		textarea:hover,textarea:active,textarea:focus {border:1px solid #7265E3;}
+		*/
+
+		/* input */
+		.bo_input {border: 1px solid #cccccc; box-sizing: border-box; border-radius: 2px; font-size: 14px; line-height: 36px; padding:0 10px; outline:none; vertical-align:middle; -webkit-appearance: none; -webkit-border-radius: 2px;}
+		.bo_input:hover {border: 1px solid #7265E3;}
+		.bo_input:active {border: 1px solid #7265E3;}
+		.bo_input:focus {border: 1px solid #7265E3;}
+
+		.bo_input_file {border: 1px solid #cccccc; box-sizing: border-box; border-radius: 2px; font-size: 14px; line-height: 36px; padding:0 10px 0 0; outline:none; vertical-align:middle;}
+		.bo_input_file:hover {border: 1px solid #7265E3;}
+		.bo_input_file:active {border: 1px solid #7265E3;}
+		.bo_input_file:focus {border: 1px solid #7265E3;}
+
+		.bo_input_password {border: 1px solid #cccccc; box-sizing: border-box; border-radius: 2px; font-size: 14px;  line-height: 36px; padding:0 10px; outline:none; vertical-align:middle; -webkit-appearance: none; -webkit-border-radius: 2px;}
+		.bo_input_password:hover {border: 1px solid #7265E3;}
+		.bo_input_password:active {border: 1px solid #7265E3;}
+		.bo_input_password:focus {border: 1px solid #7265E3;}
+
+
+		/* input password 공통 */
+		@font-face {
+			font-family: 'pass';
+			font-style: normal;
+			font-weight: 400;
+			src: url(data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAATsAA8AAAAAB2QAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAABWAAAABwAAAAcg9+z70dERUYAAAF0AAAAHAAAAB4AJwANT1MvMgAAAZAAAAA/AAAAYH7AkBhjbWFwAAAB0AAAAFkAAAFqZowMx2N2dCAAAAIsAAAABAAAAAQAIgKIZ2FzcAAAAjAAAAAIAAAACAAAABBnbHlmAAACOAAAALkAAAE0MwNYJ2hlYWQAAAL0AAAAMAAAADYPA2KgaGhlYQAAAyQAAAAeAAAAJAU+ATJobXR4AAADRAAAABwAAAAcCPoA6mxvY2EAAANgAAAAEAAAABAA5gFMbWF4cAAAA3AAAAAaAAAAIAAKAE9uYW1lAAADjAAAARYAAAIgB4hZ03Bvc3QAAASkAAAAPgAAAE5Ojr8ld2ViZgAABOQAAAAGAAAABuK7WtIAAAABAAAAANXulPUAAAAA1viLwQAAAADW+JM4eNpjYGRgYOABYjEgZmJgBEI2IGYB8xgAA+AANXjaY2BifMg4gYGVgYVBAwOeYEAFjMgcp8yiFAYHBl7VP8wx/94wpDDHMIoo2DP8B8kx2TLHACkFBkYA8/IL3QB42mNgYGBmgGAZBkYGEEgB8hjBfBYGDyDNx8DBwMTABmTxMigoKKmeV/3z/z9YJTKf8f/X/4/vP7pldosLag4SYATqhgkyMgEJJnQFECcMOGChndEAfOwRuAAAAAAiAogAAQAB//8AD3jaY2BiUGJgYDRiWsXAzMDOoLeRkUHfZhM7C8Nbo41srHdsNjEzAZkMG5lBwqwg4U3sbIx/bDYxgsSNBRUF1Y0FlZUYBd6dOcO06m+YElMa0DiGJIZUxjuM9xjkGRhU2djZlJXU1UDQ1MTcDASNjcTFQFBUBGjYEkkVMJCU4gcCKRTeHCk+fn4+KSllsJiUJEhMUgrMUQbZk8bgz/iA8SRR9qzAY087FjEYD2QPDDAzMFgyAwC39TCRAAAAeNpjYGRgYADid/fqneL5bb4yyLMwgMC1H90HIfRkCxDN+IBpFZDiYGAC8QBbSwuceNpjYGRgYI7594aBgcmOAQgYHzAwMqACdgBbWQN0AAABdgAiAAAAAAAAAAABFAAAAj4AYgI+AGYB9AAAAAAAKgAqACoAKgBeAJIAmnjaY2BkYGBgZ1BgYGIAAUYGBNADEQAFQQBaAAB42o2PwUrDQBCGvzVV9GAQDx485exBY1CU3PQgVgIFI9prlVqDwcZNC/oSPoKP4HNUfQLfxYN/NytCe5GwO9/88+/MBAh5I8C0VoAtnYYNa8oaXpAn9RxIP/XcIqLreZENnjwvyfPieVVdXj2H7DHxPJH/2/M7sVn3/MGyOfb8SWjOGv4K2DRdctpkmtqhos+D6ISh4kiUUXDj1Fr3Bc/Oc0vPqec6A8aUyu1cdTaPZvyXyqz6Fm5axC7bxHOv/r/dnbSRXCk7+mpVrOqVtFqdp3NKxaHUgeod9cm40rtrzfrt2OyQa8fppCO9tk7d1x0rpiQcuDuRkjjtkHt16ctbuf/radZY52/PnEcphXpZOcofiEZNcQAAeNpjYGIAg///GBgZsAF2BgZGJkZmBmaGdkYWRla29JzKggxD9tK8TAMDAxc2D0MLU2NjENfI1M0ZACUXCrsAAAABWtLiugAA) format('woff');
+		}
+		input.bo_input_password {
+			font-family: 'pass', 'Roboto', Helvetica, Arial, sans-serif ;
+			font-size: 18px;
+		}
+
+		input.bo_input_password::placeholder {
+			color: red;
+			opacity: 0.6; 
+			filter: alpha(opacity=60); 
+			-ms-filter: "alpha(opacity=60)"; 
+			-khtml-opacity: 0.6; 
+			-moz-opacity: 0.6;
+			font-size:14px;
+			letter-spacing:-1px
+		}
+		input.bo_input_password::-ms-input-placeholder { /* Internet Explorer 10-11 */
+			color: red;
+			opacity: 0.6; 
+			filter: alpha(opacity=60); 
+			-ms-filter: "alpha(opacity=60)"; 
+			-khtml-opacity: 0.6; 
+			-moz-opacity: 0.6;
+			font-size:13px;
+			letter-spacing:-1px
+		}
+		input.bo_input_password::-ms-input-placeholder { /* Microsoft Edge */
+			color: red;
+			opacity: 0.6; 
+			filter: alpha(opacity=60); 
+			-ms-filter: "alpha(opacity=60)"; 
+			-khtml-opacity: 0.6; 
+			-moz-opacity: 0.6;
+			font-size:13px;
+			letter-spacing:-1px
+		}
+
+
+
+
+
+		/* select */
+		.bo_selectbox {
+		  padding:0 25px 0 10px;
+		  border: 1px solid #cccccc;
+		  box-sizing: border-box;
+		  border-radius: 2px;
+		  font-size: 14px;
+		  line-height: 30px;
+		  color: #333333;
+		  font-family: inherit;
+		  outline:none;
+		  vertical-align:middle;
+		  background-color:#fff;
+		  background-image: url('../images/common/selectbox_arrow.png');
+		  background-size: 20px;
+		  background-repeat:no-repeat;
+		  background-position:calc(100% - 3px) 48%;  
+		  -webkit-appearance: none;
+			 -moz-appearance: none;
+				  appearance: none;
+		}
+		.bo_selectbox::-ms-expand { /* for IE 11 */
+			display: none;
+		}
+
+
+		/* checkbox */
+		.bo_checkbox {position:relative; text-align:center; vertical-align:middle;}
+		.bo_checkbox input[type="checkbox"]{display: none;}
+		.bo_checkbox input[type="checkbox"] + label{
+			display:inline-block;
+			width: 20px;
+			height: 20px;
+			vertical-align:middle;
+
+			background-color: #F7F7F7;
+			border: 1px solid #E7E7E7;
+			box-sizing: border-box;
+			border-radius: 2px;
+			cursor: pointer;
+			margin-bottom:4px;
+		}
+		.bo_checkbox input[type="checkbox"]:checked + label{
+		  background:url('../images/common/o_checkbox_checked.png') no-repeat 50% 50%; 
+		}
+
+
+		/* checkbox 2 */
+
+			/* Customize the label (the container) */
+			/*
+			.bo_checkbox_container {
+			display: block;
+			position: relative;
+			padding-left: 35px;
+			margin-bottom: 12px;
+			cursor: pointer;
+			font-size: 22px;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			}
+			*/
+
+			.bo_checkbox_container {
+			  display: inline-block;
+			  position: relative;
+			  padding-left: 30px;
+			  margin-bottom: 12px;
+			  margin-right:20px;
+			  cursor: pointer;
+			  font-size: 16px;
+			  -webkit-user-select: none;
+			  -moz-user-select: none;
+			  -ms-user-select: none;
+			  user-select: none;
+			}
+
+
+			/* Hide the browser's default checkbox */
+			.bo_checkbox_container input {
+			position: absolute;
+			opacity: 0;
+			cursor: pointer;
+			height: 0;
+			width: 0;
+			}
+
+			/* Create a custom checkbox */
+			.bo_chk_checkmark {
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 23px;
+			width: 23px;
+			background-color: #eee;
+			}
+
+			/* On mouse-over, add a grey background color */
+			.bo_checkbox_container:hover input ~ .bo_chk_checkmark {
+			background-color: #ccc;
+			}
+
+			/* When the checkbox is checked, add a blue background */
+			.bo_checkbox_container input:checked ~ .bo_chk_checkmark {
+			background-color: #2196F3;
+			}
+
+			/* Create the checkmark/indicator (hidden when not checked) */
+			.bo_chk_checkmark:after {
+			content: "";
+			position: absolute;
+			display: none;
+			}
+
+			/* Show the checkmark when checked */
+			.bo_checkbox_container input:checked ~ .bo_chk_checkmark:after {
+			display: block;
+			}
+
+			/* Style the checkmark/indicator */
+			.bo_checkbox_container .bo_chk_checkmark:after {
+			left: 9px;
+			top: 5px;
+			width: 5px;
+			height: 10px;
+			border: solid white;
+			border-width: 0 3px 3px 0;
+			-webkit-transform: rotate(45deg);
+			-ms-transform: rotate(45deg);
+			transform: rotate(45deg);
+			}
+
+
+
+
+
+
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ * 게시판 커스텀  CSS
+ */
+
+	/* https://replus.kr/board/newsncase/detail/12 */
+	
+	/* 데스크탑 */
+	#bbs_newsncase_12 {}
+	#bbs_newsncase_12 .sect_box { border: 6px solid #e5f6ff; border-radius: 30px; width: 100%; padding: 50px 40px; }
+	#bbs_newsncase_12 .sect_bg_lightblue { background-color: #e5f6ff; width: 100%; padding: 60px 40px;}
+	.newncase_hr { display: block; width: 100%; height: 50px; margin: 0; padding: 0; }
+	.newncase_hr2 { display: block; width: 100%; height: 80px; margin: 0; padding: 0; }
+	
+	.newsncase_padding { padding:15px 10px; }
+	
+	/* 모바일 */
+	@media (max-width: 768px){
+	
+		#bbs_newsncase_12 .sect_box { border: 6px solid #e5f6ff; padding: 30px 10px 15px 10px; }
+		#bbs_newsncase_12 .sect_bg_lightblue { padding: 30px 10px;}
+
+		.newncase_hr { height: 20px; }
+		.newncase_hr2 { height: 40px; }
+
+		.newsncase_padding { padding:10px 0px; }
+		
+		.img_mob_90per { width: 90%; margin: 0 auto; }
+		.btn_redi_submit { width: 70%; max-width: 400px; }
+	}
+
+
+
+
+
+	/* 데스크탑 모바일 공통 */
+	.bbs_flex_sp_between{
+	  display: flex;
+	  flex-wrap: wrap;
+	  gap: 24px;
+	}
+	/* ✅ 핵심: 16:9 박스 + iframe 꽉 채우기 */
+	.bbs_flex_sp_between .utube-container{
+	  position:relative;
+	  width:100%;
+	  aspect-ratio:16/9;
+	  /* background:#000; */
+	  /* overflow:hidden;
+	  border-radius:12px; */ /* 원하면 */
+	  
+	  margin-bottom: 50px;
+	}
+	.bbs_flex_sp_between .utube-container iframe{
+	  position:absolute;
+	  inset:0;
+	  width:100%;
+	  height:100%;
+	  border:0;
+	}
+	
+	/* 데스크탑 */
+	.bbs_flex_sp_between .utube-container{
+	  flex: 1 1 calc(50% - 12px);
+	  max-width: calc(50% - 12px);
+	  min-width:0;
+	}
+	
+	/* 모바일 */
+	@media (max-width: 768px){
+	
+		.bbs_flex_sp_between .utube-container{
+		  flex: 1 1 100%;
+		  max-width: 100%;
+		}
+
+		.bbs_flex_sp_between .utube-container iframe{
+		  position: absolute;
+		  inset: 0;
+		  width: 100%;
+		  height: 100%;
+		  border: 0;
+		}
+	  
+	  
+	}
+
+
+	/* figure가 박스 역할 + radius */
+	.bbs_flex_sp_between .utube-container figure{
+	  position: relative;
+	  display: block;
+	  width: 100%;
+	  aspect-ratio: 16 / 9;   /* ✅ 높이를 비율로 결정 */
+	  margin: 0;
+	  overflow: hidden !important;       /* ✅ radius 안쪽 자르기 */
+	  border-radius: 12px !important;
+	  background: #000;
+	}
+	.bbs_flex_sp_between .utube-container .utube-caption {
+	  position: absolute;
+	  width: 100%;
+	  text-align: center;
+	  bottom: -35px; 
+	  font-weight: 600;
+	}
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+

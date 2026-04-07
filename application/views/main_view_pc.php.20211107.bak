@@ -1,0 +1,211 @@
+	<!-- 메인 탑 비주얼 배너 영역 -->
+	<div class="wrap_main_top_bnr">
+	  <?php foreach($arr_img_bnr_pc as $i => $bnr) { ?>
+		<!-- <div class="main_top_bnr" style="background-image:linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('<?php echo $bnr->banner_src ?>'); "> -->
+		<div class="main_top_bnr" style="background-image:url('<?php echo $bnr->banner_src ?>'); ">
+			<div class="txt"><?php echo nl2br($bnr->bn_memo) ?></div>
+		</div>
+	  <?php } ?>
+	</div>
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+	  $('.wrap_main_top_bnr').not('.slick-initialized').slick({
+		  slidesToShow: 1,
+		  slidesToScroll: 1,
+		  arrows: false,
+		  dots: false
+	  });
+	});
+	</script>
+
+
+	<!-- 진행중인 캠페인 목록 -->
+	<div class="main_cmp">
+	  <div class="main_sect">
+		<div class="main_ctnt">
+
+			<h3 class="cmp_subject">진행중인 캠페인 </h3>
+			<hr class="cmp_subject_line" />
+
+			<div class="cmp_list">
+			  <ul class="row">
+				<?php
+				foreach($cmp_list as $kcnt => $cmp) {
+					//$cmp_tag_bg_color = (($kcnt % 2) > 0 ) ? 'cmp_tag_bg_green' : 'cmp_tag_bg_blue';
+					$cmp_tag_bg_color = 'cmp_tag_bg_blue';
+				?>
+				<li class="col-4">
+				  <a href="/campaign/detail/<?php echo $cmp->code ?>" class="" style="text-decoration:none;">
+					<div class="cmp_img_wrap">
+					  <div class="cmp_img" style="background-image:linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ),url('<?php echo $cmp->campaign_main_src ?>'); ">
+						<div class="cmp_list_item">
+							<div class="cmp_cate">[<?php echo $cmp->cmp_org_name ?>]</div>
+							<div class="cmp_ttl ellipsis"><?php echo $cmp->cmp_title ?></div>
+							<div class="cmp_tag">
+								<div class="cmp_tag_txt">#이웃을 위해</div>
+								<div class="cmp_tag_bg <?php echo $cmp_tag_bg_color ?>"></div>
+							</div>
+						</div>
+					  </div>
+					</div>
+				  </a>
+				</li>
+				<?php } ?>
+			  </ul>
+			</div>
+
+		</div>
+	  </div>
+	</div>
+
+
+	<!-- 가치 및 디바이스 수량 -->
+	<div class="main_value">
+	  <div class="main_sect">
+		<div class="main_ctnt">
+			<div class="row">
+			<?php
+			foreach($result_amount['qry'] as $cnt => $row) { 
+				if('기부 가치' == $row->amt_title OR '기부가치' == $row->amt_title) {
+					$box_val_class = 'box_val_donate';
+					$box_val_icon = 'icon_val_donate.png';
+					$box_title = $row->amt_title;
+					$box_explain = '기부한 물품을 공정가치로 측정한 금액';
+				}
+				elseif('환경 가치' == $row->amt_title OR '환경가치' == $row->amt_title) {
+					$box_val_class = 'box_val_env';
+					$box_val_icon = 'icon_val_env.png';
+					$box_title = $row->amt_title;
+					$box_explain = '기부한 물품을 재사용, 재활용함으로써 절감되는 경제적 가치';
+				}
+			?>
+				<div class="col-6">
+					<div class="box_value <?php echo $box_val_class ?>">
+						<img src="<?php echo IMG_DIR ?>/layout/<?php echo $box_val_icon ?>" style="width:62px; height:61px;" /> <?php echo $box_title ?>
+					</div>
+					<div class="text-center pt-2"><?php echo $box_explain ?></div>
+					<hr class="box_val_line" />
+					<div class="box_val_amt"><?php echo number_format($row->amt_value) ?> <span>원</span></div>
+				</div>
+			<?php } ?>
+			</div>
+			<div class="box_device">
+				<div class="row">
+				<?php
+				foreach($result_device['qry'] as $cnt => $row) { 
+					if('노트북' == $row->device_name) {
+						$device_icon = 'ico_device_laptop.png';
+					}
+					elseif('데스크탑' == $row->device_name) {
+						$device_icon = 'ico_device_desktop.png';
+					}
+					elseif('모니터' == $row->device_name) {
+						$device_icon = 'ico_device_monitor.png';
+					}
+					elseif('태블릿' == $row->device_name) {
+						$device_icon = 'ico_device_tablet.png';
+					}
+					elseif('스마트폰' == $row->device_name) {
+						$device_icon = 'ico_device_smartphone.png';
+					}
+					elseif('프린터' == $row->device_name) {
+						$device_icon = 'ico_device_printer.png';
+					}
+					elseif('웹캠' == $row->device_name) {
+						$device_icon = 'ico_device_webcam.png';
+					}
+					elseif('주변기기' == $row->device_name) {
+						$device_icon = 'ico_device_etc.png';
+					}
+					else {
+						$device_icon = '';
+					}
+				?>
+					<div class="col-3">
+						<div class="dev_icon"><img src="<?php echo IMG_DIR ?>/layout/<?php echo $device_icon ?>" style="width:42px; height:42px;" /></div>
+						<div class="dev_title"><?php echo $row->device_name ?></div>
+						<div class="dev_count"><?php echo number_format($row->device_amount) ?></div>
+					</div>
+				<?php } ?>
+				</div>
+			</div>
+
+		</div>
+	  </div>
+	</div>
+
+
+	<!-- 기부 절차 -->
+	<div class="main_process">
+	  <div class="main_sect">
+		<div class="main_ctnt">
+
+			<div class="proc_title">
+			  <h3 class="proc_ttl_text">기부 절차</h3>
+			  <div class="proc_ttl_line"></div>
+			</div>
+			<div class="proc_desc">
+				REPLUS는 도움이 필요한 비영리 단체에 전국의 <br />
+				기부자 및 기업의 지원을 이어드립니다.
+			</div>
+
+			<!-- <div class="proc_img">
+			  <img src="<?php echo IMG_DIR ?>/layout/main_process_img_1.png" />
+			</div> -->
+
+			<style type="text/css">
+			  .dn_process_wrap { padding:25px 0 0 0;}
+			  .dn_proc_img {}
+			  .dn_proc_txt { margin:0 auto; padding:0; width: 100%; list-style:none; }
+			  .dn_proc_txt li { width:20%; display: inline-block; margin:0; padding: 0; float:left; text-align:center; font-size:24px; color:#55a635; font-weight:bold; }
+			  .dn_proc_txt li img { width:36px !important; }
+			</style>
+			<div class="dn_process_wrap">
+			  <a href="/B/PARTNERS/기부-절차-안내">
+				<div class="dn_proc_img"><img src="<?php echo IMG_DIR ?>/replus/dn_process_pc.png" style="width: 100%;" /></div>
+				<ul class="dn_proc_txt" style="">
+					<li><img src="<?php echo IMG_DIR ?>/replus/dn_proc_no_1.png" /> 캠페인 선택</li>
+					<li><img src="<?php echo IMG_DIR ?>/replus/dn_proc_no_2.png" /> 물품 확인 및 약정</li>
+					<li><img src="<?php echo IMG_DIR ?>/replus/dn_proc_no_3.png" /> 물품 수거</li>
+					<li><img src="<?php echo IMG_DIR ?>/replus/dn_proc_no_4.png" /> 기부 가치 산정</li>
+					<li><img src="<?php echo IMG_DIR ?>/replus/dn_proc_no_5.png" /> 나눔 및 결과보고</li>
+				</ul>
+				<div style="clear:both;"></div>
+			  </a>
+			</div>
+
+		</div>
+	  </div>
+	</div>
+
+	<hr class="only_line" />
+
+	<div class="main_news">
+	  <div class="main_sect">
+		<div class="main_ctnt">
+			<div class="news_title">
+			  <a href="<?php echo base_url() ?>board/newsncase/"><h3 class="news_ttl_text">News & Case</h3></a>
+			  <div class="news_ttl_line"></div>
+			</div>
+			<div class="news_list">
+			  <div class="row">
+			  <?php foreach($latest_newsncase as $i => $o) { ?>
+				<div class="col-6 mb-4">
+				  <a href="<?php echo $o->href ?>">
+					<div class="news_item">
+						<div class="news_img" style="background-image:url('<?php echo $o->thumb_img_src ?>');"></div>
+						<div class="news_text">
+							<div class="text_cate <?php echo isset($o->ca_color) ? $o->ca_color : ''; ?>">[<?php echo $o->ca_code ?>]</div>
+							<div class="text_ttl"><?php echo $o->subject ?></div>
+							<div class="text_date"><?php echo $o->write_date ?></div>
+						</div>
+					</div>
+				  </a>
+				</div>
+			  <?php } ?>
+			  </div>
+			</div>
+		</div>
+	  </div>
+	</div>

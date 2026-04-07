@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>데이터 삭제 보고서 ─ 리맨</title>
+
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css" />
+  <style>
+
+	/* Pretendard */
+	.font-pretendard { font-family: 'Pretendard Variable'; font-weight: 400; }
+
+	/* flex */
+	.dsp_flex { display: flex; }
+
+	/* 가로 */
+	.dsp_flex_sp_between { display: flex; justify-content: space-between; }
+	.dsp_flex_sp_around { display: flex; justify-content: space-around; }
+	.dsp_flex_sp_evenly { display: flex; justify-content: space-evenly; }
+
+	/* 세로 */
+	.dsp_flex_column { display: flex; flex-direction: column; }
+	.dsp_flex_column_reverse { display: flex; flex-direction: column-reverse; }
+
+	/* 가로세로 정렬 */
+	.dsp_flex_x_start { display: flex; justify-content: flex-start; }
+	.dsp_flex_x_end { display: flex; justify-content: flex-end; }
+	.dsp_flex_x_center { display: flex; justify-content: center; }
+	.dsp_flex_y_center { display: flex; align-items: center; }
+	.dsp_flex_xy_center { display: flex; justify-content: center; align-items: center; }
+
+
+
+	html, body { margin: 0; padding: 0; font-family: 'Pretendard Variable'; color: #272724; font-size: 17px; }
+
+	.wrap_reportDel { width: 100%; max-width: 1240px; height: auto; max-height: 1754px;
+		background-image: url('./img/reportDel_bg_circle.png'), url('./img/reportDel_bg.png'); 
+		background-position: center center, center center;
+		background-repeat: no-repeat, no-repeat; 
+		background-size: 814px 814px, 1240px 1754px;
+	}
+	.reportCtnt { margin: 0 76px 0 86px; }
+
+	.topCopyright { width: 100%; height: 87px; }
+	.topCopyright .copyText { padding-top: 50px; line-height: 24px; font-size: 18px; }
+	.topLineBg {
+		width: 100%; height: 62px;  font-size: 22px;
+		background-image:url('./img/reportDel_topLineBg.png'); background-position: center center; background-repeat:no-repeat; background-size: cover cover; 
+	}
+	.topLineBg > div { line-height: 62px; }
+
+	.report_ttl { font-size: 55px; font-weight: 800; }
+
+	.sect_ttl { font-size: 22px; font-weight: bold; color: #008dd5; margin-bottom: 12px; }
+
+	.sect_basic {}
+	.sect_basic dl { margin: 0; padding: 0; }
+	.sect_basic dl dt { margin: 0; padding: 0; font-size: 18px; font-weight: normal; }
+	.sect_basic dl dd { margin: 0; padding: 0; font-size: 22px; font-weight: 700; margin-top: 17px;}
+
+	.sect_tbl { text-align: left; border-top: 2px solid #707070; border-bottom: 1px solid #707070; padding-bottom: 20px; }
+	.sect_tbl table {  width: 100%; }
+	.sect_tbl table th { background-color: #e9e6e3; height: 46px; vertical-align: middle; font-weight: 500; padding-left: 35px; }
+	.sect_tbl table td { font-size: 22px; padding-left: 35px; padding-top: 16px; }
+
+
+	.trans_bg {
+	  /* 맨 아래: 실제 배경 이미지 */
+	  /* 그 위: 반투명 흰색 오버레이(gradient) */
+	  background-image:
+		linear-gradient(rgba(255,255,255,0.55), rgba(255,255,255,0.55)),
+		url('/path/to/bg.jpg');
+	  background-size: cover;
+	  background-position: center;
+	  background-repeat: no-repeat;
+
+	  /* 레이아웃 */
+	  /* min-height: 60vh; */
+	  /* padding: 4rem 2rem; */
+	  display: grid;
+	  place-items: center;
+	  text-align: left;
+	}
+
+	.remann_sign {
+		vertical-align: bottom;
+		background-image: url('./img/reportDel_sign.png'); 
+		background-position: right bottom;
+		background-repeat: no-repeat; 
+		background-size: 102px 100px;
+	}
+
+  </style>
+
+  <style>
+	/* 1) 인쇄 기본 설정 */
+	@page {
+	  size: A4;               /* 필요시 Letter 로 변경 */
+	  margin: 0mm;           /* 프린터 여백과 겹치지 않게 */
+	}
+
+	/* 2) 인쇄 모드용 리셋 */
+	@media print {
+	  html, body {
+		width: 210mm;         /* A4 기준 */
+		margin: 0 !important;
+		-webkit-print-color-adjust: exact;
+				print-color-adjust: exact; /* 배경색/그레이디언트 최대한 유지 */
+	  }
+
+	  /* 화면 전용 요소 제거(상단 고정 바, 버튼 등) */
+	  .no-print, .only-screen { display: none !important; }
+
+	  /* 페이지 프레임/그림자 제거 */
+	  .page, .paper, .container {
+		box-shadow: none !important;
+		filter: none !important;
+		border: none !important;
+		transform: none !important;
+	  }
+
+	  /* fixed/sticky는 인쇄에서 깨지기 쉬움 → 정적으로 */
+	  header, footer, .sticky, .fixed {
+		position: static !important;
+		top: auto; left: auto; right: auto; bottom: auto;
+	  }
+
+	  /* 배경 이미지는 인쇄에서 종종 빠짐 → 필요시 <img> 로 대체하거나 색만 유지 */
+	  .bg-image { background: none !important; }
+	  .bg-image img { display: block !important; }
+
+	  /* viewport 단위는 종종 뭉개짐 → mm/px로 강제 */
+	  [style*="vw"], [style*="vh"] { /* 필요시 직접 클래스 지정 */
+		width: auto !important; height: auto !important;
+	  }
+
+	  /* 표가 페이지 중간에서 잘리지 않게 */
+	  table, tr, td { page-break-inside: avoid; break-inside: avoid; }
+	  .section, .card, .block { break-inside: avoid; }
+
+	  /* 링크 밑줄/URL 출력 방지(원하면 유지) */
+	  a { text-decoration: none !important; }
+	}
+
+  </style>
+ </head>
+ <body>
+  <div class="wrap_reportDel">
+
+	<div class="topCopyright">
+		<div class="reportCtnt">
+			<div class="copyText">© 2025 주식회사 ABC. All rights reserved.</div>
+		</div>
+	</div>
+
+	<div class="topLineBg">
+		<div class="reportCtnt dsp_flex_sp_between">
+			<div>2025-08-12 00:00</div>
+			<div>#Issuance Number 발급번호</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 37px; height: 95px;">
+		<div class="reportCtnt">
+			<div class="dsp_flex_sp_between">
+				<div class="report_ttl">데이터 삭제 보고서</div>
+				<div class="report_topLogo dsp_flex_column_reverse"><img src="./img/reportDel_topLogo.png" style="width: 194px;" /></div>
+			</div>
+		</div>
+		<div class="reportCtnt">
+			<div class="" style="font-size: 24px; font-weight: 500;">Data Erasure Report</div>
+		</div>
+	</div>
+
+	<div style="margin-top: 70px;">
+		<div class="sect_basic reportCtnt">
+			<div class="sect_ttl">기본정보</div>
+			<div class="dsp_flex_sp_between" style="background-color: #ffffff; padding: 32px 39px 29px 39px; ">
+
+				<dl class="dsp_flex_column">
+					<dt>고객명</dt>
+					<dd>고객명</dd>
+				</dl>
+
+				<dl class="dsp_flex_column">
+					<dt>삭제 일시</dt>
+					<dd>2025-08-12 12:23</dd>
+				</dl>
+
+				<dl class="dsp_flex_column">
+					<dt>보안 책임자</dt>
+					<dd>책임자명</dd>
+				</dl>
+
+				<dl class="dsp_flex_column">
+					<dt>처리 담당자</dt>
+					<dd>처리자명</dd>
+				</dl>
+
+				<dl class="dsp_flex_column">
+					<dt>삭제 장소</dt>
+					<dd>삭제 장소</dd>
+				</dl>
+			</div>
+		</div>
+	</div>
+
+
+	<div style="margin-top: 45px;">
+		<div class="sect_basic reportCtnt">
+			<div class="sect_ttl">데이터 삭제 기기 정보</div>
+			<div class="sect_tbl" style="">
+				<table cellpadding="0" cellspacing="0">
+					<tr>
+						<th>종류</th>
+						<th>제조사</th>
+						<th>모델명</th>
+						<th>검수 등급</th>
+					</tr>
+					<tr>
+						<td>기기 종류</td>
+						<td>제조사제조</td>
+						<td>모델명asslddfjs-w2ddf</td>
+						<td>검수 등급</td>
+					</tr>
+					<tr>
+						<td>기기 종류</td>
+						<td>제조사제조</td>
+						<td>모델명asslddfjs-w2ddf</td>
+						<td>검수 등급</td>
+					</tr>
+					<tr>
+						<td>기기 종류</td>
+						<td>제조사제조</td>
+						<td>모델명asslddfjs-w2ddf</td>
+						<td>검수 등급</td>
+					</tr>
+					<tr>
+						<td>기기 종류</td>
+						<td>제조사제조</td>
+						<td>모델명asslddfjs-w2ddf</td>
+						<td>검수 등급</td>
+					</tr>
+				</table>
+
+
+			</div>
+		</div>
+	</div>
+
+
+
+	<div style="margin-top: 70px;">
+		<div class="sect_basic reportCtnt">
+			<div class="sect_ttl">데이터 삭제 처리 정보</div>
+			<div>
+
+				<div class="trans_bg" style="padding: 32px 39px 29px 39px; ">
+
+					<div class="dsp_flex_sp_between" style="width: 100%;">
+
+						<dl class="dsp_flex_column">
+							<dt>삭제방법</dt>
+							<dd>폐기방법</dd>
+						</dl>
+
+						<dl class="dsp_flex_column">
+							<dt>데이터 삭제 처리 정보</dt>
+							<dd>BLANCCO  MOBILE</dd>
+						</dl>
+
+						<dl class="dsp_flex_column">
+							<dt>제조사</dt>
+							<dd>**화학공업</dd>
+						</dl>
+
+						<dl class="dsp_flex_column">
+							<dt>관리 S/N</dt>
+							<dd>N/A (파쇄에 따른 미확인)</dd>
+						</dl>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+
+	<div style="margin-top: 70px;">
+		<div class="sect_basic reportCtnt">
+			<div class="sect_ttl">현장 사진</div>
+
+			<div>
+				<div class="trans_bg" style="padding: 32px 39px 29px 39px; ">
+					<div class="dsp_flex_sp_between" style="width: 100%;">
+
+						<dl class="dsp_flex_column">
+							<dt>삭제 전 현장 사진</dt>
+							<dd>
+								<img src="" style="width: 274px; height: 189px; background-color: #e9e6e3;" />
+							</dd>
+						</dl>
+
+						<dl class="dsp_flex_column">
+							<dt>삭제 전 현장 사진</dt>
+							<dd>
+								<img src="" style="width: 274px; height: 189px; background-color: #e9e6e3;" />
+							</dd>
+						</dl>
+
+						<dl class="dsp_flex_column">
+							<dt>삭제 전 현장 사진</dt>
+							<dd>
+								<img src="" style="width: 274px; height: 189px; background-color: #e9e6e3;" />
+							</dd>
+						</dl>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<div style="margin-top: 70px;">
+		<div class="sect_basic reportCtnt">
+			<div class="sect_date" style="text-align: right; font-size: 22px; font-weight: 800; margin-right: 260px;">2025 년 08 월 01 일</div>
+		</div>
+	</div>
+
+	<div class="dsp_flex_column_reverse " style="margin-top: 20px; height: 100px;">
+		<div class="sect_basic reportCtnt dsp_flex_column_reverse remann_sign" style="height: 100px; ">
+
+			<div class="dsp_flex_x_end">
+
+				<div class="sect_company" style="text-align: right; font-size: 22px; font-weight: 800; margin-right: 40px;">
+					<img src="./img/reportDel_bottomLogo.png" style="width: 223px;" />
+				</div>
+				<div style="font-size: 27px; font-weight: 700; margin-right: 40px;">주식회사 리 맨</div>
+				<div style="font-size: 27px;">대표이사 <span style=" font-weight: 700; margin-right: 60px;">구 자 덕</span></div>
+
+			</div>
+
+		</div>
+	</div>
+
+	<div style="margin-top: 20px;">
+		<div class="sect_basic reportCtnt">
+			<div class="sect_cert" style="text-align: right; font-size: 20px; font-weight: 500;">
+				ISO27001 인증 (정보보호 국제표준) · SERI R2V3 인증 (전자제품 재활용 국제표준)
+			</div>
+		</div>
+	</div>
+
+
+  </div>
+ </body>	
+</html>

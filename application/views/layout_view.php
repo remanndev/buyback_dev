@@ -1,0 +1,143 @@
+<?php
+	// cms 데이터 가져오기
+	$meta_title = isset($this->cms_row->page_title) ? $this->cms_row->page_title : '';
+	$meta_title .= ($meta_title != '') ? ' - ' : '';
+	$meta_title .= $this->config->item('website_name', 'tank_auth');
+	$meta_keywords = isset($this->cms_row->meta_keyword) ? $this->cms_row->meta_keyword : $this->config->item('website_meta_keywords', 'tank_auth');
+	$meta_description = isset($this->cms_row->meta_description) ? $this->cms_row->meta_description : $this->config->item('website_meta_description', 'tank_auth');
+
+	$title = isset($this->cms_row->page_title) ? $this->cms_row->page_title.' - ' : '';
+	$title .= $this->config->item('website_name', 'tank_auth');
+	$title .= $this->session->userdata('admin_title');
+
+	$og_type = $this->config->item('website_meta_og_type', 'tank_auth');
+	$og_title = (isset($this->cms_row->og_title) && '' != $this->cms_row->og_title) ? $this->cms_row->og_title : $this->config->item('website_meta_og_title', 'tank_auth');
+	$og_description =  (isset($this->cms_row->og_description) && '' != $this->cms_row->og_description) ? $this->cms_row->og_description : $this->config->item('website_meta_og_description', 'tank_auth');
+	$og_url = (isset($this->cms_row->og_url) && '' != $this->cms_row->og_url) ? BASEURL . $this->cms_row->og_url : BASEURL . REQUEST_URI;
+	$og_image = (isset($this->cms_row->og_image) && '' != $this->cms_row->og_image) ? $this->cms_row->og_image : $this->config->item('website_logo_src', 'tank_auth');
+?><!doctype html>
+<html class="no-js" lang="ko" dir="ltr">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- <meta name="theme-color" content="#cba86a"> -->
+
+	<meta name="title" content="<?php echo $meta_title ?>">
+	<meta name="keywords" content="<?php echo $meta_keywords ?>">
+	<meta name="description" content="<?php echo $meta_description ?>">
+    <title><?php echo $title ?></title>
+	<!-- Facebook Interface -->
+	<meta property="og:type" content="<?php echo $og_type ?>"/>
+	<meta property="og:title" content="<?php echo $og_title ?>"/>
+	<meta property="og:url" content="<?php echo $og_url ?>"/>
+	<meta property="og:description" content="<?php echo $og_description ?>"/>
+	<meta property="og:site_name" content="<?php echo $this->config->item('website_name', 'tank_auth') ?>"/>
+	<meta property="og:image" content="<?php echo $og_image ?>"/>
+	<!-- // Facebook Interface -->
+
+	<!-- Naver -->
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="<?php echo BASEURL ?>/favicon.ico?v=1" type="image/x-icon">
+	<link rel="icon" href="<?php echo BASEURL ?>/favicon.ico?v=1" type="image/x-icon">
+	<!-- // Favicon -->
+
+    <!-- Bootstrap CSS -->
+	<!-- 
+	<link rel="stylesheet" href="<?php echo LIB_DIR ?>/bootstrap/bootstrap-5.0.2-dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="<?php echo CSS_DIR ?>/common.css?v=<?php //echo rand() ?>" />
+	<link rel="stylesheet" href="<?php echo CSS_DIR ?>/layout_replus.css?v=<?php //echo rand() ?>" /> -->
+
+	<?php
+	// CSS 파일을 로드 한다.
+	if(isset($GLOBALS['hoksi_css']) && $GLOBALS['hoksi_css']) { foreach($GLOBALS['hoksi_css'] as $css_file) { echo $css_file . PHP_EOL;}}
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 load_css('<link rel="stylesheet" type="text/css" media="screen" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/blitzer/jquery-ui.css" />');
+	 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 */
+	?>
+
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+	
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+	<!-- <script src="<?php echo LIB_DIR ?>/bootstrap/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script> -->
+
+	<!-- Scripts -->
+	<script src="<?php echo JS_DIR ?>/common.js?v=<?php //echo rand() ?>"></script>
+	<script src="<?php echo JS_DIR ?>/layout.js?v=<?php //echo rand() ?>"></script>
+
+	<?php
+	// 자바 스크립트 파일을 로드 한다.
+	if(isset($GLOBALS['hoksi_js']) && $GLOBALS['hoksi_js']) { foreach($GLOBALS['hoksi_js'] as $js_file) { echo $js_file . PHP_EOL;}}
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 load_js('<script src="/js/plugins/jqgrid/4.6.0/jquery.jqGrid.min.js" type="text/javascript"></script>');
+	 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 */
+	?>
+  </head>
+  <body>
+	<div class="layout_content">
+		<?php
+			// 헤더
+			$this->load->view('layout_header_view');
+		?>
+		<?php
+			if ( isset($viewPage) && $viewPage ) $this->load->view($viewPage); // 페이지 내용
+		?>
+	</div>
+	<footer class="layout_footer">
+	<?php
+		// 푸터
+		$this->load->view('layout_footer_view');
+	?>
+	</footer>
+
+	<?php
+	// Popup : 메인 페이지에서만
+	if(! $this->uri->segment(1)) { 
+
+		// 레이어 팝업
+		foreach ($pulayer as $o):
+			echo $o;
+		endforeach;
+
+		// 일반 팝업
+		if ($pubasic):
+	?>
+			<script type='text/javascript'>
+			//<![CDATA[
+			$(function() {
+			  <?php foreach ($pubasic as $o): ?>
+			  var popup<?php echo $o->id?> = <?php echo $o->html?>
+			  <?php endforeach; ?>
+			});
+			//]]>
+			</script>
+	<?php
+		endif;
+	}
+	?>
+
+	<script type="text/javascript">
+	$(function() {
+		var first_code = '<?php echo isset($this->first_code) ? $this->first_code : '' ?>';
+		var page_code = '<?php echo isset($this->page_code) ? $this->page_code : '' ?>';
+		var nav_code = first_code;
+		var nav_code_sub = page_code;
+		if(first_code != '') {
+			nav_code = 'nav_'+first_code;
+			nav_code_sub = 'nav_'+page_code;
+			$('.desk_navbar .'+nav_code).addClass('actived');
+			$('.desk_navbar_sub_main .'+nav_code_sub).addClass('actived');
+			$('dl.mobile_navbar dt.'+nav_code).addClass('actived').removeClass('menu_close').addClass('active');
+			$('dl.mobile_navbar dd.'+nav_code_sub).addClass('actived');
+			$('dl.mobile_navbar dt.'+nav_code).nextAll().show();
+		}
+	});
+	</script>
+
+  </body>
+</html>

@@ -1,0 +1,186 @@
+	<div class="contents_wrap">
+		<!-- 캠페인 상세 -->
+		<div class="container" style="margin:0 auto; padding: 0; ">
+			<!-- 캠페인 우측 컨텐츠 -->
+			<div class="cmp_ctnt_side">
+
+				<dl>
+					<dt><h2 class="cmp_side_ttl">목표 기부 가치</h2></dt>
+					<dt><h2 style="font-size:42px;color:#4f4f4f;"><?php echo $cmp->goal_money ?> 만원</h2></dt>
+
+					<dt class="mt_25"><h2 class="cmp_side_ttl">목표 기기</h2></dt>
+					<dd>
+						<h2 style="color:#434387;"><?php echo $cmp->goal_desc ?></h2>
+					</dd>
+				</dl>
+
+				<dl class="mt_30">
+					<dt><h2 class="cmp_side_ttl">모금 기간</h2></dt>
+					<dd><h5 style="margin: 0 0 8px 10px;"><?php echo $cmp->term_begin ?> ~ <?php echo $cmp->term_end ?></h5></dd>
+				</dl>
+
+				<div class="mt_30">
+					<a href="<?php echo base_url() ?>campaign/donation/<?php echo $code; ?>"><button class="o_btn o_btn_block btn-purple-flat o_btn_v60"><h4>디지털 기기 기부하기</h4></button></a>
+				</div>
+
+				<!-- 단체 소개 -->
+				<dl class="mt_30 py_30" style="background-color:#efeff8; color:#6c6c6c;">
+					<dt><h4 style="text-align:center;"><?php echo $cmp->org_name ?></h4></dt>
+					<dd class="pt_20 px_20"><?php echo $cmp->org_info ?></dd>
+				</dl>
+
+			</div>
+
+
+
+
+			<!-- 캠페인 좌측 컨텐츠 -->
+			<div class="cmp_ctnt">
+
+				<h3 class="cmp_title mb_30" style="color:#353535;"><?php echo $cmp->title ?></h3>
+
+				<figure>
+					<?php echo $cmp->campaign_main_img ?>
+				</figure>
+
+				<div class="tab">
+				  <button class="tablinks active" onclick="openTab(event, 'campaign')" id="campaignOpen">캠페인 소개</button>
+				  <button class="tablinks" onclick="openTab(event, 'comment')" id="commentOpen">응원댓글</button>
+				</div>
+				<input type="hidden" id="cmptab" value="<?php echo $cmptab ?>" />
+
+				<div id="campaign" class="tabcontent">
+					<?php echo $cmp->content ?>
+				</div>
+
+				<div id="comment" class="tabcontent">
+					<?php echo form_open($this->uri->uri_string(), array('id'=>'comment_form','name'=>'comment_form', 'onsubmit'=>'return false;')); ?>
+						<input type="hidden" id="cmp_idx" value="<?php echo $cidx ?>" />
+						<textarea id="cmt_content" name="cmt_content" class="o_input" style="width:100%; min-width:100%; max-width:100%; height:120px; min-height:120px; max-height:120px;"></textarea>
+						<?php if ($this->tank_auth->is_logged_in()) { // logged in ?>
+						<div class="py_10" style="text-align:right;">
+							<button type="submit" id="btn_comment" class="o_btn btn-black-flat btn-md">댓글 달기</button>
+						</div>
+						<?php } ?>
+					<?php echo form_close(); ?>
+
+					<hr style="border:none; margin:15px 0;padding:0;" />
+
+					<div id="layer_comment" style="border-top:1px solid #939393;">
+						<?php
+						foreach($result_cmt['qry'] as $i => $o) {
+							
+							$reply_layer_css = "";
+
+							// 답글인 경우
+							if( '2' === $o->depth ) {
+								$reply_layer_css = "margin:0; padding:10px; padding-left:50px; background-color:#f9f9f9; background-image:url('". IMG_DIR."/common/icon_reply.gif'); background-repeat:no-repeat; background-position:20px 17px; ";
+							}
+						?>
+
+							<div style="padding:15px; border-bottom:1px solid #dddddd; <?php echo $reply_layer_css ?>">
+
+								<small style="color:gray; margin-right:15px;"><span style="color:#000; margin-right:15px; text-decoration:underline;"><?php echo isset($o->user_name) && '' != $o->user_name ? $o->user_name : 'guest'; ?></span> <?php echo substr($o->reg_datetime,0,16); ?></small>
+
+								<?php if($this->tank_auth->is_admin()  OR  (isset($this->user_idx) && $this->user_idx === $o->user_idx)) { ?>
+								<button type="button" class="btn btn-dark-flat btn-xs" onclick="cmt_edit_view(<?php echo $o->idx ?>);">수정</button>
+								<?php if($this->tank_auth->is_admin() && $o->depth === '1') { ?>
+								<button type="button" class="btn btn-dark-flat btn-xs" onclick="cmt_reply_view(<?php echo $o->idx ?>);">답글</button>
+								<?php } ?>
+								<button type="button" class="btn btn-danger-flat btn-xs" onclick="cmt_del(<?php echo $o->idx ?>);">삭제</button>
+								<?php } ?>
+
+								<div id="view_cmt_<?php echo $o->idx ?>" style="padding-top:5px; font-size:15px; color:#2c2c2c;"><?php echo nl2br($o->content) ?></div>
+
+								<!-- 코멘트 수정 -->
+								<div id="edit_cmt_<?php echo $o->idx ?>" style="display: none; margin:5px 0; ">
+								  <div style="position:relative; width: 100%; vertical-align:top;">
+									<div style="width: calc(100% - 85px);">
+										<textarea id="cmt_content_<?php echo $o->idx ?>" style="width:100%; min-width:100%; max-width:100%; padding:10px; border:1px solid #ccc;font-size:15px;"><?php echo $o->content ?></textarea>
+									</div>
+									<div style="position:absolute; top:0; right:0;">
+										<button type="button" class="btn btn_dark btn-sm" style="padding:20px 15px;" onclick="cmp_cmt_write(<?php echo $o->idx ?>,'update');">수정하기</button>
+									</div>
+								  </div>
+								</div>
+
+								<!-- 코멘트 댓글 -->
+								<div id="reply_cmt_<?php echo $o->idx?>" style="display: none; position:relative; margin:15px 0;  padding-left:35px;  background-image:url('<?php echo IMG_DIR?>/common/icon_reply.gif'); background-repeat:no-repeat; background-position:5px 5px; ">
+								  <div style="position:relative; width: 100%; vertical-align:top;">
+									<div style="width: calc(100% - 85px);">
+										<textarea id="reply_content_<?php echo $o->idx ?>" style="width:100%; min-width:100%; max-width:100%; padding:10px; border:1px solid #ccc;"></textarea>
+									</div>
+									<div style="position:absolute; top:0; right:0;">
+										<button type="button" class="btn btn_dark btn-sm" style="padding:20px 15px;" onclick="cmp_cmt_write(<?php echo $o->idx ?>,'reply');"> 답글달기</button>
+									</div>
+								  </div>
+								  <hr style=" clear:both; border:none;" />
+								</div>
+
+							</div>
+
+						<?php
+						}
+						?>
+					</div>
+
+
+
+
+
+				</div>
+
+			</div>
+			<hr class="clear_both" />
+		</div>
+	</div>
+
+
+<script type="text/javascript">
+	function tab_sess(tab_name) {
+
+			$.ajax({
+				  type: "POST",
+				  url: "/trans/sess_cmptab/"+tab_name,
+				  data: { 
+					  'tab_name': tab_name
+				  }
+			}).done(function( res ) {
+				  //alert("Data Loaded: " + res);
+			}).fail(function(error) {
+				  //console.log(error);
+				  //alert( "access error.." );
+			}); // 맨 마지막에 세미콜론(;)
+
+	}
+
+	function openTab(evt, tabName) {
+	  var i, tabcontent, tablinks;
+	  tabcontent = document.getElementsByClassName("tabcontent");
+	  for (i = 0; i < tabcontent.length; i++) {
+		tabcontent[i].style.display = "none";
+	  }
+
+	  tablinks = document.getElementsByClassName("tablinks");
+	  for (i = 0; i < tablinks.length; i++) {
+		tablinks[i].className = tablinks[i].className.replace(" active", "");
+	  }
+	  document.getElementById(tabName).style.display = "block";
+	  evt.currentTarget.className += " active";
+
+	  //sess_cmptab
+	  tab_sess(tabName);
+	}
+
+	// Get the element with id="defaultOpen" and click on it
+	//var cmptab = '<?php echo ($cmptab && '' != $cmptab) ? $cmptab : "campaign" ?>'; //$('#cmptab').val();
+	var cmptab = '<?php echo $cmptab ?>'; //$('#cmptab').val();
+	document.getElementById(cmptab+'Open').click();
+
+</script>
+
+
+
+<script type="text/javascript">
+//script.js
+</script>

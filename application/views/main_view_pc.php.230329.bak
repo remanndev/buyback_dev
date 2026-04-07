@@ -1,0 +1,483 @@
+	<!-- 메인 탑 비주얼 배너 영역 -->
+	<style type="text/css">
+	.wrap_main_top_bnr .slick-prev {
+		left: 50%;
+		margin: 0 0 0 -570px;
+		z-index: 100;
+	}
+	.wrap_main_top_bnr .slick-prev:before {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 29px;
+		height: 29px;
+		-webkit-transform: translate(-50%,-50%) rotate(45deg);
+		-ms-transform: translate(-50%,-50%) rotate(45deg);
+		transform: translate(-50%,-50%) rotate(45deg);
+		margin-left: 10px;
+		border-left: 1px solid #000;
+		border-bottom: 1px solid #000;
+	}
+
+
+	.wrap_main_top_bnr .slick-next {
+		right: 50%;
+		margin: 0 -570px 0 0;
+		-webkit-transform: rotate(180deg) translateY(50%);
+		-ms-transform: rotate(180deg) translateY(50%);
+		transform: rotate(180deg) translateY(50%);
+		z-index: 100;
+	}
+	.wrap_main_top_bnr .slick-next:before {
+		content: "";
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 29px;
+		height: 29px;
+		-webkit-transform: translate(-50%,-50%) rotate(45deg);
+		-ms-transform: translate(-50%,-50%) rotate(45deg);
+		transform: translate(-50%,-50%) rotate(45deg);
+		margin-left: 10px;
+		border-left: 1px solid #000;
+		border-bottom: 1px solid #000;
+	}
+	</style>
+
+	<style type="text/css">
+	.cmp_list ul li {
+		padding: 6px;
+		transition: all 0.2s;
+	}
+	.cmp_list ul li .itm_box {
+		padding: 2px;
+		/* padding: 0 0 2px 0; */
+		background-color: #ffffff;
+	}
+	.cmp_list ul li:hover .itm_box {
+		padding: 2px;
+		/* padding: 0 0 2px 0; */
+		background-color: #58ae31;
+	}
+	.cmp_list ul li .itm_box a {
+		display: block;
+		border:1px solid #cecece;
+		background-color: #ffffff;
+	}
+	</style>
+
+
+	<div class="wrap_main_top_bnr">
+	  <?php foreach($arr_img_bnr_pc as $i => $bnr) {
+		$click_event = 'return false;';
+		if( isset($bnr->bn_link) && '' != $bnr->bn_link ) {
+			$click_event = '';
+		}
+	  ?>
+	   <a href="<?php echo $bnr->bn_link ?>" target="<?php echo $bnr->bn_target ?>" onclick="<?php echo $click_event; ?>">
+		<div class="main_top_bnr" style="background-image:url('<?php echo $bnr->banner_src ?>'); background-size: cover; background-position: center center;">
+			<div class="txt"><?php echo nl2br($bnr->bn_memo) ?></div>
+		</div>
+	   </a>
+	  <?php } ?>
+	</div>
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+	  $('.wrap_main_top_bnr').not('.slick-initialized').slick({
+		  slidesToShow: 1,
+		  slidesToScroll: 1,
+		  dots: false,
+		  autoplay: true,
+		  autoplaySpeed: 5000,
+		  //arrows: false,
+	  });
+	});
+	</script>
+
+
+	<!-- 진행중인 캠페인 목록 406*290 -->
+	<div class="main_cmp">
+	  <div class="main_sect">
+		<div class="main_ctnt">
+
+			<div class="proc_title">
+			  <h3 class="proc_ttl_text font_common font_sect_ttl">최근 캠페인</h3>
+			  <div class="proc_ttl_line"></div>
+			</div>
+
+			<style type="text/css">
+				.main_cmp_items { position: relative; }
+				.main_cmp_items .slick-prev { left: -20px; z-index: 100; }
+				.main_cmp_items .slick-prev:before {
+					content: "";
+					position: absolute;
+					top: 50%;
+					left: -50%;
+					width: 29px;
+					height: 29px;
+					-webkit-transform: translate(-50%,-50%) rotate(45deg);
+					-ms-transform: translate(-50%,-50%) rotate(45deg);
+					transform: translate(-50%,-50%) rotate(45deg);
+					margin-left: 10px;
+					border-left: 1px solid #000;
+					border-bottom: 1px solid #000;
+				}
+
+				.main_cmp_items .slick-next {
+					right: -20px;
+					-webkit-transform: rotate(180deg) translateY(50%);
+					-ms-transform: rotate(180deg) translateY(50%);
+					transform: rotate(180deg) translateY(50%);
+					z-index: 100;
+				}
+				.main_cmp_items .slick-next:before {
+					content: "";
+					position: absolute;
+					top: 50%;
+					left: -50%;
+					width: 29px;
+					height: 29px;
+					-webkit-transform: translate(-50%,-50%) rotate(45deg);
+					-ms-transform: translate(-50%,-50%) rotate(45deg);
+					transform: translate(-50%,-50%) rotate(45deg);
+					margin-left: 10px;
+					border-left: 1px solid #000;
+					border-bottom: 1px solid #000;
+				}
+			</style>
+
+			<div class="cmp_list">
+			  <ul class="main_cmp_items">
+				<?php
+				foreach($cmp_list as $kcnt => $cmp) {
+				?>
+				<li>
+				 <div class="itm_box">
+				  <a href="/campaign/detail/<?php echo $cmp->code ?>" class="" style="text-decoration:none;">
+					
+						<div class="cmp_img" style="width:100%; height: 200px; background-image:url('<?php echo $cmp->campaign_main_src ?>');  background-size:cover; background-position:center center;"></div>
+						<div class="cmp_list_item" style="border-top:1px solid #cecece; max-height: 140px; ">
+							<div class="cmp_ttl ellipsis2" style="height: 48px;"><?php echo $cmp->cmp_title ?></div>
+							<div class="cmp_cate"><?php echo $cmp->cmp_org_name ?></div>
+						</div>
+					
+				  </a>
+				 </div>
+				</li>
+				<?php } ?>
+			  </ul>
+			</div>
+
+			<script type="text/javascript">
+				$('.main_cmp_items').slick({
+				  infinite: true,
+				  slidesToShow: 4,
+				  slidesToScroll: 4,
+				  dots: false,
+				  autoplay: true,
+				  autoplaySpeed: 4000,
+				});
+			</script>
+
+
+		</div>
+	  </div>
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 가치 및 디바이스 수량 -->
+	<div class="main_cmp">
+	  <div class="main_sect">
+		<div class="main_ctnt" >
+			<div class="proc_title">
+			  <h3 class="proc_ttl_text font_common font_sect_ttl">현재까지 누적된 사회적가치</h3>
+			  <div class="proc_ttl_line"></div>
+			</div>
+		</div>
+	  </div>
+	</div>
+
+
+	<!-- [ver 3] 가치 및 디바이스 수량 -->
+	<div class="section_totalvalue">
+	  <div class="main_sect">
+		<div class="main_ctnt">
+		  <div class="tv_device">
+			<?php
+			foreach($result_device['qry'] as $cnt => $row) { 
+				if('노트북' == $row->device_name) {
+					$device_icon = '/layout/tv_img_notebook.png';
+				}
+				elseif('데스크탑' == $row->device_name) {
+					$device_icon = '/layout/tv_img_desktop.png';
+				}
+				elseif('모니터' == $row->device_name) {
+					$device_icon = '/layout/tv_img_monitor.png';
+				}
+				elseif('태블릿' == $row->device_name) {
+					$device_icon = '/layout/tv_img_tablet.png';
+				}
+
+				elseif('스마트폰' == $row->device_name) {
+					$device_icon = '/replus/icon_device_smartphone.png';
+				}
+				elseif('태블릿' == $row->device_name) {
+					$device_icon = '/replus/icon_device_tablet.png';
+				}
+				elseif('프린터' == $row->device_name) {
+					$device_icon = '/replus/icon_device_printer.png';
+				}
+				elseif('웹캠' == $row->device_name) {
+					$device_icon = '/replus/icon_device_webcam.png';
+				}
+				elseif('주변기기' == $row->device_name) {
+					$device_icon = '/replus/icon_device_etc.png';
+				}
+				else {
+					$device_icon = '';
+				}
+			?>
+				<div class="device_each">
+					<img src="<?php echo IMG_DIR ?><?php echo $device_icon ?>" alt="<?php echo $row->device_name ?>" />
+					<div class="device_cnt"><?php echo number_format($row->device_amount) ?></div>
+				</div>
+			<?php } ?>
+		  </div>
+
+		  <div class="tv_tree">
+			<div class="tv_tree_point"></div>
+			<div class="tv_tree_point"></div>
+			<div class="tv_tree_point"></div>
+			<div class="tv_tree_point"></div>
+			<div class="tv_tree_bottomline"><img src="<?php echo IMG_DIR ?>/layout/tv_device_recycle.png" /></div>
+		  </div>
+
+		  <div class="tv_amount roundbox_20">
+			<?php
+			$dl_class = '';
+			$amt_title = '';
+			$amt_value = '';
+			$amt_explain = '';
+			foreach($result_amount['qry'] as $i => $row) { 
+				$amt_value = $row->amt_value;
+				if('기부 가치' == $row->amt_title OR '기부가치' == $row->amt_title) {
+					$amt_title = '기부 가치';
+					$dl_class = 'tv_dn';
+					$amt_explain = '기부한 물품을 공정가치로 환산한 금액';
+				}
+				elseif('환경 가치' == $row->amt_title OR '환경가치' == $row->amt_title) {
+					$amt_title = '환경 가치';
+					$dl_class = 'tv_env';
+					$amt_explain = '재사용 · 재활용하여 절감된 경제적 가치';
+				}
+			?>
+				<dl class="<?php echo $dl_class ?>">
+					<dt><?php echo $amt_title ?></dt>
+					<dd><?php echo number_format($amt_value) ?><span>원</span></dd>
+					<small><?php echo $amt_explain ?></small>
+				</dl>
+			<?php } ?>
+
+
+			<!-- <dl class="tv_dn">
+				<dt>기부 가치</dt>
+				<dd><?php echo number_format(98597934) ?><span>원</span></dd>
+				<small>기부한 물품을 공정가치로 환산한 금액</small>
+			</dl>
+			<dl class="tv_env">
+				<dt>환경 가치</dt>
+				<dd><?php echo number_format(98597934) ?><span>원</span></dd>
+				<small>재사용 · 재활용하여 절감된 경제적 가치</small>
+			</dl> -->
+		  </div>
+		</div>
+	  </div>
+
+	  <div class="tv_bottom_wrap">
+		<div class="tv_bottom_bg">
+		  <div class="tv_bg_bottomleft"></div>
+		  <div class="tv_bg_bottomright"></div>
+		</div>
+	  </div>
+
+	</div>
+
+
+	<!-- 기부 절차 -->
+	<div class="main_process">
+	  <div class="main_sect">
+		<div class="main_ctnt">
+
+			<div class="proc_title">
+			  <h3 class="proc_ttl_text font_common font_sect_ttl">기부 절차</h3>
+			  <div class="proc_ttl_line"></div>
+			</div>
+			<div class="proc_desc font_sect_ctnt">
+				REPLUS는 도움이 필요한 비영리 단체에 전국의 기부자 및 기업의 지원을 이어드립니다.
+			</div>
+
+			<style type="text/css">
+			  .proc_donation_wrap { margin-top:15px; padding:25px 0 0 0; }
+			  .proc_dn_box { margin:0 auto; border:0px solid red; width: 100%; }
+			  .proc_dn_each { 
+				width: 100%; max-width: 800px; height:auto; /* padding: 3.6% 10px 3.6% 5px; */ padding: 25px 15px;  margin:5px auto;
+				position:relative;
+				display: flex;
+
+				-moz-border-radius:10px;
+				-webkit-border-radius:10px;
+				-o-border-radius:10px;
+				-ms-border-radius:10px;
+				-khtml-border-radius:10px;
+				border-radius:10px;
+				border:1px solid #e8e8e8;
+				background-color:parent;
+				clear:both
+				
+				background: #ffffff;
+				box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
+				-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
+				-webkit-box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.08);
+			  }
+
+
+			  .proc_dn_each > div { 
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin-left: 20px;
+			  }
+			  /*
+			  .proc_dn_each > div:nth-child(1) { margin:10px; }
+			  .proc_dn_each > div:nth-child(2) { margin:10px; }
+			  */
+
+			  .proc_dn_no { padding:0 0 0 15px;}
+			  .proc_dn_no img { width: 40px; }
+			  .proc_dn_img { padding-left: 10px; }
+			  .proc_dn_img img { width: 100px; }
+
+			  .proc_dn_txt { padding-left: 10px; /* display: flex;justify-content: center;align-items: center; */}
+			  .proc_dn_txt dl { margin:0; padding:0; display: flex; flex-direction: column; justify-content: center;}
+			  .proc_dn_txt dl dt { margin:0; padding:0; color: #549732; font-weight: bold; font-size:24px;}
+			  .proc_dn_txt dl dd { margin:0; padding:0; color: #444445; font-size: 16px; }
+
+			  .proc_dn_arrow {
+				z-index:1;
+				width:100%;
+				height:30px;
+				background-image:url('<?php echo IMG_DIR ?>/replus/proc_dn_arrow_sky30.png');
+				background-repeat:no-repeat;
+				background-position:center center;
+			  }
+			</style>
+			<div class="proc_donation_wrap">
+			 <a href="/H/GUIDE/기부절차안내">
+			  <div class="proc_dn_box">
+					<div class="proc_dn_each">
+						<div class="proc_dn_no"><img src="<?php echo IMG_DIR ?>/replus/proc_no_1.png" alt="1" /></div>
+						<div class="proc_dn_img"><img src="<?php echo IMG_DIR ?>/replus/proc_dn_1.png" alt="캠페인 선택" /></div>
+						<div class="proc_dn_txt">
+						  <dl>
+							<dt>캠페인 선택</dt>
+							<dd>진행 중인 캠페인을 확인하여 원하시는 캠페인에 기부 신청을 합니다.</dd>
+						  </dl>
+						</div>
+					</div>
+					<div class="proc_dn_arrow"></div>
+					<div class="proc_dn_each">
+						<div class="proc_dn_no"><img src="<?php echo IMG_DIR ?>/replus/proc_no_2.jpg" alt="2" /></div>
+						<div class="proc_dn_img"><img src="<?php echo IMG_DIR ?>/replus/proc_dn_2.png" alt="안전 수거" /></div>
+						<div class="proc_dn_txt">
+						  <dl>
+							<dt>안전 수거</dt>
+							<dd>물품 정보 확인 후 안전하게 수거하여 검수하고 등급 판정을 진행합니다.</dd>
+						  </dl>
+						</div>
+					</div>
+					<div class="proc_dn_arrow"></div>
+					<div class="proc_dn_each">
+						<div class="proc_dn_no"><img src="<?php echo IMG_DIR ?>/replus/proc_no_3.jpg" alt="3" /></div>
+						<div class="proc_dn_img"><img src="<?php echo IMG_DIR ?>/replus/proc_dn_3.png" alt="재생 및 가치 산정" /></div>
+						<div class="proc_dn_txt">
+						  <dl>
+							<dt>재생 및 가치 산정</dt>
+							<dd>리플러스 그린센터에서 공정한 절차를 거쳐 기부 물품으로 재생하거나 가치를 산정합니다.</dd>
+						  </dl>
+						</div>
+					</div>
+					<div class="proc_dn_arrow"></div>
+					<div class="proc_dn_each">
+						<div class="proc_dn_no"><img src="<?php echo IMG_DIR ?>/replus/proc_no_4.jpg" alt="4" /></div>
+						<div class="proc_dn_img"><img src="<?php echo IMG_DIR ?>/replus/proc_dn_4.png" alt="나눔 및 전달" /></div>
+						<div class="proc_dn_txt">
+						  <dl>
+							<dt>나눔 및 전달</dt>
+							<dd>기부 단체 전달 또는 지원이 필요한 정보소외계층에게 나눔합니다.</dd>
+						  </dl>
+						</div>
+					</div>
+					<div class="proc_dn_arrow"></div>
+					<div class="proc_dn_each">
+						<div class="proc_dn_no"><img src="<?php echo IMG_DIR ?>/replus/proc_no_5.jpg" alt="5" /></div>
+						<div class="proc_dn_img"><img src="<?php echo IMG_DIR ?>/replus/proc_dn_5.png" alt="피드백 및 예우" /></div>
+						<div class="proc_dn_txt">
+						  <dl>
+							<dt>피드백 및 예우</dt>
+							<dd>기부 물품 진행 전 과정은 리플러스 홈페이지에서 확인 가능하며 기부자에게 감사를 전합니다.</dd>
+						  </dl>
+						</div>
+					</div>
+			  </div>
+
+			 </a>
+			</div>
+
+
+
+		</div>
+	  </div>
+	</div>
+
+	<hr class="only_line" />
+
+	<div class="main_news">
+	  <div class="main_sect">
+		<div class="main_ctnt">
+			<div class="news_title">
+			  <a href="<?php echo base_url() ?>board/newsncase/"><h3 class="news_ttl_text font_common font_sect_ttl">News & Case</h3></a>
+			  <div class="news_ttl_line"></div>
+			</div>
+			<div class="news_list">
+			  <div class="row">
+			  <?php foreach($latest_newsncase as $i => $o) { ?>
+				<div class="col-6 mb-4">
+				  <a href="<?php echo $o->href ?>">
+					<div class="news_item">
+						<div class="news_img" style="background-image:url('<?php echo $o->thumb_img_src ?>');"></div>
+						<div class="news_text">
+							<div class="text_cate <?php echo isset($o->ca_color) ? $o->ca_color : ''; ?>">[<?php echo $o->ca_code ?>]</div>
+							<div class="text_ttl"><?php echo $o->subject ?></div>
+							<div class="text_date"><?php echo $o->write_date ?></div>
+						</div>
+					</div>
+				  </a>
+				</div>
+			  <?php } ?>
+			  </div>
+			</div>
+		</div>
+	  </div>
+	</div>

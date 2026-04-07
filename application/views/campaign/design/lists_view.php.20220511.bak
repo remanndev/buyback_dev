@@ -1,0 +1,24 @@
+	<div class="contents_wrap">
+
+		<!-- 캠페인 목록 -->
+		<div class="" style="margin:0 auto; padding:0;">
+			<h4 class="o_page_ttl mb_30">기부캠페인</h4>
+			<ul class="campaign_list">
+			<?php foreach($list as $key => $cmp) { ?>
+				<li><div class="campaign_item">
+					<a href="/campaign/detail/<?php echo $cmp->code ?>" class="">
+						<div class="item_img_wrap"><?php echo $cmp->campaign_main_img ?></div>
+						<div class="item_content">
+							<div class="item_ctnt_title"><?php echo $cmp->cmp_title ?></div>
+							<div class="item_planner"><?php echo $cmp->cmp_org_name ?></div>
+							<div class="item_process_bar" aria-label="모금률"><span class="item_process_bar_collection" style="width: <?php echo $cmp->left_date_per ?>%;"></span></div>
+							<span class="item_percent"><?php echo $cmp->left_date_str ?></span>
+							<div class="item_money"><?php echo $cmp->donation_value; ?><span class="item_text">원</span></div>
+						</div>
+					</a>
+				</div></li>
+			<?php } ?>
+			</ul>
+		</div>
+
+	</div>

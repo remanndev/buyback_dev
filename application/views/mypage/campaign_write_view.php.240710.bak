@@ -1,0 +1,395 @@
+<style type="text/css">
+.goal_number::after {
+	content: '대';
+	display: block;
+	position:absolute;
+	top:10px;
+	right:20px;
+}
+</style>
+<?php
+// 카테고리메뉴
+$selected_cmp_cate =  (isset($row->cmp_cate) ? $row->cmp_cate : set_value('campaign_cate'));
+$cmp_cate_options = array('' => '카테고리를 선택해주세요.');
+
+foreach($result_cate['qry'] as $i=>$cate) {
+	$cmp_cate_options[$cate->cate_name] = $cate->cate_name;
+}
+?>
+	<div class="ctnt_wrap">
+		<div class="ctnt_inside">
+			<div class="row py_35">
+				<div class="d-none d-lg-block col-lg-3">
+					<!-- 마이페이지 사이드 메뉴 -->
+					<?php $this->load->view('mypage/mypage_side_view'); ?>
+				</div>
+				<div class="col-12 col-lg-9">
+
+					<!-- 캠페인 상세 -->
+					<div id="campaign_write_wrap" class="contents_wrap">
+
+						<h2 class="position_r">
+							캠페인 <?php echo isset($row->idx) ? '수정' :'개설'; ?>
+							<span class="position_a" style="top:0; right:0;">
+							  <?php if( isset($row->state) ) { ?>
+								<button type="button" class="btn  btn-xs btn-<?php echo ('write' == $row->state) ? 'success' : 'silver'; ?>" disabled>작성중</button>
+								<button type="button" class="btn  btn-xs btn-<?php echo ('submit' == $row->state) ? 'success' : 'silver'; ?>" disabled>제출</button>
+								<button type="button" class="btn  btn-xs btn-<?php echo ('launch' == $row->state) ? 'primary' : 'silver'; ?>" disabled>런칭</button>
+							  <?php } else { ?>
+								<!-- <button type="button" class="btn  btn-xs btn-success-flat" disabled>작성중</button>
+								<button type="button" class="btn  btn-xs btn-silver-flat" disabled>제출</button>
+								<button type="button" class="btn  btn-xs btn-silver-flat" disabled>런칭</button> -->
+							  <?php } ?>
+							</span>
+						</h2>
+						<hr class="mb_30" />
+
+						<!-- 목표기기 추가 샘플용 # 삭제하지 마세요. -->
+						<div id="add_goal_sample" style="display:none;">
+						  <div class="row mt_5">
+							<div class="col-7"><input type="text" class="o_input campaign_input goal_device" style="width:100%; font-size:18px;" name="goal_device[]" value="" placeholder="기기명" autocomplete='off' /></div>
+							<div class="col-3 goal_number"><input type="text" class="o_input campaign_input goal_device goal_cnt" style="width:100%; font-size:18px;" name="goal_amt[]" value="" placeholder="수량(숫자만)" autocomplete='off' /></div>
+							<div class="col-2"><button type="button" onclick="remove_goalbox(this);" class="btn_del_goal o_btn  btn-danger-flat" style="width:100%; line-height:40px;padding-top:0; padding-bottom:0; vertical-align: baseline;">X</button></div>
+						  </div>
+						  <hr class="clear_both" />
+						</div>
+
+						<?php echo form_open_multipart($this->uri->uri_string(), array('id'=>'campaign_form','name'=>'campaign_form', 'onsubmit'=>'return form_check();')); ?>
+
+							<div class="campaign_ctnt">
+
+								<?php if( $result_cate['total_count'] > 0) { ?>
+								<dl>
+									<dt>캠페인 카테고리</dt>
+									<dd>
+										<?php echo form_dropdown('campaign_cate', $cmp_cate_options, $selected_cmp_cate, 'class="form-control o_selectbox campaign_input" style="width:auto; height:40px; padding-right: 30px; vertical-align:middle; background-color:#f7f7f7;"'); ?>
+										<?php echo form_error('campaign_cate','<div class="err_color_red">','</div>'); ?>
+									</dd>
+								</dl>
+								<?php } ?>
+
+								<dl>
+									<dt>캠페인 제목</dt>
+									<dd><input type="text" id="campaign_title" class="o_input campaign_input campaign_title" name="campaign_title" value="<?php echo isset($row->cmp_title) ? $row->cmp_title : ''; ?>" autocomplete='off' /></dd>
+								</dl>
+								<!--[2023-05-23] <dl>
+									<dt>목표 기부 가치</dt>
+									<dd><input type="text" id="goal_money" class="o_input campaign_input cmp_goal_money" name="goal_money" value="<?php //echo isset($row->cmp_goal_money) ? number_format($row->cmp_goal_money) : ''; ?>" maxlength="12" autocomplete='off' /><span class="money_unit">원</span></dd>
+								</dl> -->
+								<dl id="wrap_goal_device">
+									<dt>목표 기기</dt>
+									
+									<dd class="box_goal_wrap">
+									  <div class="row">
+										<div class="col-7"><input type="text" class="o_input campaign_input goal_device" style="width:100%; font-size:18px;" name="goal_device[]" value="<?php echo isset($row->goal_device_1) ? $row->goal_device_1 : ''; ?>" placeholder="기기명" autocomplete='off' /></div>
+										<div class="col-3 goal_number"><input type="text" class="o_input campaign_input goal_device goal_cnt" style="width:100%; font-size:18px; " name="goal_amt[]" value="<?php echo isset($row->goal_amt_1) ? $row->goal_amt_1 : ''; ?>" placeholder="수량(숫자만)" autocomplete='off' /></div>
+										<?php //if(isset($row->state) && 'write' == $row->state) { ?>
+										<div class="col-2"><button type="button" id="btn_add_goal" class="o_btn btn-dark-flat" style="width:100%; line-height:40px;padding-top:0; padding-bottom:0; vertical-align: baseline;">추가</button></div>
+										<?php //} ?>
+									  </div>
+
+									  <hr class="clear_both" />
+									</dd>
+									
+
+									<?php 
+									// goal_device_2, goal_amt_2 부터~ 
+									foreach($arr_device as $i => $device) {
+									?>
+									<dd class="box_goal_wrap">
+									  <div class="mt_5 row">
+										<div class="col-7"><input type="text" class="o_input campaign_input goal_device" style="width:100%; font-size:18px;" name="goal_device[]" value="<?php echo $device ?>" placeholder="기기명" autocomplete='off' /></div>
+										<div class="col-3 goal_number"><input type="text" class="o_input campaign_input goal_device goal_cnt" style="width:100%; font-size:18px;" name="goal_amt[]" value="<?php echo $arr_amt[$i] ?>" placeholder="수량(숫자만)" autocomplete='off' /></div>
+										<?php if(isset($row->state) && 'write' == $row->state) { ?>
+										<div class="col-2"><button type="button" onclick="remove_goalbox(this);" class="btn_del_goal o_btn  btn-danger-flat" style="width:100%; line-height:40px;padding-top:0; padding-bottom:0;  vertical-align: baseline;">X</button></div>
+										<?php } ?>
+									  </div>
+
+									  <hr class="clear_both" />
+									</dd>
+
+									<?php } ?>
+								</dl>
+
+								<dl>
+									<dt>모금 기간</dt>
+									<dd class="mt_10">
+									  <div class="row">
+										<div class="col-6"><input type="text" id="term_begin" class="o_input campaign_input campaign_term datepicker cmp_term_begin" name="term_begin" maxlength="10" value="<?php echo isset($row->cmp_term_begin) ? $row->cmp_term_begin : ''; ?>" placeholder="시작일자" title="시작일자" autocomplete="off" /></div>
+										<div class="col-6"><input type="text" id="term_end" class="o_input campaign_input campaign_term datepicker cmp_term_end" name="term_end" maxlength="10" value="<?php echo isset($row->cmp_term_end) ? $row->cmp_term_end : ''; ?>" placeholder="마감일자" title="마감일자" autocomplete="off" /></div>
+									</dd>
+								</dl>
+
+								<?php
+								// 단체명 및 단체 소개 내용
+								//$company_name = isset($row->cmp_org_name) ? $row->cmp_org_name : (isset($org_row->org_name) ? $org_row->org_name : '');
+								$company_name = isset($company) ? $company : '';
+								
+								//$company_info = isset($row->cmp_org_info) ? $row->cmp_org_info : (isset($org_row->org_info) ? $org_row->org_info : '');
+								$company_info = isset($company_info) ? $company_info : '';
+								?>
+
+								<input type="hidden" name="org_link" value="<?php echo $org_row->org_link ?>" />
+								<dl>
+									<dt>단체명</dt>
+									<dd><input type="text" class="o_input campaign_input cmp_org_name" name="org_name" value="<?php echo isset($company_name) ? $company_name : ''; ?>" placeholder="단체명은 수정할 수 없습니다." title="단체명은 수정할 수 없습니다." autocomplete='off' <?php echo (isset($company_name) && '' != $company_name) ? 'readonly' : ''; ?> style="color: #000000; background-color: #f4f4f4;" /></dd>
+								</dl>
+
+								<dl>
+									<dt>단체 소개</dt>
+									<dd><textarea id="cmp_org_info" class="o_input campaign_input cmp_org_info" name="org_info" placeholder="간략하게 단체를 소개해주세요." title="간략하게 단체를 소개해주세요."><?php echo isset($company_info) ? $company_info : ''; ?></textarea></dd>
+								</dl>
+
+
+								<dl>
+									<dt>캠페인 메인(목록) 이미지 <small class="ml_10" style="color:#ff9900; font-weight:normal;">4:3 비율의 이미지를 업로드 해주세요. (ex. 1200px : 900px)</small></dt>
+									<dd>
+										<label for="campaign_main_img_input" style="cursor:pointer;display:block;">
+										  <figure id="image_container" class="campaign_main_img"><?php echo isset($row->campaign_main_img) ? $row->campaign_main_img : ''; ?></figure>
+										</label>
+										<input type="hidden" id="file_idx_main_img" value="<?php echo isset($row->file_idx) ? $row->file_idx : ''; ?>" />
+										<input type="file" id="campaign_main_img_input" class="o_input campaign_main_image" name="campaign_main_image" accept="image/*" onchange="setThumbnail(event);"/>
+
+									</dd>
+								</dl>
+								<script> 
+								  function setThumbnail(event) { 
+									$('#image_container').html('');
+									var reader = new FileReader(); 
+									reader.onload = function(event) { var img = document.createElement("img"); img.setAttribute("src", event.target.result); document.querySelector("figure#image_container").appendChild(img); }; 
+									reader.readAsDataURL(event.target.files[0]);
+								  }
+								</script>
+
+								<dl>
+									<dt>캠페인 내용</dt>
+									<dd>
+										<textarea id="campaign_content" class="o_input campaign_ctnt" name="campaign_content" placeholder="캠페인 내용을 입력해주세요." title="캠페인 내용을 입력해주세요."><?php echo isset($row->cmp_content) ? $row->cmp_content : ''; ?></textarea>
+									</dd>
+								</dl>
+							</div>
+
+
+							<hr class="clear_both" />
+
+							<hr style="border:none; border-top:1px solid silver; margin: 50px 0;">
+
+
+							<div>
+							<?php if( ! isset($row->state) ) { ?>
+							  <div class="dsp_flex_sp_between">
+								<button type="submit" class="btn  btn-dark o_btn_v50" style="margin:0 auto; width: 100px;">저장</button>
+								<!-- <a href="<?php echo base_url('mypage/campaign') ?>"><button type="button" class="btn  btn-dark o_btn_v50" style="margin:0 auto; width: 100px;">목록</button></a> -->
+							  </div>
+
+							<?php } elseif(isset($row->state) && 'write' == $row->state) { ?>
+							  <div class="dsp_flex_sp_between">
+								<!-- <a href="<?php echo base_url('mypage/campaign') ?>"><button type="button" class="btn  btn-dark o_btn_v50" style="margin:0 auto; width: 100px;">목록</button></a> -->
+
+								<div>
+									<button type="submit" class="btn btn-dark o_btn_v50" style="margin:0 auto; width: 100px;">저장</button>
+
+									<button type="button" id="btn_preview" class="btn btn-primary-flat o_btn_v50" style="margin:0 auto; width: 100px;">미리 보기</button>
+
+									<a href="#" onclick="submit_confirm('/mypage/campaign/submit/<?php echo $row->idx ?>'); return false;"><button type="button" class="btn  btn-success o_btn_v50" style="margin:0 auto; width: 100px;">제출하기</button></a>
+								</div>
+
+								<a href="#" onclick="del_confirm('mypage/campaign/del/<?php echo $row->idx ?>'); return false;"><button type="button" class="btn  btn-danger o_btn_v50" style="margin:0 auto; width: 100px;">삭제</button></a>
+							  </div>
+							<?php } else { ?>
+							  <div class="dsp_flex_sp_between">
+								<!-- <a href="<?php echo base_url('mypage/campaign') ?>"><button type="button" class="btn  btn-dark o_btn_v50" style="margin:0 auto; width: 100px;">목록</button></a> -->
+								<?php if('submit' == $row->state) { ?>
+								<a href="#" onclick="submit_recover('/mypage/campaign/recover/<?php echo $row->idx ?>'); return false;"><button type="button" class="btn  btn-secondary o_btn_v50" style="margin:0 auto; width: 100px;">회수하기</button></a>
+								<?php } ?>
+							  </div>
+							<?php } ?>
+							</div>
+
+						<?php echo form_close(); ?>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<?php echo form_open(base_url('campaign/preview'), array('id'=>'campaign_preview','name'=>'campaign_preview','target'=>'_new','onsubmit'=>'return preview_check();')); ?>
+		<input type="hidden" name="code" value="<?php echo isset($row->code) ? $row->code : ''; ?>" />
+		<input type="submit" id="preview_submit" name="submit" value="미리 보기" class="btn  btn-primary-flat o_btn_v50" style="margin:0 auto; width: 100px; display: none;" />
+	<?php echo form_close(); ?>
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('#btn_preview').on('click', function() {
+			$('#preview_submit').trigger('click');
+		});
+	});
+	</script>
+
+	<script type="text/javascript">
+		// datetimepicker
+		/*
+		$.datetimepicker.setLocale('kr');
+		$('.datepicker').datetimepicker({
+			lang:'kr',
+			timepicker:false,
+			format:'Y-m-d',
+			formatDate:'Y/m/d'
+		});
+		*/
+
+		$.datetimepicker.setLocale('kr');
+		$('.datepicker').datetimepicker({
+			lang:'kr',
+			timepicker:false,
+			format:'Y-m-d',
+			scrollMonth : false 
+		});
+	</script>
+
+
+	<script type="text/javascript">
+		$R('#cmp_org_info', { 
+			//focus: true,
+			//toolbarExternal: '#my-external-toolbar',
+			lang: 'ko',
+			minHeight: '200px',
+			maxHeight: '300px',
+			buttonsHide: ['html','format','italic','lists','deleted']
+		});
+
+		$R('#campaign_content', { 
+			//focus: true,
+			//toolbarExternal: '#my-external-toolbar',
+			lang: 'ko',
+			minHeight: '500px',
+			maxHeight: '1000px',
+			//plugins: ['fontsize','fontcolor','filemanager','video','table','alignment','inlinestyle','specialchars','textdirection','widget','fontfamily','fullscreen'],
+			plugins: ['fontsize','fontcolor','video','table','alignment','specialchars','widget'],
+			imageUpload: "/files/upload/redactor_image/<?php echo url_code('campaign/image','e') ?>/campaign/<?php echo isset($row->idx) ? $row->idx :''; ?>",
+			fileUpload: "/files/upload/redactor_file/<?php echo url_code('campaign/files','e') ?>/campaign/<?php echo isset($row->idx) ? $row->idx :''; ?>",
+
+			/*
+			buttonsAddAfter: {
+				after: 'deleted',
+				buttons: ['underline','line', 'redo', 'undo', 'underline', 'ol', 'ul', 'sup', 'sub']
+			},
+			*/
+			buttonsHide: ['lists']
+		});
+	</script>
+
+	<script type="text/javascript">
+		function form_check() {
+
+			if($('select[name="campaign_cate"]').val()  &&  '' == $('select[name="campaign_cate"]').val() ) {
+				alert('캠페인 카테고리를 선택하세요.');
+				// $('#campaign_title').focus();
+				//console.log( 'category is exist' );
+				return false;
+			}
+			else if( '' == $('#campaign_title').val() ) {
+				alert('캠페인 제목을 입력하세요.');
+				// $('#campaign_title').focus();
+				return false;
+			}
+			else if( '' == $('#term_begin').val()  ||  '' == $('#term_end').val() ) {
+				alert('모금 기간을 입력하세요.');
+				return false;
+			}
+			else if( '' == $('#campaign_main_img_input').val() && '' == $('#file_idx_main_img').val() ) {
+				alert('캠페인 메인 이미지을 등록하세요.');
+				// $('#campaign_main_img_input').focus();
+				return false;
+			}
+			else if( '' == $('#campaign_content').val() ) {
+				alert('캠페인 내용을 입력하세요.');
+				return false;
+			}
+			/* [2023-05-23]
+			else if( '' == $('#goal_money').val() ) {
+				alert('목표 기부 가치를 입력해주세요.');
+				return false;
+			}
+			*/
+			/*
+			else if( '' == $('#goal_desc').val() ) {
+				alert('목표 기기를 입력하세요.');
+				return false;
+			}
+			*/
+			else {
+				return true;
+			}
+
+		}
+
+		// 제출하기
+		function submit_confirm(url) {
+			if( confirm( '\n정말 제출하시겠습니까? \n제출하신 캠페인은 관리자의 승인을 거쳐 런칭됩니다.') ) {
+				location.href = url;
+			}
+		}
+
+		// 제출상태의 캠페인 작성 상태로 되돌리기
+		function submit_recover(url) {
+			if( confirm( '\n제출된 캠페인을 회수하시겠습니까? \n회수된 캠페인은 작성상태로 변경됩니다.') ) {
+				location.href = url;
+			}
+		}
+
+		// 미리보기 전 저장 여부 확인
+		function preview_check() {
+			if( confirm( '캠페인을 저장하셨나요? \n꼭 저장하신 후 미리 보기 버튼을 클릭해주세요.') ) {
+				return true;
+			}
+			else 
+				return false;
+
+		}
+	</script>
+
+
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+		$('#goal_money').on('keyup',function() {
+			var str = removeComma(trim($(this).val()));
+			var n = addComma(str);
+			//console.log(n);
+			$('#goal_money').val(n);
+		});
+
+		// 캠페인 기간 오류 잡기
+		$('.campaign_term').on('blur',function() {
+			var term_begin = $('#term_begin').val();
+			var term_end = $('#term_end').val();
+
+			console.log(term_begin);
+			console.log(term_end);
+			if('' != term_begin && '' != term_end) {
+				if(term_begin > term_end) {
+					alert('모금(캠페인) 기간 시작일과 종료일이 맞지 않습니다.');
+					$('#term_begin').val('');
+					$('#term_end').val('');
+				}
+			}
+		});
+
+	});
+	</script>
+
+	<script type="text/javascript">
+		$(document).on('keyup','.goal_cnt', function() {
+			var replace_text = $(this).val().replace(/[^-0-9]/g, '');
+			$(this).val(replace_text);
+		});
+		$(document).on('blur','.goal_cnt', function() {
+			var replace_text = $(this).val().replace(/[^-0-9]/g, '');
+			$(this).val(replace_text);
+		});
+	</script>

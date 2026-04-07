@@ -1,0 +1,362 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+/**
+ * Board
+ */
+class Upload_lib
+{
+	private $error = array();
+
+	function __construct()
+	{
+		$this->ci =& get_instance();
+		$this->ci->load->model('upload_model');
+	}
+
+
+	function multi_upload_file($attach_file_name="attach_file[]",$encoded_upload_folder=FALSE,$wr_table=FALSE,$wr_table_idx='',$wr_opt_idx='')
+	{
+		$field_name = str_replace('[]','',$attach_file_name);
+		$cnt_field = count($_FILES[$field_name]['name']);
+
+		$cnt_succ = 0; // 실제 업로드 된 파일 수량 체크
+
+		if($cnt_field > 0) {
+			$multi_files = $_FILES;
+			for($i=0;$i<$cnt_field;$i++){
+				$res = $this->upload_file($field_name,$encoded_upload_folder,$wr_table,$wr_table_idx,$wr_opt_idx,$multi_files,$i);
+
+				if($res) $cnt_succ += 1;
+			}
+		}
+
+		return $cnt_succ;
+	}
+
+
+
+	function upload_file($field_name,$encoded_upload_folder=FALSE,$wr_table=FALSE,$wr_table_idx='',$wr_opt_idx='',$multi_files=FALSE,$multi_index=FALSE,$return_data=FALSE) {
+
+			/*
+			echo $field_name.'<<<<br />';
+			echo $encoded_upload_folder.'<<<<br />';
+			echo $wr_table.'<<<<br />';
+			echo $wr_table_idx.'<<<<br />';
+			echo $wr_opt_idx.'<<<<br />';
+			echo $multi_files.'<<<<br />';
+			echo $multi_index.'<<<<br />';
+
+			echo '<hr />';
+			*/
+
+
+			//print_r($multi_files);
+			//echo $wr_table.'<<<<br />';
+			//echo $wr_table_idx.'<<<<br />';
+			//exit;
+
+
+			//echo $encoded_upload_folder.'<<<br>';
+			//echo url_code($encoded_upload_folder,'d').'<<<<<<br>';
+			//exit;
+
+			// 업로드 경로 특정
+			$upload_folder = ($encoded_upload_folder) ? url_code($encoded_upload_folder,'d') : "uploads/files";
+			$upload_dir = DATA_DIR.'/'.$upload_folder.'/';
+			$upload_path = DATA_PATH.'/'.$upload_folder.'/';
+
+			if('upload/member2day' == $upload_folder) {
+				$upload_dir = RT_DIR.$upload_folder.'/';
+				$upload_path = RT_PATH.'/'.$upload_folder.'/';
+			}
+
+
+
+			//echo $upload_folder.'<<<';
+			//exit;
+
+			//$config['upload_path']   = $upload_path;
+			//$config['allowed_types'] = '*'; //'gif|jpg|jpeg|jpe|png';
+			//$config['max_size']      = '10240';
+
+            $config['upload_path'] = $upload_path;
+            $config['max_size']	= '22000';
+            $config['max_width']  = '0'; // 5120
+            $config['max_height']  = '0'; // 5120
+            $config['remove_spaces']  = TRUE;  // TRUE로 설정하면 파일명에 공백이 있을경우 밑줄(_)로 변경. 권장 옵션.
+            $config['overwrite']  = FALSE;
+            $config['allowed_types'] = '*';  // 'png|jpg|gif|jpeg|pjpeg|bmp|csv|txt|pdf|zip|ppt|pptx|doc|docx|xlsx|word|hwp'
+            $config['encrypt_name']  = TRUE;  // TRUE로 설정하면 파일이름은 랜덤하게 암호화된 문자열로 변환.
+
+			$this->ci->load->library('upload', $config);
+
+			/**
+			* 멀티 업로드인 경우에만 해당됩니다.
+			*/
+			if($multi_index !== FALSE)
+			{
+				$_FILES[$field_name]['name']= $multi_files[$field_name]['name'][$multi_index];
+				$_FILES[$field_name]['type']= $multi_files[$field_name]['type'][$multi_index];
+				$_FILES[$field_name]['tmp_name']= $multi_files[$field_name]['tmp_name'][$multi_index];
+				$_FILES[$field_name]['error']= $multi_files[$field_name]['error'][$multi_index];
+				$_FILES[$field_name]['size']= $multi_files[$field_name]['size'][$multi_index];
+			}
+
+			//print_r($_FILES[$field_name]);
+			//echo '<hr />';
+			//exit;
+
+			$succ = FALSE;
+
+			if( $this->ci->upload->do_upload($field_name) ) {
+
+					// 업로드 데이타 가져오기
+					$upload_data = $this->ci->upload->data();
+
+
+					// [2020-04-14] 레티나 대응
+					// @2x 파일명을 추가하여 카피
+					//$img_file = $upload_data['full_path'];
+					//$new_file = $upload_data['file_path'].$upload_data['raw_name'].'@2x'.$upload_data['file_ext'];
+					//@copy($img_file, $new_file);
+
+
+					$arr_filename = explode('.',$upload_data['file_name']);
+					//$upload_data['file_name'] = date('YmdHis').'_1.'.$arr_filename[1];
+
+					// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					// 업로드 파일 저장을 위해 고유 세션 정보
+					// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					$user_idx = $this->ci->tank_auth->get_user_id();
+					$ss_write_name = 'ss_file_'.$user_idx;
+					if (! $this->ci->session->userdata($ss_write_name)) {
+						$this->ci->session->set_userdata($ss_write_name, $user_idx.'_'.time());
+					}
+					//$file_write_sess = $this->ci->session->userdata('ss_file_'.$user_idx);
+					$sess_file_write = $this->ci->session->userdata($ss_write_name);
+
+					// 업로드 용도 구분
+					if($field_name === 'attach_file_form')
+						$upload_gubun = 'file';
+					elseif($field_name === 'attach_image_form')
+						$upload_gubun = 'image';
+					else
+						$upload_gubun = ($upload_data['is_image']) ? 'image' : 'file';
+
+					// 버전 관리용도
+					// 파일명 예시 : 한사투--견적서--v2.hwp
+					$parent_idx = '';
+					$ver_name = '';
+					$ver_no = '';
+
+					/*
+
+							$file_name_org_raw = str_replace($upload_data['file_ext'],'',$upload_data['orig_name']);
+							$file_name_org_arr = explode('--v',$file_name_org_raw);
+							$ver_name = (isset($file_name_org_arr[0]) && '' != $file_name_org_arr[0]) ? $file_name_org_arr[0] : NULL;
+
+							$ver_cnt = $this->basic_model->get_common_count('file_manager',array('ver_name'=>$ver_name));
+
+							// 마지막 값 
+							$tmp_ver_ext = strrchr($upload_data['orig_name'],'--v');
+							$ver_name = str_replace($tmp_ver_ext,'',$upload_data['orig_name']);
+					*/
+
+					$file_name_org_raw = str_replace($upload_data['file_ext'],'',$upload_data['orig_name']);
+					$file_name_org_arr = explode('--v',$file_name_org_raw);
+					$ver_name = (isset($file_name_org_arr[0]) && '' != $file_name_org_arr[0]) ? $file_name_org_arr[0] : $file_name_org_raw;
+
+					$ver_cnt = $this->ci->basic_model->get_common_count('file_manager',array('ver_name'=>$ver_name, 'wr_sess'=>''));
+					$ver_no = ($ver_cnt) ? ($ver_cnt + 1) : 1;
+
+					// [1/3] 파일 버전관리를 위한 parent_idx 값 처리
+					if($ver_no > 1) {
+						$this->ci->db->select('idx');
+						$this->ci->db->where('wr_sess','');
+						$this->ci->db->where('ver_name',$ver_name);
+						$this->ci->db->where('ver_no',1);
+						$row = $this->ci->db->get('file_manager')->row();
+
+						$parent_idx = (isset($row->idx) && '' != $row->idx) ? $row->idx : '';
+					}
+
+
+
+					if(0 == $multi_index) {
+						$gubun = 'list';
+						// 기존 업로드 파일이 있다면..
+						$this->delete_file_manager(false,false,false,array('wr_table'=>$wr_table,'wr_table_idx'=>$wr_table_idx,'gubun'=>'list'));
+					}
+					elseif(1 ==  $multi_index) {
+						$gubun = 'banner';
+						// 기존 업로드 파일이 있다면..
+						$this->delete_file_manager(false,false,false,array('wr_table'=>$wr_table,'wr_table_idx'=>$wr_table_idx,'gubun'=>'banner'));
+					}
+
+					// 파일 관리 디비에 저장
+					if($sess_file_write  OR  ($wr_table  &&  $wr_table_idx))
+					{
+						$data = array(
+							//'wr_sess'       => $sess_file_write,
+							//'wr_table'         => $wr_table,
+							//'wr_table_idx'     => $wr_table_idx,
+							'user_idx'      => $user_idx,
+							'upload_type'   => 'form',
+							'upload_gubun'   => $upload_gubun,
+							'file_dir'      => $upload_folder,
+							'file_name'     => $upload_data['file_name'],
+							'file_name_org' => $upload_data['orig_name'],
+							'file_ext'     => $upload_data['file_ext'],
+							'file_size'     => $upload_data['file_size'],
+							'file_type'     => ($upload_data['is_image']) ? 'image' : 'file',
+
+							'ver_name'     => $ver_name,
+							'ver_no'     => $ver_no,
+							
+							'img_width'     => $upload_data['image_width'],
+							'img_height'    => $upload_data['image_height'],
+							'datetime_upload'  => TIME_YMDHIS,
+
+							'gubun'         =>$gubun
+						);
+
+						
+						// [2/3] 파일 버전관리를 위한 parent_idx 값 처리
+						if('' != $parent_idx) {
+							$data['parent_idx'] = $parent_idx;
+						}
+
+						if( $this->ci->input->post('content',NULL) ) {
+							$data['content'] = $this->ci->input->post('content',NULL);
+						}
+
+						if($wr_table  &&  $wr_table_idx) {
+							$data['wr_table'] = $wr_table;
+							$data['wr_table_idx'] = $wr_table_idx;
+						}
+						elseif($wr_table) {
+							$data['wr_table'] = $wr_table;
+							$data['wr_sess'] = $sess_file_write;
+						}
+						else {
+							$data['wr_sess'] = $sess_file_write;
+						}
+
+						$res = $this->ci->upload_model->insert_file_manager($data);
+						
+						// [3/3] 파일 버전관리를 위한 parent_idx 값 처리
+						if( 1 == $ver_no  &&  isset($res['idx'])  &&  '' != $res['idx']) {
+							// 첫 번째 파일이므로 업데이트 처리
+							$this->ci->db->where('idx', $res['idx']);
+							$this->ci->db->update('file_manager', array('parent_idx' => $res['idx'])); 
+						}
+
+						if($return_data) {
+							$succ = $data;
+							$succ['idx'] = $res['idx'];
+						}
+						else {
+							$succ = ( $res ) ? TRUE : FALSE;
+						}
+
+						// 파일 버전 관리를 위한..
+						//if($res['idx'])
+
+
+						$idx = $this->ci->db->insert_id();
+						$data['idx'] = $idx;
+
+					}
+
+			}
+			else {
+
+					//print_r( array('error' => $this->ci->upload->display_errors('', '')) );
+					//exit;
+
+					// 에러 발생시, 관리자에게만 에러 내용을 표시
+					// $error_msg = $this->ci->upload->display_errors('<p>', '</p>');
+					// $alert_msg = $this->ci->upload->display_errors('', '');
+					// if( SU_ADMIN ) {
+					// 	echo $error_msg;
+					// 	alert($alert_msg);
+					// 	exit;
+					// }
+			}
+			$this->ci->upload->initialize($config);
+
+			return $succ;
+	}
+
+
+
+
+
+	function update_file_manager($file_write_sess=FALSE,$wr_table=FALSE,$wr_table_idx=FALSE,$delete_sess=TRUE) 
+	{
+
+			if(! $file_write_sess  OR  ! $wr_table  OR  ! $wr_table_idx)
+				return NULL;
+
+			$res = $this->ci->upload_model->update_file_manager($file_write_sess,$wr_table,$wr_table_idx,$delete_sess);
+			if( $res ) {
+				return $res;
+			}
+			else {
+				return NULL;
+			}
+	}
+
+
+	// [2019-01-30] 먼저 업로드 후, 업로드 메시지를 talks 테이블에 저장하고, talks_idx 값을 file_manager 에 업데이트 하기 위한 용도
+	function update_file_manager_talks($file_write_sess=FALSE,$wr_table=FALSE,$wr_table_idx=FALSE,$delete_sess=TRUE) 
+	{
+
+			if(! $file_write_sess  OR  ! $wr_table  OR  ! $wr_table_idx)
+				return NULL;
+
+			$res = $this->ci->upload_model->update_file_manager_talks($file_write_sess,$wr_table,$wr_table_idx,$delete_sess);
+			if( $res ) {
+				return $res;
+			}
+			else {
+				return NULL;
+			}
+	}
+
+
+
+
+
+
+
+
+
+	// 파일 삭제
+	function delete_file_manager($file_idx=FALSE,$table=FALSE,$table_idx=FALSE,$sql_where=FALSE)
+	{
+		// 파일 정보 불러와서, 먼저 파일 삭제 후 디비에서도 삭제.
+		// 성공하면 TRUE, 실패하면 FALSE
+		return $this->ci->upload_model->delete_file_manager($file_idx,$table,$table_idx,$sql_where);
+	}
+
+	// 파일 세션 갱신
+	function update_file_session($file_idx=FALSE,$sess_file_write=FALSE)
+	{
+		// 파일 정보 불러와서, 먼저 파일 삭제 후 디비에서도 삭제.
+		// 성공하면 TRUE, 실패하면 FALSE
+		return $this->ci->upload_model->update_file_session($file_idx,$sess_file_write);
+	}
+
+
+
+	// 파일 세션 삭제
+	function delete_session_file_manager()
+	{
+		// 파일 세션 삭제
+		return $this->ci->upload_model->delete_session_file_manager();
+	}
+
+
+
+}

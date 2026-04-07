@@ -1,0 +1,139 @@
+/* =========================
+   BUYBACK LAYOUT
+========================= */
+.page-wrap {
+    padding: 30px 0;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.section-desc {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* =========================
+   DEVICE SELECT
+========================= */
+.device-box {
+    padding: 20px;
+}
+
+.device-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.device-row select,
+.device-row input {
+    flex: 1;
+}
+
+/* =========================
+   DEVICE LIST
+========================= */
+.device-list {
+    margin-top: 20px;
+}
+
+.device-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+.device-info {
+    font-size: 14px;
+}
+
+.device-price {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* =========================
+   SUMMARY
+========================= */
+.summary-box {
+    padding: 20px;
+}
+
+.summary-total {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.summary-price {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-primary);
+}
+
+/* =========================
+   PICKUP FORM
+========================= */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #6b7280;
+}
+
+
+/* =========================
+   ADMIN TABLE
+========================= */
+.table-wrap {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: #f9fafb;
+    font-size: 12px;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 14px;
+}
+
+.table tr:hover {
+    background: #f3f4f6;
+}
+
+.table-delete {
+    color: red;
+    cursor: pointer;
+}

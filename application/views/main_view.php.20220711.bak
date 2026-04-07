@@ -1,0 +1,254 @@
+	<!-- 메인 : 이미지 슬라이더 -->
+	<div class="slick_main_visual min_container  d-none d-md-block">
+	<?php foreach($list_banner as $i => $o) { ?>
+		<div style="margin:0 auto; "><a href="<?php echo $o->bn_link ?>" target="<?php echo $o->bn_target ?>"><img src="<?php echo $o->banner_src ?>" style="<?php echo (isset($o->bn_width) && '' != $o->bn_width) ? 'width:'.$o->bn_width.'px' : '' ?>" /></a></div>
+	<?php } ?>
+	</div>
+	<!-- [mobile] 메인 : 이미지 슬라이더 -->
+	<div class="m_container  d-block d-md-none">
+		<div class="m_slick_main_visual">
+		<?php foreach($list_banner_mobile as $i => $o) { ?>
+			<div><a href="<?php echo $o->bn_link ?>" target="<?php echo $o->bn_target ?>"><img src="<?php echo $o->banner_src ?>" style="<?php echo (isset($o->bn_width) && '' != $o->bn_width) ? 'width:'.$o->bn_width.'px' : '' ?>" /></a></div>
+		<?php } ?>
+		</div>
+	</div>
+
+	
+	<!-- 기부캠페인 최신 -->
+	<div class="contents_wrap" style="height:calc(100% - 300px);">
+
+		<!-- 기부캠페인 최신 -->
+		<h2>지금까지 기부된 디지털 기기</h2>
+		<div class="container pt-4">
+		  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3">
+			<?php foreach($device_result['qry'] as $dcnt => $device) { ?>
+			<div class="col">
+				<div class="input-group">
+				  <span class="input-group-text" id="basic-addon1" style="display:inline-block;width:100px; text-align:center;"><?php echo $device->gd_type ?></span>
+				  <span class="form-control"><?php echo number_format($device->tot_amt) ?> 대</span>
+				</div>
+			</div>
+			<?php } ?>
+		  </div>
+		</div>
+
+
+
+
+		<!-- 메인 : 기부 캠페인 -->
+		<h2 style="margin-top:50px;">기부 캠페인</h2>
+		<div class="container" style="margin:0 auto; padding:15px 0 0 0;">
+
+			<div class="main_campaign_list row  row-cols-1  row-cols-sm-2 row-cols-lg-4">
+
+				<div class="col"><a class="main_campaign_state" href="#">
+					<div class="campaign_item">
+						<span class="state_label">기부</span>
+						<strong class="state_title">당신의 참여가<br>변화의 시작입니다</strong>
+						<span class="campaign_more" onclick="redirect('/campaign/lists');" aria-label="진행 중 모금함 더보기">더보기 ☞</span>
+						<dl class="campaign_state_list">
+							<dt>참여</dt>
+							<dd><?php echo number_format($total_donor) ?>명</dd>
+							<dt>기부금액</dt>
+							<dd><?php echo number_format($total_donation_value) ?>원</dd>
+						</dl>
+					</div>
+				</a></div>
+
+
+
+				<?php foreach($list as $kcnt => $cmp) { ?>
+					<div class="col"><div class="campaign_item">
+						<a href="/campaign/detail/<?php echo $cmp->code ?>" class="">
+							<div class="item_img_wrap"><?php echo $cmp->campaign_main_img ?></div>
+							<div class="item_content">
+								<div class="item_ctnt_title"><?php echo $cmp->cmp_title ?></div>
+								<div class="item_planner"><?php echo $cmp->cmp_org_name ?></div>
+								<div class="item_process_bar" aria-label="모금률" title="목표수량 대비 기부율"><span class="item_process_bar_collection" style="width: <?php echo $cmp->left_date_per ?>%;"></span></div>
+								<span class="item_percent" title="목표수량 대비 기부율"><?php echo $cmp->left_date_str ?></span>
+								<div class="item_money"><?php echo $cmp->donation_value; ?><span class="item_text">원</span></div>
+							</div>
+						</a>
+					</div></div>
+				<?php } ?>
+				<?php
+				$blank_item_cnt = 2 - $kcnt;
+				for($i=0; $i<$blank_item_cnt;$i++) {
+				?>
+					<li></li>
+				<?php
+				}
+				?>
+			</div>
+		</div>
+
+
+
+		<!-- 메인 : 기부 캠페인 -->
+		<h2 style="margin-top:50px;">당신의 기부와 모금을 도와드립니다.</h2>
+		<!-- <div class="container d-none d-xl-block" style="margin:0 auto; padding:15px 0 0 0;"> -->
+		<div class="container" style="margin:0 auto; padding:15px 0 0 0;">
+			<div>
+				<div class="selectorbox">
+					<div id="selectorbox1_open" class="sboxopen" style="display:block;">
+						<div class="selector_inner">
+							<div class="inner_top">
+								<div class="inner_header">
+                                    <h1>기업 / 기관</h1>
+									<p>우리가 가진 자원을 기부단체나 개인에게 기부하고 싶습니다. </p>
+									<a class="vs_button vs_mainButton vs_roundCornerButton tealText " style="color:#fff;" href="#">Get started</a>
+									<a class="vs_button vs_secondaryButton" href="#">Log in</a>
+                                </div>
+							</div>
+							<div class="inner_bottom">
+							</div>
+						</div>
+					</div>
+					<div id="selectorbox1_closed" class="sboxclosed" style="display:none;">
+						<button type="button" id="box1" class="click_opensbox btn-light-silver" title="Click to find out more about Charity giving">
+							<div class="selector_inner">
+								<div class="inner_top">
+									<div class="inner_header">
+										<h1>기업 / 기관</h1>
+									</div>
+								</div>
+								<div class="inner_bottom">
+									<p class="icon_open"></p>
+								</div>
+							</div>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class="selectorbox">
+					<div id="selectorbox2_open" class="sboxopen" style="display:none;">
+						<div class="selector_inner">
+							<div class="inner_top">
+								<div class="inner_header">
+                                    <h1>NPO , 사회적기업</h1>
+									<p>공익과 자선을 위한 당신 기부를 기다립니다.  </p>
+									<a class="vs_button vs_mainButton vs_roundCornerButton tealText " style="color:#fff;" href="#">Get started</a>
+									<a class="vs_button vs_secondaryButton" href="#">Log in</a>
+                                </div>
+							</div>
+							<div class="inner_bottom">
+							</div>
+						</div>
+
+					</div>
+					<div id="selectorbox2_closed" class="sboxclosed" style="display:block;">
+						<button type="button" id="box2" class="click_opensbox btn-light-silver" title="Click to find out more about Charity giving">
+							<div class="selector_inner">
+								<div class="inner_top">
+									<div class="inner_header">
+										<h1>NPO , 사회적기업</h1>
+									</div>
+								</div>
+								<div class="inner_bottom">
+									<p class="icon_open"></p>
+								</div>
+							</div>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div>
+				<div class="selectorbox last">
+					<div id="selectorbox3_open" class="sboxopen" style="display:none;">
+						<div class="selector_inner">
+							<div class="inner_top">
+								<div class="inner_header">
+                                    <h1>기부자</h1>
+									<p>나는 가치 있는 기부를 하고자 합니다.. </p>
+									<a class="vs_button vs_mainButton vs_roundCornerButton tealText " style="color:#fff;" href="#">Get started</a>
+									<a class="vs_button vs_secondaryButton" href="#">Log in</a>
+                                </div>
+							</div>
+							<div class="inner_bottom">
+							</div>
+						</div>
+
+					</div>
+					<div id="selectorbox3_closed" class="sboxclosed" style="display:block;">
+						<button type="button" id="box3" class="click_opensbox btn-light-silver" title="Click to find out more about Charity giving">
+							<div class="selector_inner">
+								<div class="inner_top">
+									<div class="inner_header">
+										<h1>기부자</h1>
+									</div>
+								</div>
+								<div class="inner_bottom">
+									<p class="icon_open"></p>
+								</div>
+							</div>
+						</button>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<script type="text/javascript">
+		$(document).ready(function(){
+
+			$('.slick_main_visual').slick({
+				  infinite: true,
+				  speed: 500,
+				  slidesToShow: 1,
+				  centerMode: true,
+				  variableWidth: true,
+				  dots: false,
+				  autoplay: true,
+				  autoplaySpeed: 4000,
+			});
+
+
+			$('.m_slick_main_visual').slick({
+				  infinite: true,
+				  speed: 500,
+				  slidesToShow: 1,
+				  centerMode: true,
+				  variableWidth: true,
+				  dots: true,
+				  autoplay: true,
+				  autoplaySpeed: 4000,
+			});
+
+			$('.click_opensbox').css('border','0');
+
+			$('.click_opensbox').click(function(){
+				var boxno = $(this).attr('id');
+				var boxid_open = 'selector'+boxno+'_open';
+				var boxid_closed = 'selector'+boxno+'_closed';
+				$('.sboxopen').hide();
+				$('.sboxclosed').show();
+				$('#'+boxid_open).show();
+				$('#'+boxid_closed).hide();
+			});
+			/*
+
+			$('.slick_partner').slick({
+				  infinite: true,
+				  speed: 500,
+				  slidesToShow: 8,
+				  centerMode: true,
+				  autoplay: true,
+				  autoplaySpeed: 1000,
+			});
+
+			*/
+
+		});
+	</script>

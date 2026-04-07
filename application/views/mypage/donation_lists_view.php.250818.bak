@@ -1,0 +1,215 @@
+	<!-- 모바일 -->
+	<?php $this->load->view('mypage/mypage_side_mobile_view'); ?>
+
+	<!-- 모바일 -->
+	<!-- <div class="m_slide_nav d-block d-md-none">
+		<div class="m_slide_nav_wrap">
+			<div class="m_list_nav">
+				<ul>
+					<li><span><a href="/mypage/donation/lists">나의 기부 물품 현황</a></span></li>
+					<li><span><a href="/mypage/user/edit/">정보수정</a></span></li>
+					<?php if( isset($this->user->level) && $this->user->level > 10 ) { ?>
+					<li><span><a href="/mypage/campaign/lists">캠페인 관리</a></span></li>
+					<li><span><a href="/mypage/campaign/write">캠페인 만들기</a></span></li>
+					<?php } ?>
+				</ul>
+			</div>
+		</div>
+	</div> -->
+
+	<div class="ctnt_wrap">
+		<div class="ctnt_inside">
+			<div class="row py_35">
+				<div class="d-none d-lg-block col-lg-3">
+					<!-- 마이페이지 사이드 메뉴 -->
+					<?php $this->load->view('mypage/mypage_side_view'); ?>
+				</div>
+				<div class="col-12 col-lg-9">
+
+					<style>
+						/* common */
+						.res_tbl_wrap {
+							position: relative;
+							overflow: hidden;
+							margin: 0 auto;
+							width: 100%;
+							max-width: 1200px;
+							border-top: 2px solid #121212;
+						}
+						.res_tbl_wrap table {
+							display: table;
+							width: 100%;
+							border-collapse: collapse;
+							border-spacing: 0;
+						}
+						.res_tbl_wrap table thead tr th {
+							border-bottom: 1px solid #121212;
+						}
+						.res_tbl_wrap table thead tr th,
+						.res_tbl_wrap table tbody tr td {
+							text-align: left;
+							padding: 0.8125vw 1.25vw;
+							font-size: 15px;
+							font-size: 1.3vw;
+							/* line-height: 1.375vw; */
+						}
+						.res_tbl_wrap table tbody tr td {
+							border-bottom: 1px solid #efefef;
+							height: auto !important;
+						}
+
+						.center_pc { text-align: center !important; }
+
+						/* desktop only */
+						@media screen and (min-width: 1200px) {
+							.res_tbl_wrap table thead tr th,
+							.res_tbl_wrap table tbody tr td {
+								padding: 12px 20px;
+								font-size: 16px;
+								line-height: 22px;
+							}
+						}
+
+						/* mobile only */
+						@media screen and (max-width: 990px) {
+							.res_tbl_wrap table col {
+								width: 100% !important;
+							}
+							.res_tbl_wrap table thead {
+								display: none;
+							}
+							.res_tbl_wrap table tbody tr {
+								border-bottom: 1px solid #efefef;
+							}
+							.res_tbl_wrap table tbody tr td {
+								width: 100%;
+								display: flex;
+								margin-bottom: 2px;
+								padding: 1px 5px;
+								border-bottom: none;
+								font-size: 14px;
+								line-height: 18px;
+							}
+							.res_tbl_wrap table tbody tr td:first-child, 
+							.res_tbl_wrap table tbody tr th:first-child {
+								/* padding-top: 16px; */
+								margin-top: 5px;
+							}
+							.res_tbl_wrap table tbody tr td:last-child, 
+							.res_tbl_wrap table tbody tr th:last-child {
+								/* padding-bottom: 15px; */
+								margin-bottom: 5px;
+							}
+							.res_tbl_wrap table tbody tr td:before {
+								display: inline-block;
+								margin-right: 12px;
+								-webkit-box-flex: 0;
+								-ms-flex: 0 0 100px;
+								flex: 0 0 100px;
+								font-weight: 700;
+								content: attr(data-label);
+								background-color: #f3f3f3;
+								min-height: 22px;
+								line-height: 22px;
+								padding-left: 5px;
+							}
+
+							/* mobile */
+							.center_pc { text-align: left !important; }
+						}
+					</style>
+
+					<!-- 캠페인 좌측 컨텐츠 -->
+					<div class="mypage_ctnt" style="">
+						<h2 class="mb_40" style="color:#353535;">나의 기부 물품 현황 <small>- 목록</small></h2>
+						<div class="tbl_frm  res_tbl_wrap">
+							<table class="table-hover">
+							<tr class="_pc">
+							  <th class="center_pc">NO</th>
+							  <th>캠페인명</th>
+							  <th class="center_pc">기부신청일자</th>
+							  <th class="center_pc">상태</th>
+							  <th class="center_pc">수거관리</th>
+							</tr>
+							<?php foreach($list as $i => $o) { ?>
+							<tr class="tbl_list">
+							  <td class="center_pc" data-label="NO"><?php echo $o->num ?></td>
+							  <td data-label="캠페인명"><a href="/mypage/donation/detail/<?php echo $o->cmp_code ?>/<?php echo $o->idx ?>"><div class="" style="width: 100%; max-width:320px;"><?php echo $o->cmp_title ?></div></a></td>
+							  <td class="center_pc" data-label="기부신청일자"><?php echo $o->reg_date ?></td>
+							  <td class="center_pc" data-label="상태">
+								<?php echo $o->state_good_proc ?>
+							  </td>
+							  <td class="center_pc" data-label="관리"><?php echo $o->btn_updateWaState ?>
+
+								<!-- <button class="btn btn-primary-flat btn-xs btn_updateWaState" onclick="alert('준비중입니다.'); return false;" data-idx="<?php echo $o->idx ?>">수거 신청</button> -->
+
+								<!-- <?php if( ($i%2) < 1) { ?>
+								<a href="#" onclick="alert('준비중입니다.'); return false;"><button class="btn btn-primary-flat btn-xs">수거 신청</button></a>
+								<?php } else { ?>
+								<span class="badge bg-dark">신청 완료</span>
+								<?php } ?> -->
+								
+
+								<?php 
+								/*
+								if(NULL == $o->delete && '접수 중' == $o->state_good_proc) {
+								?>
+								<a href="#" onclick="cancel_confirm_msg('mypage/donation/del/<?php echo $o->cmp_code ?>/<?php echo $o->idx ?>/<?php echo $o->user_idx ?>','\n기부 내역을 취소하시겠습니까? \n취소하시더라도, 언제든지 다시 기부하실 수 있습니다.'); return false;"><button class="btn btn-danger-flat btn-xs">기부 취소</button></a>
+								<?php
+								}
+								*/
+								?>
+
+							  </td>
+							</tr>
+							<?php } ?>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+<script type='text/javascript'>
+//<![CDATA[
+	$(function() {
+
+		// 작업요청 전송(기부하기) 상태에서 수거 신청 상태로 업데이트
+		$('.btn_updateWaState').on('click',function(){
+
+			const idx = $(this).data('idx');
+
+			var request = $.ajax({
+			  url: "/trans/ros_replus_updateWaState/",
+			  method: "POST",
+			  data: { 'idx': idx, 'reqState' : 1  /* , '<?php echo $this->security->get_csrf_token_name() ?>':'<?php echo $this->security->get_csrf_hash() ?>' */},
+			  dataType: "text"
+			});
+
+			request.done(function( res ) {
+
+				//console.log(res);
+					
+				if('SUCCESS' == res) {
+					// 상태 변경 성공
+					location.reload();
+				}
+				else {
+					// 상태 변경 실패
+					alert('수거 신청이 되지 않았습니다. \n계속해서 신청이 되지 않을 경우, 관리자에 문의해주시기 바랍니다.');
+				}
+			});
+
+			request.fail(function( jqXHR, textStatus ) {
+			  alert( "Request failed: " + textStatus );
+			});
+
+		});
+
+
+	});
+//]]>
+</script>

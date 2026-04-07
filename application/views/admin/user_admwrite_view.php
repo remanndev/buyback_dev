@@ -1,0 +1,356 @@
+<div class=" admin_wrap">
+
+	<h1>관리자 <?php echo (isset($user_idx) && $user_idx > 0) ? '정보 수정' : '등록'; ?></h1>
+	<h2>기본정보</h2>
+
+	<?php echo form_open($this->uri->uri_string(), array('id'=>'member_form','name'=>'member_form', 'onsubmit'=>' return chk_form();')); ?>
+
+	<div class="tbl_frm">
+		<table>
+		<colgroup>
+		  <col>
+		  <col>
+		  <col>
+		  <col>
+		</colgroup>
+		<tr>
+		  <th>회원 구분</th>
+		  <td>관리자</td>
+		  <th>가입 일자</th>
+		  <td><?php echo (isset($row->created) ? $row->created : ''); ?></td>
+		</tr>
+
+		<tr>
+		  <th style="line-height:30px;">아이디</th>
+		  <td>
+			<?php
+			// 기존 회원 정보 수정
+			if( isset($arr_seg[4]) && ! empty($arr_seg[4]) ) {
+				echo (isset($row->username) ? $row->username : '');
+				echo '<input type="hidden" id="username" name="username" value="'. $row->username .'" />';
+				echo '<input type="hidden" id="duplicate_username" name="duplicate_username" value="'. $row->username .'" />';
+			}
+			// 신규 회원 가입시 아이디 등록
+			else {
+			?>
+				<input type="hidden" id="duplicate_username" name="duplicate_username" value="<?php echo set_value('duplicate_username') ?>" />
+				<input type="text" id="username" name="username" value="<?php echo set_value('username', (isset($row->username) ? $row->username : '')) ; ?>" class="o_input" />
+				<button type="button" class="btn btn-dark btn-xs o_btn  check_username" >중복 체크</button>
+				<?php echo form_error('username', '<div id="err_duplicate_username" class="err_color_red">','</div>'); ?>
+				<?php //echo form_error('duplicate_username', '<div id="err_duplicate_username" class="error_member_admin">','</div>'); ?>
+			<?php } ?>
+		  </td>
+		  <th>최종 로그인 ( 횟수 )</th>
+		  <td><?php echo (isset($row->last_login) ? $row->last_login : ''); ?> <?php echo (isset($row->cnt_login) ? ' ( 총 '. $row->cnt_login .' 회 로그인 )' : ''); ?> </td>
+		</tr>
+		<tr>
+		  <th>이름</th>
+		  <td>
+			<input type="text" name="nickname" value="<?php echo set_value('nickname', (isset($row->nickname) ? $row->nickname : '' )); ?>" class="o_input" />
+			<?php echo form_error('nickname','<div class="err_color_red">','</div>'); ?>
+		  </td>
+		  <th>이메일</th>
+		  <td>
+			<input type="hidden" id="duplicate_email" name="duplicate_email" value="<?php echo set_value('duplicate_email', (isset($row->email) ? $row->email : '')) ?>" />
+			<input type="email" id="user_email" name="user_email" value="<?php echo set_value('user_email', (isset($row->email) ? $row->email : '')); ?>" class="o_input" />
+			<?php /* ?><!-- <button class="btn btn-default-flat btn-xs" style="font-size:13px; border:1px solid #777777; background-color:#828282; color:#fff;">이메일 변경</button> --><?php */ ?>
+			<button type="button" class="btn btn-dark btn-xs o_btn  check_email" >중복 체크</button>
+
+			<?php echo form_error('user_email', '<div id="err_duplicate_email" class="err_color_red">','</div>'); ?>
+		  </td>
+		</tr>
+		<tr>
+		  <th>가입 승인 여부<br />(activate)</th>
+		  <td>
+			<?php //echo (isset($row->activated) && $row->activated) ? '승인완료(인증메일확인)' : '미승인상태(인증메일 미확인)'; ?>
+			<?php echo (isset($row->activated) && $row->activated) ? '승인완료' : '미승인상태(인증메일 미확인)'; ?>
+		  </td>
+		  <th>비밀번호 변경</th>
+		  <td>
+			<small style="display:block; padding-bottom:2px; color:#0080c0; font-size:11px;">*비밀번호를 변경하실 때만 입력해주세요.</small>
+			<small style="display:block; padding-bottom:2px; color:#0080c0; font-size:11px;">*영문대·소문자/숫자/특수문자를 포함하여, <?php echo $this->config->item('password_min_length', 'tank_auth') ?>자리 이상(<?php echo $this->config->item('password_max_length', 'tank_auth') ?>자리 이하)으로 설정해주세요.</small>
+			<input type="password" name="member_pw" value="" placeholder="비밀번호" class="o_input" />
+			<input type="password" name="member_pw_confirm" value="" placeholder="비밀번호 확인" class="o_input" />
+
+			<?php echo form_error('member_pw', '<div class="err_color_red">','</div>'); ?>
+			<?php echo form_error('member_pw_confirm', '<div class="err_color_red">','</div>'); ?>
+		  </td>
+		</tr>
+		<?php if(! (isset($row->is_admin) && $row->is_admin > 0)) { ?>
+		<tr>
+		  <th>차단(ban) 여부</th>
+		  <td>
+			<label for="user_banned" style="font-size:12px; padding-right:15px;"><?php echo form_checkbox('user_banned','1', set_checkbox('user_banned', '1', ('1' === (isset($row->banned) ? $row->banned : '')) ? TRUE : FALSE), 'id="user_banned" style="vertical-align:middle;"'); ?> 차단</label>
+		  </td>
+		  <th>차단(ban) 사유</th>
+		  <td>
+			<input type="text" name="ban_reason" value="<?php echo set_value('ban_reason', (isset($row->ban_reason) ? $row->ban_reason : '')); ?>" class="o_input" />
+		  </td>
+		</tr>
+		<?php } ?>
+
+
+		<!-- <tr>
+		  <th>휴대폰번호</th>
+		  <td>
+			<input type="text" name="upro_phone_1" value="<?php echo set_value('upro_phone_1', (isset($arr_phone[0]) && ! empty($arr_phone[0])) ? $arr_phone[0] : '010'); ?>" maxlength="3" class="o_input" style="width:40px; text-align:center; " />
+			-
+			<input type="text" name="upro_phone_2" value="<?php echo set_value('upro_phone_2', (isset($arr_phone[1]) && ! empty($arr_phone[1])) ? $arr_phone[1] : ''); ?>" maxlength="4" class="o_input" style="width:50px; text-align:center; " />
+			-
+			<input type="text" name="upro_phone_3" value="<?php echo set_value('upro_phone_3', (isset($arr_phone[2]) && ! empty($arr_phone[2])) ? $arr_phone[2] : ''); ?>" maxlength="4" class="o_input" style="width:50px; text-align:center; " />
+		  </td>
+		  <th>유선 전화번호</th>
+		  <td>
+			<input type="text" name="upro_tel_1" value="<?php echo set_value('upro_tel_1', (isset($arr_tel[0]) && ! empty($arr_tel[0])) ? $arr_tel[0] : ''); ?>" maxlength="3" class="o_input" style="width:40px; text-align:center; " />
+			-
+			<input type="text" name="upro_tel_2" value="<?php echo set_value('upro_tel_2', (isset($arr_tel[1]) && ! empty($arr_tel[1])) ? $arr_tel[1] : ''); ?>" maxlength="4" class="o_input" style="width:50px; text-align:center; " />
+			-
+			<input type="text" name="upro_tel_3" value="<?php echo set_value('upro_tel_3', (isset($arr_tel[2]) && ! empty($arr_tel[2])) ? $arr_tel[2] : ''); ?>" maxlength="4" class="o_input" style="width:50px; text-align:center; " />
+		  </td>
+		</tr>
+
+		<tr>
+		  <th>주소</th>
+		  <td colspan="3">
+			<input type="text" id="postcode" name="postcode" value="<?php echo set_value('postcode', (isset($row->postcode) ? $row->postcode : '')); ?>" readonly class="o_input" style="width:70px;text-align:center;" placeholder="우편번호" /> <button type="button" class="btn btn-black-flat btn-xs o_btn" style="vertical-align:middle;" onclick="srh_execDaumPostcode(); return false;" >우편번호 찾기</button>
+			<input type="text" id="addr" name="addr" value="<?php echo set_value('addr', (isset($row->addr) ? $row->addr : '')); ?>" readonly class="o_input" style="width:70%;display:block; margin-top:5px;" placeholder="우편번호 찾기 버튼을 클릭하여 주소를 등록해주세요." />
+			<input type="text" id="addr_detail" name="addr_detail" value="<?php echo set_value('addr_detail', (isset($row->addr_detail) ? $row->addr_detail : '')); ?>" class="o_input" style="width:70%;display:block; margin-top:5px;" placeholder="상세 주소를 입력해주세요." />
+		  </td>
+		</tr> -->
+
+		</table>
+	</div>
+
+	<div style="text-align:center; padding:40px 0 20px;">
+		<input type="submit" name="submit" class="btn btn-dark btn-sm" value="저장" />
+		<a href="/admin/user/admlists" style="text-decoration:none;"><button type="button" class="btn btn-dark btn-sm">목록</button></a>
+	</div>
+
+	<?php echo form_close(); ?>
+	<hr class="clear" />
+
+
+
+	<!-- iOS에서는 position:fixed 버그가 있음, 적용하는 사이트에 맞게 position:absolute 등을 이용하여 top,left값 조정 필요 -->
+	<div id="layer_execDaumPostcode" style="display:none;position:fixed;overflow:hidden;z-index:1;-webkit-overflow-scrolling:touch;">
+	<img src="//t1.daumcdn.net/localimg/localimages/07/postcode/320/close.png" id="btnCloseLayer" style="cursor:pointer;position:absolute;right:-3px;top:-3px;z-index:1" onclick="closeDaumPostcode()" alt="닫기 버튼">
+	</div>
+
+</div>
+
+
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script>
+    // 우편번호 찾기 화면을 넣을 element
+    var element_layer = document.getElementById('layer_execDaumPostcode');
+
+    function closeDaumPostcode() {
+        // iframe을 넣은 element를 안보이게 한다.
+        element_layer.style.display = 'none';
+    }
+
+    function srh_execDaumPostcode() {
+        new daum.Postcode({
+            oncomplete: function(data) {
+                // 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                var fullAddr = data.address; // 최종 주소 변수
+                var extraAddr = ''; // 조합형 주소 변수
+
+                // 기본 주소가 도로명 타입일때 조합한다.
+                if(data.addressType === 'R'){
+                    //법정동명이 있을 경우 추가한다.
+                    if(data.bname !== ''){
+                        extraAddr += data.bname;
+                    }
+                    // 건물명이 있을 경우 추가한다.
+                    if(data.buildingName !== ''){
+                        extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    // 조합형주소의 유무에 따라 양쪽에 괄호를 추가하여 최종 주소를 만든다.
+                    fullAddr += (extraAddr !== '' ? ' ('+ extraAddr +')' : '');
+                }
+
+                // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                document.getElementById('postcode').value = data.zonecode; //5자리 새우편번호 사용
+                document.getElementById('addr').value = fullAddr;
+                //document.getElementById('sample2_addressEnglish').value = data.addressEnglish;
+
+                // iframe을 넣은 element를 안보이게 한다.
+                // (autoClose:false 기능을 이용한다면, 아래 코드를 제거해야 화면에서 사라지지 않는다.)
+                element_layer.style.display = 'none';
+            },
+            width : '100%',
+            height : '100%'
+        }).embed(element_layer);
+
+        // iframe을 넣은 element를 보이게 한다.
+        element_layer.style.display = 'block';
+
+        // iframe을 넣은 element의 위치를 화면의 가운데로 이동시킨다.
+        initLayerPosition();
+    }
+
+    // 브라우저의 크기 변경에 따라 레이어를 가운데로 이동시키고자 하실때에는
+    // resize이벤트나, orientationchange이벤트를 이용하여 값이 변경될때마다 아래 함수를 실행 시켜 주시거나,
+    // 직접 element_layer의 top,left값을 수정해 주시면 됩니다.
+    function initLayerPosition(){
+        var width = 450; //우편번호서비스가 들어갈 element의 width
+        var height = 550; //우편번호서비스가 들어갈 element의 height
+        var borderWidth = 5; //샘플에서 사용하는 border의 두께
+
+        // 위에서 선언한 값들을 실제 element에 넣는다.
+        element_layer.style.width = width + 'px';
+        element_layer.style.height = height + 'px';
+        element_layer.style.border = borderWidth + 'px solid';
+        // 실행되는 순간의 화면 너비와 높이 값을 가져와서 중앙에 뜰 수 있도록 위치를 계산한다.
+        element_layer.style.left = (((window.innerWidth || document.documentElement.clientWidth) - width)/2 - borderWidth) + 'px';
+        element_layer.style.top = (((window.innerHeight || document.documentElement.clientHeight) - height)/2 - borderWidth) + 'px';
+    }
+</script>
+
+
+
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$('.check_username').click(function(){
+
+		var username = $('#username').val();
+		var len_username = username.length;
+		var min_len = "<?php echo $this->config->item('username_min_length', 'tank_auth') ?>";
+		var max_len = "<?php echo $this->config->item('username_max_length', 'tank_auth') ?>";
+		//alert(len_username);
+		if( '' == username) {
+			alert('아이디를 입력해주세요.');
+		}
+		else if(len_username < min_len){
+			alert('아이디는 '+min_len+'자 이상, '+max_len+'자 이하 이어야 합니다.');
+		}
+		else {
+
+			var request = $.ajax({
+			  url: "/trans/duplication_check/",
+			  method: "POST",
+			  data: { 'check_field': 'username', 'check_value' : username  /* , '<?php echo $this->security->get_csrf_token_name() ?>':'<?php echo $this->security->get_csrf_hash() ?>' */},
+			  dataType: "html"
+			});
+
+			$('#duplicate_username').val('');
+
+			request.done(function( res ) {
+			  if('true' == res) {
+				alert('사용 가능한 아이디입니다.');
+				$('#duplicate_username').val(username);
+				$('#err_duplicate_username').html('');
+				$('#username').css('background-color','#eeeeee');
+			  }
+			  else {
+				alert('사용할 수 없는 아이디입니다.');
+				$('#username').val('');
+				$('#username').css('background-color','#ffffff');
+			  }
+			});
+
+			request.fail(function( jqXHR, textStatus ) {
+			  alert( "Request failed: " + textStatus );
+			  $('#username').val('');
+			  $('#username').css('background-color','#ffffff');
+			});
+
+		}
+	});
+
+
+	$('.check_email').click(function(){
+
+		var email = $('#user_email').val();
+		if( '' == email) {
+			alert('이메일을 입력해주세요.');
+		}
+		else {
+
+			var mb_idx = '<?php echo $user_idx ?>';
+			var mb_email = '<?php echo isset($row->email) ? $row->email : '' ?>';
+
+			var request = $.ajax({
+			  url: "/trans/duplication_check/",
+			  method: "POST",
+			  data: { 'check_field': 'email', 'check_value' : email, 'mb_idx':mb_idx, 'mb_email':mb_email  /* , '<?php echo $this->security->get_csrf_token_name() ?>':'<?php echo $this->security->get_csrf_hash() ?>' */},
+			  dataType: "html"
+			});
+
+			$('#duplicate_email').val('');
+
+			request.done(function( res ) {
+			  if('owner' == res) {
+				// 본인 메일
+				alert('기존 이메일 주소와 동일합니다.');
+				$('#duplicate_email').val(email);
+				$('#err_duplicate_email').html('');
+				$('#user_email').css('background-color','#eeeeee');
+			  }
+			  else if('true' == res) {
+
+				if( validateEmail(email) ) {
+					alert('사용 가능한 이메일입니다.');
+					$('#duplicate_email').val(email);
+					$('#err_duplicate_email').html('');
+					$('#user_email').css('background-color','#eeeeee');
+				}
+				else {
+					alert('유효한 이메일 주소가 아닙니다.');
+					$('#user_email').val('');
+					$('#err_duplicate_email').html('');
+					$('#user_email').css('background-color','#ffffff');
+				}
+
+			  }
+			  else {
+				//console.log('사용할 수 없는 아이디입니다.');
+				alert('사용할 수 없는 이메일입니다...');
+				$('#user_email').val('');
+				$('#err_duplicate_email').html('');
+				$('#user_email').css('background-color','#ffffff');
+			  }
+			});
+
+			request.fail(function( jqXHR, textStatus ) {
+			  alert( "Request failed: " + textStatus );
+			  $('#user_email').val('');
+			  $('#user_email').css('background-color','#ffffff');
+			});
+
+		}
+	});
+
+});
+
+// 폼 체크
+function chk_form() {
+
+	var username = $('#username').val();
+	var duplicate_username = $('#duplicate_username').val();
+	
+
+	var duplicate_email = $('#duplicate_email').val();
+	var user_email = $('#user_email').val();
+
+	if('' == username || username != duplicate_username) {
+		alert('아이디를 입력하신 후 중복 체크 버튼을 클릭해주세요.');
+		return false;
+	}
+	else if(duplicate_email != '' && duplicate_email == user_email) {
+		return true;
+	}
+	else {
+		$('#user_email').css('background-color','#ffffff');
+		alert('이메일을 입력하신 후 중복 체크 버튼을 클릭해주세요.');
+		return false;
+	}
+}
+</script>
+

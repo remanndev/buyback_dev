@@ -1,0 +1,45 @@
+
+	/** [mobile] 메인 ::  비주얼   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+		.m_slick_main_visual {width:100%; height:240px; overflow:hidden; margin:0 !important;}
+		.m_slick_main_visual .slick-dots {position:absolute; bottom:0px; text-align: right; padding-right:15px;}
+		.m_slick_main_visual .slick-dots li {margin:0 5px 0 0 !important;}
+
+		.m_slick_main_visual .slick-dots li button:before { opacity: .4;
+			display:inline-block; width:20px; height:4px; background-color:#FFFFFF; text-indent:-9999px;}
+		.m_slick_main_visual .slick-dots li.slick-active {opacity: 1;}
+
+		.m_slick_main_visual .slick-arrow {
+			z-index: 10 !important;
+			width: 44px !important;
+			height: 80px !important;
+			background-color: rgba(0,0,0,.15) !important;
+		}
+		.m_slick_main_visual .slick-prev {
+			left: auto !important;
+			right: 50% !important;
+			margin-right: 526px !important;
+		}
+		.m_slick_main_visual .slick-arrow:before {
+			position: absolute !important;
+			top: 50% !important;
+			left: 50% !important;
+			width: 18px !important;
+			height: 34px !important;
+			margin: -17px 0 0 -9px !important;
+			background-image: url('/assets/images/donate/main_top_slick_arrow.svg') !important;
+			content: '' !important;
+		}
+		.m_slick_main_visual .slick-next {
+			left: 50% !important;
+			margin-left: 526px !important;
+		}
+		.m_slick_main_visual .slick-next:before {
+			transform: rotate(180deg);
+		}
+
+		.m_slick_main_visual .slick-slide img {opacity: .7; }
+		.m_slick_main_visual .slick-slide {background-color: #000;}
+		.m_slick_main_visual .slick-current, .slick-active {background-color:parent;}
+		.m_slick_main_visual .slick-current img, .slick-active img {opacity: 1}
+		

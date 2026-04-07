@@ -1,0 +1,411 @@
+<?php
+// 카테고리메뉴
+$selected_ca_code =  (isset($cate_menu) && '' !=$cate_menu) ? $cate_menu : (isset($row->ca_code) ? $row->ca_code : set_value('ca_code'));
+$ca_code_options = array('' => '카테고리를 선택해주세요.');
+if('' !== trim($bbs_cf->bo_category)) {
+	$arr_bbs_menu = explode(',',$bbs_cf->bo_category);
+	foreach($arr_bbs_menu as $i=>$menu) {
+		$ca_code_options[$menu] = $menu;
+	}
+}
+
+
+
+// 제목 설정
+$input_subject = array(
+	'name'	=> 'wr_subject',
+	'id'	=> 'wr_subject',
+	'value' => isset($row->wr_subject) ? $row->wr_subject : set_value('wr_subject'),
+	'maxlength'	=> 255,
+	'class' => 'o_input',
+	'placeholder' => '제목을 입력하세요.',
+	'autocomplete' => 'off"',
+	'style'	=> 'width:100%;padding:5px 7px;vertical-align:middle; font-size:17px;'
+);
+
+
+// input_wr_name
+$input_wr_name = array(
+	'name'	=> 'wr_name',
+	'id'	=> 'wr_name',
+	'value' => isset($row->wr_name) ? $row->wr_name : set_value('wr_name'),
+	'maxlength'	=> 255,
+	'autocomplete' => 'off"',
+	'style'	=> 'width:100%;padding:3px 7px;line-height:20px;font-size:13px; vertical-align:middle;'
+);
+
+// 공지 체크 설정
+if( $wr_idx > 0 ) {
+	$arr_bo_notice_idxs = explode(',',$bbs_cf->bo_notice_idxs);
+	$cf_checked_notice = in_array($row->wr_idx, $arr_bo_notice_idxs);
+}
+else {
+	$cf_checked_notice = FALSE;
+}
+$checked_notice = (isset($row->opt_notice) && $row->opt_notice > 0) ? TRUE : $cf_checked_notice;
+$input_option_notice = array(
+	'name'	=> 'opt_notice',
+	'id'	=> 'opt_notice',
+	'value' => '1',
+	'checked' => set_checkbox('opt_notice','1',$checked_notice),
+	'style'	=> 'vertical-align:middle'
+);
+
+// 비밀글 체크 설정
+$cf_checked_secret = FALSE;
+$bo_use_secret = $bbs_cf->bo_use_secret;
+if('0' === $bo_use_secret):
+	// 비밀글 사용 안함
+	$cf_checked_secret = FALSE;
+elseif('1' === $bo_use_secret):
+	// 비밀글 사용, 기본 일반글
+	$cf_checked_secret = FALSE;
+elseif('2' === $bo_use_secret):
+	// 비밀글 사용, 기본 비밀글
+	$cf_checked_secret = TRUE;
+elseif('3' === $bo_use_secret):
+	// 비밀글 사용, 무조건 비밀글
+	$cf_checked_secret = TRUE;
+endif;
+$checked_secret = (isset($row->opt_secret) && $row->opt_secret > 0) ? TRUE : $cf_checked_secret;
+
+$input_option_secret = array(
+	'name'	=> 'opt_secret',
+	'id'	=> 'opt_secret',
+	'value' => '1',
+	//'checked' => set_checkbox('opt_secret','1',$checked_secret),
+	'checked' => $checked_secret,
+	'style'	=> 'vertical-align:middle'
+);
+
+
+$captcha = array(
+	'name'	=> 'captcha',
+	'id'	=> 'captcha',
+	'maxlength'	=> 8,
+	'autocomplete' => 'off"',
+	'style' => 'padding:10px; '
+);
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// 모바일 설정
+$_class_container = 'container';
+if(IS_MOBILE) {
+	$_class_container = 'm_container_bbs';
+}
+?>
+
+
+<style type="text/css">
+	.bbs_basic_list {border-top:2px solid #333333; position:relative; display:block; }
+	.bbs_basic_list table {width: 100%;}
+	.bbs_basic_list table thead th { font-size:15px; padding:15px 12px !important; border-bottom:1px solid #bfbfbf;}
+	.bbs_basic_list table tbody td { padding:11px !important; border-bottom:1px solid #dddddd;}
+	.bbs_basic_list table td, .bbs_basic_list table td a { font-size:14px; color:#333333; text-decoration:none;}
+
+	h3.o_content_ttl {position:relative; font-size:45px; font-weight:bold; text-align:center;}
+	h4.o_content_ttl {position:relative; font-size:34px; font-weight:bold; }
+	.o_content_ttl_redbar {position:absolute; top:0; left:15px; width:27px; height:5px; background-color:red; }
+
+</style>
+
+
+
+<div class="contents_wrap">
+	<!-- 캠페인 상세 -->
+	<div class="<?php echo $_class_container ?> py_40" style="margin:0 auto;">
+
+		<div>
+			<?php echo $bbs_cf->bo_head; ?>
+		</div>
+
+		<!-- 페이지 내용 -->
+		<div class="o_page_content">
+			<section class="o_ctnt" >
+
+				<h4 class="o_content_ttl"><?php echo isset($bbs_cf->bo_title) ? $bbs_cf->bo_title : '게시판'; ?></h4>
+
+				<div class="mt_20">
+
+				<?php echo form_open_multipart($this->uri->uri_string(), array('id'=>'board_form','name'=>'board_form')); ?>
+						
+
+						<?php if($bbs_cf->bo_use_category &&  trim($bbs_cf->bo_category) !== '' ) { ?>
+						<div>
+							<?php echo form_dropdown('ca_code', $ca_code_options, $selected_ca_code, 'class="form-control" style="width:100%;font-size:15px; vertical-align:middle; background-color:#f7f7f7;"'); ?>
+							<?php echo form_error('ca_code','<div class="error">','</div>'); ?>
+						</div>
+						<?php } ?>
+
+						<div style="margin-top:15px; ">
+							<?php echo form_input($input_subject); ?>
+							<?php echo form_error('wr_subject','<div class="error">','</div>'); ?>
+						</div>
+
+
+						<?php if( $bbs_cf->bo_use_secret > 0 ) { ?>
+						<div>
+							<?php
+							if($bbs_cf->bo_use_secret === '0' ) {
+								// 비밀글 사용 안함
+							} elseif($bbs_cf->bo_use_secret === '3' ) {
+								// 무조건 비밀글
+								echo form_hidden('opt_secret', '1');
+							} else {
+								echo '<label for="opt_secret">'. form_checkbox($input_option_secret) .' 비밀글</label> &nbsp;';
+							}
+							?>
+						</div>
+						<?php } ?>
+
+						<div style="margin-top:15px; ">
+							<textarea id="wr_content" name="wr_content"><?php echo isset($row->wr_content) ? $row->wr_content : set_value('wr_content',$bbs_cf->bo_init_content) ?></textarea>
+							<?php echo form_error('wr_content','<div class="error">','</div>'); ?>
+						</div>
+
+						<?php if($result_file_editor) { ?>
+						<div class="page-header-sub mt_30" style="position:relative; padding:0;">
+							<h3 style="display:inline-block; margin:0 15px 0 0; font-size:19px; font-weight:bold;">에디터 파일 관리<small></small></h3>
+							<div class="notice_info_red" style=" line-height:23px; display:inline-block; font-size:14px;">에디터에서 업로드한 파일은 글 저장 이후 아래에서 확인하실 수 있습니다.</div>
+						</div>
+						
+						<div id="uploaded_file" style="position:relative; margin:5px 0; width:100%;  border:1px solid #cccccc; background-color:#fafafa;">
+						  <div style="padding:5px; height:auto; overflow:hidden;">
+
+							<div id="uploaded_thumb" style="position:relative; width:26.5%; max-width:155px; display:inline-block;">
+							<?php
+								$thumb_image = '<img id="preview_file" src="'. IMG_DIR .'/common/pn_preview.gif" alt="..." class="img-thumbnail" style="width:100%;">';
+								echo $thumb_image;
+							?>
+							</div>
+							
+							<div style="float:right; width:100%; min-width:73%; max-width:calc(100% - 155px); height:100%; padding:0;">
+							  <ul style="background-color:#ffffff; margin:0 0 0 5px;  padding-left:10px; height:118px; border:1px solid #EEEEEE; overflow-y:scroll;  ">
+								  <?php foreach($result_file_editor['qry'] as $i => $o) { ?>
+									<li class="file_editor_<?php echo $i ?>" style="font-size:11px; position:relative; line-height:200%; list-style:none;">
+										<?php echo $o->file_name_org ?> (<?php echo number_format($o->file_size) ?> KB)
+
+										<img src="<?php echo IMG_DIR ?>/common/icon_btn_upload.gif" style="cursor:pointer; vertical-align:middle;" alt="업로드" title="업로드" onclick="file_insert_to_content('<?php echo $o->file_dir ?>','<?php echo $o->file_name ?>','<?php echo $o->file_name_org ?>','<?php echo $o->file_type ?>','<?php echo $o->img_width ?>','<?php echo $bbs_cf->bo_image_width ?>')" />
+										<img src="<?php echo IMG_DIR ?>/common/icon_btn_del.gif" style="cursor:pointer; vertical-align:middle;" alt="삭제" title="삭제" onclick="delete_file_manager(<?php echo $o->idx ?>,'file_editor_<?php echo $i ?>','<?php echo $o->file_type ?>','<?php echo $o->file_dir ?>','<?php echo $o->file_name ?>')" />
+
+									</li>
+								  <?php } ?>
+							  </ul>
+							</div>
+							
+							<hr style="clear:both; margin:0; padding:0; width:0; height:0;" />
+
+						  </div>
+						</div>
+						<?php } ?>
+
+
+
+						<?php
+							if(('reply' === $mode  OR  'write' === $mode)  && (! $this->tank_auth->is_logged_in())) {
+						?>
+
+						<dl class="board_write">
+						  <dt>자동등록방지</dt>
+						  <dd>
+
+								<?php if ($show_captcha) { ?>
+								<div>
+
+									<?php if ($use_recaptcha) { ?>
+
+											<h6 style="font-size:13px; margin:5px 0;">아래의 코드를 정확하게  입력해주세요.</h6>
+											<input type="text" id="recaptcha_response_field" name="recaptcha_response_field" />
+											<?php //echo form_error('recaptcha_response_field'); ?>
+											<?php echo form_error('recaptcha_response_field','<div class="error">','</div>'); ?>
+
+
+											<div style="margin-top:5px; padding:10px 5px; border:1px solid #eee;">
+											  <div id="recaptcha_image"></div>
+											</div>
+
+											<a href="javascript:Recaptcha.reload()">Get another CAPTCHA</a>
+											<div class="recaptcha_only_if_image"><a href="javascript:Recaptcha.switch_type('audio')">Get an audio CAPTCHA</a></div>
+											<div class="recaptcha_only_if_audio"><a href="javascript:Recaptcha.switch_type('image')">Get an image CAPTCHA</a></div>
+
+											<div style="margin:5px 0;"><?php echo $recaptcha_html; ?></div>
+
+									<?php } else { ?>
+
+											<h6 style="font-size:13px; margin:5px 0 0 0;">아래의 코드를 정확하게  입력해주세요.  <button id="btn_code_renew" type="button" class="btn btn-default-flat btn-xs" onclick="">새로고침</button></h6>
+											<div style="padding-top:5px;">
+												<span id="layer_captcha_html" style="margin-top:5px;"><?php echo $captcha_html; ?></span>
+												<?php echo form_input($captcha); ?>
+											</div>
+											<?php echo form_error($captcha['name'],'<div class="error">','</div>'); ?>
+
+									<?php } ?>
+
+								</div>
+								<?php } ?>
+
+						  </dd>
+						</dl>
+
+						<?php } ?>
+
+
+
+
+						<!-- 업로드 -->
+						<?php if( $bbs_cf->bo_use_upload > 0 ) { ?>
+
+						<dl class="board_write mt_30">
+						  <dt style="font-size:19px; font-weight:bold;">첨부 파일</dt>
+						  <dd class="pt_5">
+
+							<?php
+							$fno_limit = $bbs_cf->bo_upload_cnt;
+							for($fno=0;$fno<$fno_limit;$fno++) {
+							?>
+							  <div><input type="file" name="attach_file_form[]" class="o_input_file mb-1" style="width:100%;" /></div>
+							<?php } ?>
+
+
+							<?php if($result_file_form && $result_file_form['total_count'] > 0) { ?>
+							<ul style="background-color:#ffffff; margin-top:10px; padding:15px; border:1px solid #EEEEEE; background-color:#f7f7f7; list-style:none;">
+							  <?php foreach($result_file_form['qry'] as $i => $o) { ?>
+							  <li class="file_form_<?php echo $i ?>" style="position:relative; line-height:170%; font-size:15px;">
+								<?php echo $o->file_name_org ?> (<?php echo number_format($o->file_size) ?> KB)
+								<img src="<?php echo IMG_DIR ?>/common/icon_btn_del.gif" style="cursor:pointer;" alt="삭제" title="삭제" onclick="delete_file_manager(<?php echo $o->idx ?>,'file_form_<?php echo $i ?>','<?php echo $o->file_type ?>','<?php echo $o->file_dir ?>','<?php echo $o->file_name ?>')" />
+							  </li>
+							  <?php } ?>
+							</ul>
+							<?php } ?>
+
+						  </dd>
+						</dl>
+						<?php } ?>
+
+						<div style="position:relative; width:100%; padding:30px 0; text-align:center; ">
+							<button type="submit" name="submit" class="o_btn btn btn-black-flat mx-1">저장</button>
+							<input type="hidden" name="submit" value="submit" />
+							<a href="<?php echo $cancel_link?>" class="o_btn btn btn-black-flat mx-1" role="button" aria-pressed="true">취소</a>
+						</div>
+
+				<?php echo form_close(); ?>
+
+			</section>
+		</div>
+	
+	</div>
+</div>
+
+
+
+
+
+<?php if(IS_MOBILE) { ?>
+<script type="text/javascript">
+	$R('#wr_content', { 
+		focus: false,
+		//toolbarExternal: '#my-external-toolbar',
+		lang: 'ko',
+		minHeight: '300px',
+		maxHeight: '1000px',
+		plugins: ['fontsize','fontcolor','filemanager','video','table','alignment','specialchars','fontfamily','fullscreen'],
+		imageUpload: "/files/upload/redactor_image/<?php echo url_code('board/'. $bo_code .'/image','e') ?>/<?php echo $bo_code ?>/<?php echo $wr_idx ?>",
+		fileUpload: "/files/upload/redactor_file/<?php echo url_code('board/'. $bo_code .'/files','e') ?>/<?php echo $bo_code ?>/<?php echo $wr_idx ?>",
+
+		buttonsAddAfter: {
+			after: 'deleted',
+			buttons: ['underline','line', 'redo', 'undo']
+		},
+		buttonsHide: ['lists','widget', 'sup', 'sub', 'ol', 'ul','inlinestyle','textdirection']
+
+	});
+</script>
+<?php } else { ?>
+
+<script type="text/javascript">
+	$R('#wr_content', { 
+		focus: false,
+		//toolbarExternal: '#my-external-toolbar',
+		lang: 'ko',
+		minHeight: '500px',
+		maxHeight: '1000px',
+		plugins: ['fontsize','fontcolor','filemanager','video','table','alignment','specialchars','fontfamily','fullscreen'],
+		imageUpload: "/files/upload/redactor_image/<?php echo url_code('board/'. $bo_code .'/image','e') ?>/<?php echo $bo_code ?>/<?php echo $wr_idx ?>",
+		fileUpload: "/files/upload/redactor_file/<?php echo url_code('board/'. $bo_code .'/files','e') ?>/<?php echo $bo_code ?>/<?php echo $wr_idx ?>",
+
+		buttonsAddAfter: {
+			after: 'deleted',
+			buttons: ['underline','line', 'redo', 'undo']
+		},
+		buttonsHide: ['lists','widget', 'sup', 'sub', 'ol', 'ul','inlinestyle','textdirection']
+
+	});
+</script>
+<?php } ?>
+
+<script type="text/javascript">
+// 파일을 본문 안에 추가
+function file_insert_to_content(file_dir,file_name,file_name_org,file_type,img_width,limit_width)
+{
+	if('image' == file_type){
+		var img_w = img_width+'px';
+		if(Number(img_width) > Number(limit_width)) {
+			img_w = limit_width +'px';
+		}
+		var add_tag = '<p><img class="'+file_name+'" src="/data/'+ file_dir + '/' + file_name +'" alt="" width="'+img_w+'"></p>';
+	}
+	else {
+		var add_tag = '<p><a class="'+file_name+'" href="/data/'+ file_dir + '/' + file_name +'">'+file_name_org+'</a></p>';
+	}
+
+	// insert
+	$R('#wr_content', 'insertion.insertHtml', add_tag);
+}
+
+// 선택 파일 삭제
+function delete_file_manager(idx,file_class,file_type,file_dir,file_name)
+{
+	if( confirm('삭제하시겠습니까?') )
+	{
+
+			// 삭제하려는 사람과 등록한 사람 비교 포함.
+			var request = $.ajax({
+			  url: "/trans/delete_file_manager/",
+			  method: "POST",
+			  data: { 'idx': idx  /* , '<?php echo $this->security->get_csrf_token_name() ?>':'<?php echo $this->security->get_csrf_hash() ?>' */},
+			  dataType: "html"
+			});
+
+			request.done(function( res ) {
+
+				// 파일 삭제하고, 디비에서도 삭제하면
+				// 에디터에서 삭제 및 파일 첨부 리스트에서도 삭제
+				if('true' == res) {
+
+					// 에디터에서 삭제
+					if('image' == file_type) {
+						//var del_attr = '/data'+ file_dir + file_name;
+						//if($('img').attr('src') == del_attr) {$(this).remove();}
+					}
+					else {
+						//var del_attr = '/data'+ file_dir + file_name;
+						//if($('a').attr('href') == del_attr) {$(this).remove();}
+					}
+					$('.'+file_name).remove();
+
+					// 파일 첨부 리스트에서 삭제
+					$('.'+file_class).remove();
+				}
+
+
+			});
+
+			request.fail(function( jqXHR, textStatus ) {
+			  alert( "Request failed: " + textStatus );
+
+			  return false;
+			});
+	}
+}
+</script>

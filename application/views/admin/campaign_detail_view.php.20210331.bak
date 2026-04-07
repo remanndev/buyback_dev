@@ -1,0 +1,276 @@
+<style type="text/css">
+
+	/** 공통 + + + + + + + + + + + + + + + + + + + + + + + + + + + + */
+
+	.adm_container_wrap { border-top: 0px solid #e5e5e5;}
+	.adm_container { width:1140px; }
+
+
+
+
+	/** 캠페인 만들기 + + + + + + + + + + + + + + + + + + + + + + + + + + + + */
+			#campaign_write_wrap {}
+
+			#campaign_write_wrap .cmp_ctnt { position:relative; width:750px; display:inline-block; }
+			#campaign_write_wrap .cmp_ctnt > figure { margin:0; }
+			#campaign_write_wrap .cmp_ctnt > figure > img { max-width:100%; }
+
+			#campaign_write_wrap .cmp_ctnt_side { display:inline-block; float:right; width: 320px; padding:0 10px;}
+
+			#campaign_write_wrap .cmp_side_ttl {font-size:22px;color:#898989;}
+			#campaign_write_wrap .cmp_goal_money {position:relative;width:100%; font-size:34px; height:60px; line-height:50px; padding:0 50px 0 10px; font-weight:bold; }
+			#campaign_write_wrap .cmp_goal_unit {position:absolute; top:8px; right:15px; line-height:43px; font-size:34px;}
+			#campaign_write_wrap .cmp_goal_desc {width:100%; max-width: 100%; min-width:100%; height:auto; min-height:120px; font-size:24px; font-weight:700; color: #434387; line-height:150%; }
+			#campaign_write_wrap .cmp_term_begin {width:140px; font-size:17px; font-weight:700; text-align:center; padding:5px 0;}
+			#campaign_write_wrap .cmp_term_end {width:140px; font-size:17px; font-weight:700; text-align:center; padding:5px 0;}
+
+			#campaign_write_wrap .cmp_org_wrap {background-color:#efeff8; color:#6c6c6c;}
+			#campaign_write_wrap .cmp_org_name {width: 100%; line-height:40px; font-size:18px; text-align:center; color: #6c6c6c; font-weight: 700;}
+			#campaign_write_wrap .cmp_org_desc {width:100%; max-width:100%; min-width:100%; color:#6c6c6c; font-size:15px; line-height: 23px; font-size:16px; }
+
+			.campaign_title { margin-top:10px; width:100%; line-height:50px; font-size:32px; font-weight:bold; color:#353535;}
+			.campaign_main_img { margin:0; width: 100%; height:auto; min-height: 200px; background-color:#f2f2f2;}
+			.campaign_main_img img {width: 100%;}
+			.campaign_main_image { /* display:none; */ border:1px solid #fff; margin-top:10px;} 
+
+
+
+</style>
+
+
+
+
+<h1>캠페인 관리</h1>
+
+	<div class="adm_container_wrap">
+		<!-- 캠페인 상세 -->
+		<div id="campaign_write_wrap" class="adm_container" >
+
+			<h3 style="position:relative;">
+				<!-- 캠페인 <?php echo isset($row->idx) ? '수정' :'만들기'; ?> -->
+				
+				  <?php if( isset($row->state) ) { ?>
+					<button type="button" class="o_btn  btn-xs2 btn-<?php echo ('write' == $row->state) ? 'success' : 'silver'; ?>-flat" disabled>작성중</button>
+					<button type="button" class="o_btn  btn-xs2 btn-<?php echo ('submit' == $row->state) ? 'success' : 'silver'; ?>-flat" disabled>제출</button>
+					<button type="button" class="o_btn  btn-xs2 btn-<?php echo ('launch' == $row->state) ? 'primary' : 'silver'; ?>-flat" disabled>런칭</button>
+				  <?php } else { ?>
+					<!-- <button type="button" class="o_btn  btn-xs btn-success-flat" disabled>작성중</button>
+					<button type="button" class="o_btn  btn-xs btn-silver-flat" disabled>제출</button>
+					<button type="button" class="o_btn  btn-xs btn-silver-flat" disabled>런칭</button> -->
+				  <?php } ?>
+				
+			</h3>
+			<hr class="mb_30" />
+
+			<?php echo form_open_multipart($this->uri->uri_string(), array('id'=>'campaign_form','name'=>'campaign_form', 'onsubmit'=>'return form_check();')); ?>
+
+				<!-- 캠페인 우측 컨텐츠 -->
+				<div class="cmp_ctnt_side">
+					<dl>
+						<dt><h2 class="cmp_side_ttl">목표 기부 가치</h2></dt>
+						<dt class="mt_10 position_r"><input type="text" id="goal_money" class="o_input cmp_goal_money" name="goal_money" value="<?php echo isset($row->cmp_goal_money) ? number_format($row->cmp_goal_money) : ''; ?>" maxlength="12" /><strong class="cmp_goal_unit">원</strong></dt>
+						<dt class="mt_25"><h2 class="cmp_side_ttl">목표 기기</h2></dt>
+						<dd class="mt_10">
+							<textarea id="goal_desc" class="o_input cmp_goal_desc" name="goal_desc" placeholder="노트북 00대
+데스크탑 00대
+모니터 00대"><?php echo isset($row->cmp_goal_desc) ? $row->cmp_goal_desc : ''; ?></textarea>
+						</dd>
+					</dl>
+
+					<dl class="mt_30">
+						<dt><h2 class="cmp_side_ttl">모금 기간</h2></dt>
+						<dd class="mt_10"><h3><input type="text" id="term_begin" class="o_input datepicker cmp_term_begin" name="term_begin" value="<?php echo isset($row->cmp_term_begin) ? $row->cmp_term_begin : ''; ?>" /> ~ <input type="text" id="term_end" class="o_input datepicker cmp_term_end" name="term_end" value="<?php echo isset($row->cmp_term_end) ? $row->cmp_term_end : ''; ?>" /></h3></dd>
+					</dl>
+
+					<div class="mt_30">
+						<button type="button" class="o_btn o_btn_block btn-success-flat o_btn_v60" disabled><h3>디지털 기기 기부하기</h3></button>
+					</div>
+
+					<!-- 단체 소개 -->
+					<dl class="mt_30 py_30 px_20 cmp_org_wrap" style="">
+						<dt><h3><input type="text" class="o_input cmp_org_name" name="org_name" value="<?php echo isset($row->cmp_org_name) ? $row->cmp_org_name : ''; ?>" placeholder="단체명을 입력해주세요." title="단체명을 입력해주세요." /></h3></dt>
+						<dd class="pt_20"><textarea id="cmp_org_info" class="o_input cmp_org_info" name="org_info" placeholder="간략하게 단체를 소개해주세요." title="간략하게 단체를 소개해주세요."><?php echo isset($row->cmp_org_info) ? $row->cmp_org_info : ''; ?></textarea></dd>
+					</dl>
+				</div>
+
+				<!-- 캠페인 좌측 컨텐츠 -->
+				<div class="cmp_ctnt">
+
+					<h2 class="cmp_side_ttl">캠페인 제목</h2>
+					<div class="mb_40"><input type="text" id="campaign_title" class="o_input campaign_title" name="campaign_title" value="<?php echo isset($row->cmp_title) ? $row->cmp_title : ''; ?>" /></div>
+
+					<h2 class="cmp_side_ttl mb_10">캠페인 메인(목록) 이미지 <small class="ml_10" style="color:#ff9900; font-weight:normal;">4:3 비율의 이미지를 업로드 해주세요.</small></h2>
+					<label for="campaign_main_img_input" style="cursor:pointer;">
+					  <figure id="image_container" class="campaign_main_img"><?php echo isset($row->campaign_main_img) ? $row->campaign_main_img : ''; ?></figure>
+					</label>
+					<input type="hidden" id="file_idx_main_img" value="<?php echo isset($row->file_idx) ? $row->file_idx : ''; ?>" />
+					<input type="file" id="campaign_main_img_input" class="o_input campaign_main_image" name="campaign_main_image" accept="image/*" onchange="setThumbnail(event);"/>
+
+					<script> 
+					  function setThumbnail(event) { 
+						$('#image_container').html('');
+						var reader = new FileReader(); 
+						reader.onload = function(event) { var img = document.createElement("img"); img.setAttribute("src", event.target.result); document.querySelector("figure#image_container").appendChild(img); }; 
+						reader.readAsDataURL(event.target.files[0]);
+					  }
+					</script>
+
+
+
+					<h2 class="cmp_side_ttl mt_40">캠페인 내용</h2>
+					<div class="campaign_ctnt_wrap mt_10">
+						<textarea id="campaign_content" class="o_input campaign_ctnt" name="campaign_content" placeholder="캠페인 내용을 입력해주세요." title="캠페인 내용을 입력해주세요."><?php echo isset($row->cmp_content) ? $row->cmp_content : ''; ?></textarea>
+					</div>
+
+				</div>
+
+
+				<hr class="clear_both" />
+
+				<hr style="border:none; border-top:1px solid silver; margin: 50px 0;">
+
+				<div class="mb_20 text_center">
+
+				<?php if( ! isset($row->state) ) { ?>
+					<button type="submit" class="o_btn  btn-black-flat o_btn_v50" style="margin:0 auto; width: 100px;">저장</button>
+					<a href="<?php echo base_url() ?>/mypage/campaign/"><button type="button" class="o_btn  btn-black-flat o_btn_v50" style="margin:0 auto; width: 100px;">목록</button></a>
+
+				<?php } elseif(isset($row->state) && 'write' == $row->state) { ?>
+					<button type="submit" class="o_btn  btn-black-flat o_btn_v50" style="margin:0 auto; width: 100px;">저장</button>
+					<a href="<?php echo base_url() ?>/mypage/campaign/"><button type="button" class="o_btn  btn-black-flat o_btn_v50" style="margin:0 auto; width: 100px;">목록</button></a>
+					<a href="#" onclick="del_confirm('mypage/campaign/del/<?php echo $row->idx ?>'); return false;"><button type="button" class="o_btn  btn-danger-flat o_btn_v50" style="margin:0 auto; width: 100px;">삭제</button></a>
+
+					<a href="#" onclick="submit_confirm('/mypage/campaign/submit/<?php echo $row->idx ?>'); return false;"><button type="button" class="o_btn  btn-success-flat o_btn_v50" style="margin:0 auto 0 50px; width: 100px;">제출하기</button></a>
+
+				<?php } else { ?>
+					<a href="<?php echo base_url() ?>/mypage/campaign/"><button type="button" class="o_btn  btn-black-flat o_btn_v50" style="margin:0 auto; width: 100px;">목록</button></a>
+				<?php } ?>
+				</div>
+
+			<?php echo form_close(); ?>
+		</div>
+	</div>
+
+
+	<script type="text/javascript">
+		// datetimepicker
+		$.datetimepicker.setLocale('kr');
+		$('.datepicker').datetimepicker({
+			lang:'kr',
+			timepicker:false,
+			format:'Y-m-d',
+			formatDate:'Y/m/d'
+		});
+	</script>
+
+
+	<script type="text/javascript">
+		$R('#cmp_org_info', { 
+			//focus: true,
+			//toolbarExternal: '#my-external-toolbar',
+			lang: 'ko',
+			minHeight: '200px',
+			maxHeight: '300px',
+			buttonsHide: ['html','format','italic','lists','deleted']
+		});
+
+		$R('#campaign_content', { 
+			//focus: true,
+			//toolbarExternal: '#my-external-toolbar',
+			lang: 'ko',
+			minHeight: '500px',
+			maxHeight: '1000px',
+			plugins: ['fontsize','fontcolor','filemanager','video','table','alignment','inlinestyle','specialchars','textdirection','widget','fontfamily','fullscreen'],
+			imageUpload: "/files/upload/redactor_image/<?php echo url_code('campaign/image','e') ?>/campaign/<?php echo isset($row->idx) ? $row->idx :''; ?>",
+			fileUpload: "/files/upload/redactor_file/<?php echo url_code('campaign/files','e') ?>/campaign/<?php echo isset($row->idx) ? $row->idx :''; ?>",
+
+			buttonsAddAfter: {
+				after: 'deleted',
+				buttons: ['underline','line', 'redo', 'undo', 'underline', 'ol', 'ul', 'sup', 'sub']
+			},
+			buttonsHide: ['lists']
+		});
+	</script>
+
+	<script type="text/javascript">
+		function form_check() {
+
+			if( '' == $('#campaign_title').val() ) {
+				alert('캠페인 제목을 입력하세요.');
+				// $('#campaign_title').focus();
+				return false;
+			}
+			else if( '' == $('#campaign_main_img_input').val() && '' == $('#file_idx_main_img').val() ) {
+				alert('캠페인 메인 이미지을 등록하세요.');
+				// $('#campaign_main_img_input').focus();
+				return false;
+			}
+			else if( '' == $('#campaign_content').val() ) {
+				alert('캠페인 내용을 입력하세요.');
+				return false;
+			}
+			else if( '' == $('#goal_money').val() ) {
+				alert('목표 기부 가치를 입력해주세요.');
+				return false;
+			}
+			else if( '' == $('#goal_desc').val() ) {
+				alert('목표 기기를 입력하세요.');
+				return false;
+			}
+			else if( '' == $('#term_begin').val()  ||  '' == $('#term_end').val() ) {
+				alert('모금 기간을 입력하세요.');
+				return false;
+			}
+			else {
+				return true;
+			}
+
+		}
+
+		// 제출하기
+		function submit_confirm(url) {
+			if( confirm( '정말 제출하시겠습니까? \n\n제출하신 캠페인은 관리자의 승인을 거쳐 런칭됩니다.') ) {
+				location.href = url;
+			}
+		}
+	</script>
+
+
+
+	<script type="text/javascript">
+	$(document).ready(function(){
+
+		$('#goal_money').on('keyup',function() {
+			var str = removeComma(trim($(this).val()));
+			var n = addComma(str);
+			//console.log(n);
+			$('#goal_money').val(n);
+		});
+
+	});
+	</script>
+
+
+
+
+
+
+
+<?php if('write' == $row->state) { ?>
+
+<?php } elseif('submit' == $row->state) { ?>
+	<a href="#" onclick="launch_confirm('/admin/campaign/launch/<?php echo $row->idx ?>'); return false;"><button type="button" class="btn  btn-success-flat" style="margin:0 auto; width: 100px;">런칭하기</button></a>
+<?php } elseif('launch' == $row->state) { ?>
+	<button type="button" class="btn  btn-primary-flat" style="margin:0 auto; ">런칭(공개)된 캠페인</button>
+<?php } ?>
+
+<script type="text/javascript">
+
+		// 런칭하기
+		function launch_confirm(url) {
+			if( confirm( '정말 공개하시겠습니까? \n\n공개하신 캠페인은 즉시 캠페인 페이지에 반영됩니다.') ) {
+				location.href = url;
+			}
+
+		}
+</script>

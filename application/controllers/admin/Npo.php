@@ -1,0 +1,1179 @@
+<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+class Npo extends CI_Controller
+{
+	function __construct()
+	{
+		parent::__construct();
+
+		// $autoload['helper'] = array('url', 'file', 'common');
+
+		$this->load->helper(array('form', 'url', 'load','security'));
+		$this->load->library('form_validation');
+		$this->load->library('tank_auth');
+		$this->load->library('upload_lib');
+		$this->lang->load('tank_auth');
+
+		// 관리자 로그인 후에만 접속 가능, 그 외에는 메인 페이지로 이동.
+		if(! $this->tank_auth->is_admin() ) {
+			$this->tank_auth->logout();
+			redirect('/auth/login/'. url_code('/admin','e'));
+		}
+
+		$this->arr_seg = $this->uri->segment_array();
+	}
+
+	function index()
+	{
+		//redirect(base_url().'admin/sub/main');
+		//$this->main();
+
+		if ($this->tank_auth->is_admin()) {									// logged in
+			redirect('/admin/user/lists/');
+		}
+		elseif($this->tank_auth->is_logged_in()) {
+			$this->tank_auth->logout();
+			//alert('관리자로 로그인해주세요.','admin/');
+			//alert($this->lang->line('auth_message_admin_page'), 'admin/');
+		}
+		else {
+			redirect('/auth/');
+		}
+
+	}
+
+	function main() {
+		redirect('/admin/npo/lists/');
+	}
+
+
+
+	/* 비영리 민간 단체 목록 */
+	public function lists()
+	{
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// 엑셀 파일로 업로드한 단체 정보만 삭제
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		if( $this->input->post('excel_truncate_submit') ) {
+
+			$chk = $this->input->post('chk_excel',FALSE);
+			if('truncate' == $chk) 
+			{
+
+				// 단체 정보를 완전히 삭제
+				if($this->tank_auth->delete_excel_npo_by_admin('관리자삭제')) {
+					//alert('단체 정보가 삭제되었습니다.','admin/user');
+					//redirect(base_url().'admin/user');
+					echo '<script type="text/javascript">parent.location.reload();</script>';
+				}
+
+			}
+		}
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// 단체 정보 엑셀 파일로 업로드
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		if( $this->input->post('excel_upload_submit') ) {
+
+			$chk = $this->input->post('chk_excel',FALSE);
+			if('upload' == $chk) 
+			{
+
+				// 엑셀 업로드
+
+				//load our new PHPExcel library
+				$this->load->library('excel');
+
+				$objPHPExcel = new PHPExcel();
+				$objPHPExcel = PHPExcel_IOFactory::load($_FILES['excel_file']['tmp_name']);
+				$sheetsCount = $objPHPExcel->getSheetCount();
+
+				/* 시트별로 읽기 */
+				for($i = 0; $i < $sheetsCount; $i++)
+				{
+					$objPHPExcel->setActiveSheetIndex($i);
+					$sheet = $objPHPExcel->getActiveSheet();
+					$highestRow = $sheet->getHighestRow();
+					$highestColumn = $sheet->getHighestColumn();
+				 
+					/* 한줄읽기 */
+					// 1번째 줄은 칼럼 타이틀(기관구분	등록기관	등록번호	유형	단체명	대표자	소재지	주된사업	연락처	등록일	주관과	상태	비고)
+					for ($row = 2; $row <= $highestRow; $row++)
+					{
+						/* $rowData가 한줄의 데이터를 셀별로 배열처리 됩니다. */
+						$rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row, NULL, TRUE, FALSE);
+						$udata = $rowData[0];
+
+						$npo_gubun = isset($udata[0]) ? $udata[0] : '';
+						$npo_reg = isset($udata[1]) ? $udata[1] : '';
+						$npo_no = isset($udata[2]) ? $udata[2] : '';
+						$npo_type = isset($udata[3]) ? $udata[3] : '';
+						$npo_name = isset($udata[4]) ? $udata[4] : '';
+						$npo_ceo = isset($udata[5]) ? $udata[5] : '';
+						$npo_addr = isset($udata[6]) ? $udata[6] : '';
+						$npo_business = isset($udata[7]) ? $udata[7] : '';
+						$npo_tel = isset($udata[8]) ? $udata[8] : '';
+						$npo_reg_date = isset($udata[9]) ? $udata[9] : '';
+						$npo_buseo = isset($udata[10]) ? $udata[10] : '';
+						$npo_state = isset($udata[11]) ? $udata[11] : '';
+						$npo_memo = isset($udata[12]) ? $udata[12] : '';
+
+						$npo_arr = array(
+							'npo_gubun' => $npo_gubun,
+							'npo_reg' => $npo_reg,
+							'npo_no' => $npo_no,
+							'npo_type' => $npo_type,
+							'npo_name' => $npo_name,
+							'npo_ceo' => $npo_ceo,
+							'npo_addr' => $npo_addr,
+							'npo_business' => $npo_business,
+							'npo_tel' => $npo_tel,
+							'npo_reg_date' => $npo_reg_date,
+							'npo_buseo' => $npo_buseo,
+							'npo_state' => $npo_state,
+							'npo_memo' => $npo_memo,
+						);
+
+						$this->tank_auth->excel_npo_by_admin($npo_arr);
+					}
+				}
+
+				//redirect(current_url());
+				echo '<script type="text/javascript">parent.location.reload();</script>';
+
+			}
+		}
+
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// 페이징 정보 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$this->load->library('segment', array('offset'=>4), 'seg'); // 세그먼트 주소( page 위치 )
+		$this->load->library('querystring', NULL, 'param'); // 쿼리스트링 주소
+		$seg	  =& $this->seg;
+		$param	  =& $this->param;
+		
+		// [sql] where option 
+		$sql_where_option = array('idx > '=> 0);
+
+		// [페이징]
+		$qstr = '';
+
+		// 검색
+		if($sfl = $param->get('sfl',FALSE)) { // search field
+			$qstr .= ('' == $qstr) ? '?' : '&';
+			$qstr .= 'sfl='.$sfl;
+		}
+		if($stx = $param->get('stx',FALSE)) { // search text
+			// 휴대전화 검색인 경우
+			/*
+			if(isset($sfl) && 'phone' == $sfl) {
+				$stx = trim(str_replace('-','',$stx));
+			}
+			*/
+			$qstr .= ('' == $qstr) ? '?' : '&';
+			$qstr .= 'stx='.$stx;
+		}
+		/*
+		if($level = $param->get('level','all')) {
+			$qstr .= ('' == $qstr) ? '?' : '&';
+			$qstr .= 'level='.$level;
+			if(isset($level) && '' != $level && 'all' != $level) {
+				$sql_where_option['level'] = $level;
+			}
+		}
+		*/
+		// 정렬
+		if($ofl = $param->get('ofl','created DESC')) { // order_field
+			$qstr .= ('' == $qstr) ? '?' : '&';
+			$qstr .= 'ofl='.$ofl;
+		}
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// sql 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$sql_select = '*';
+		$sql_from = 'npo_list';
+		$like_field = $sfl;                         // search
+		$like_match = $stx;
+		$like_side = 'both';
+		$sql_where = $sql_where_option;            // where, group, order
+		$sql_group_by = FALSE;
+		$sql_order_by = $ofl;
+		// 페이징
+		$limit = '20';
+		$page  = $seg->get('page', 1); // 페이지
+		if(! isset($page) OR empty($page)) {
+			$page = '1';
+		}
+		$offset = ($page - 1) * $limit;
+		// 조인
+		$sql_join_tbl = FALSE;
+		$sql_join_on = FALSE;
+		$sql_join_option = 'LEFT OUTER';
+
+		// 검색 상관없는 전체 수
+		$user_total_count = $this->basic_model->get_common_count($sql_from,$sql_where);
+
+		$arr = array(
+				'sql_select'     => $sql_select,
+				'sql_from'       => $sql_from,
+				'sql_join_tbl'       => $sql_join_tbl,
+				'sql_join_on'        => $sql_join_on,
+				'sql_join_option'    => $sql_join_option,
+				'like_field'      => $like_field,
+				'like_match'      => $like_match,
+				'like_side'      => $like_side,
+				'sql_where'      => $sql_where, //array('PIDX' => $pidx),
+				'sql_group_by'   => $sql_group_by,
+				'sql_order_by'   => $sql_order_by,  // $order_field.' DESC, IDX DESC',
+				'page'      => $page,
+				'limit'      => $limit,
+				'offset'      => $offset,
+		);
+		$result = $this->basic_model->arr_get_result($arr);
+		//$list = $this->basic_lib->arr_user_list($arr);
+
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// pagination 설정
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$config['suffix']	   = $qstr; //$qstr;
+		$config['base_url']    = base_url() . 'admin/npo/lists/page/';
+		$config['per_page']    = $limit;
+		$config['total_rows']  = $result['total_count'];
+		$config['uri_segment'] = $seg->pos('page');  // 5
+
+		// 검색 목록 ADD
+		$btn_prev_part = $btn_next_part = '';
+		$config['full_tag_open']  = "<ul class='pagination'>".$btn_prev_part;
+		$config['full_tag_close'] = $btn_next_part.'</ul>';
+
+		//$CI =& get_instance();
+		//$CI->load->library('pagination', $config);
+		$this->load->library('pagination', $config);
+
+		// 엑셀 다운로드
+		//$btn_excel_download = '<a href="/admin/npo/excel_download_member/'.$level.'/'.$sfl.'/'.$stx.'" class="btn btn-dark btn-xs o_btn">엑셀 다운</a>';
+
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// Get data.
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$breadcrumb = array(
+			'회원'=>base_url().'admin/npo/main',
+			'비영리단체관리'=>''
+		);
+
+		$data = array(
+			'sfl' => $sfl,
+			'stx' => $stx,
+			//'level' => $level,
+			'ofl' => $ofl,
+
+			'user_total_count' => $user_total_count,
+			//'list'    => $list,
+			'result'    => $result,
+			'page'      => $page,
+			'limit'      => $limit,
+			'paging'    => $this->pagination->create_links(),
+
+			//'btn_excel_download'  => $btn_excel_download,
+
+			'arr_seg'   => $this->arr_seg, //$this->uri->segment_array(),
+			'breadcrumb'    => $breadcrumb,
+			'viewPage'  => 'admin/npo_lists_view'
+		);
+
+		$this->load->view('admin/layout_view', $data);
+	}
+
+
+
+	public function write($user_idx=FALSE)
+	{
+
+		// 없는 회원인 경우, 등록 페이지로 back
+		if($user_idx  &&  ! $this->basic_model->get_common_count('users',array('id'=>$user_idx))) {
+			alert('존재하지 않는 회원입니다.',BASEURL.'/admin/user/write');
+		}
+
+		/** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		* [2017-02-17] 회원가입 에러 메시지 CSS */
+		$this->form_validation->set_error_delimiters('<div class="error_member_admin">','</div>');
+		$data['errors'] = array();
+
+
+		if( $this->input->post('submit') ) {
+
+			//print_r($this->input->post());
+			//exit;
+
+			// 신규회원 아이디
+				if(! $user_idx) {
+					$use_username = $this->config->item('use_username', 'tank_auth');
+					if ($use_username) {
+						$this->form_validation->set_rules('username', '아이디', 'trim|required|xss_clean|min_length['.$this->config->item('username_min_length', 'tank_auth').']|max_length['.$this->config->item('username_max_length', 'tank_auth').']|alpha_dash|duplicate[duplicate_username]|is_unique[users.username]|is_unique[users_admin.username]');
+						$this->form_validation->set_rules('duplicate_username', '아이디 중복 체크', '');
+					}
+
+					// 신규 가입시 비밀번호 등록 필수
+					$is_set_pw = TRUE;
+					$this->form_validation->set_rules('member_pw', '비밀번호', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
+					$this->form_validation->set_rules('member_pw_confirm', '비밀번호 확인', 'trim|required|xss_clean|matches[member_pw]');
+
+				}
+				else {
+					// 비밀번호 등록시에만 체크
+					$member_pw = $this->input->post('member_pw','');
+					$member_pw_confirm = $this->input->post('member_pw_confirm','');
+					$is_set_pw = FALSE;
+					if( '' !== $member_pw || '' !== $member_pw_confirm ) {
+					  $this->form_validation->set_rules('member_pw', '비밀번호', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
+					  $this->form_validation->set_rules('member_pw_confirm', '비밀번호 확인', 'trim|required|xss_clean|matches[member_pw]');
+					  $is_set_pw = TRUE;
+					}
+
+				}
+
+			// 공통
+				// 이름
+				$this->form_validation->set_rules('nickname', '이름', 'trim|required|xss_clean');
+
+				$this->form_validation->set_rules('user_banned', '차단 여부', '');
+				$this->form_validation->set_rules('ban_reason', '차단 사유', '');
+
+				$this->form_validation->set_rules('upro_phone_1', '휴대폰번호', '');
+				$this->form_validation->set_rules('upro_phone_2', '휴대폰번호', '');
+				$this->form_validation->set_rules('upro_phone_3', '휴대폰번호', '');
+				$this->form_validation->set_rules('upro_tel_1', '유선 전화번호', '');
+				$this->form_validation->set_rules('upro_tel_2', '유선 전화번호', '');
+				$this->form_validation->set_rules('upro_tel_3', '유선 전화번호', '');
+
+				$this->form_validation->set_rules('upro_postcode', '우편번호', '');
+				$this->form_validation->set_rules('upro_addr', '주소', '');
+				$this->form_validation->set_rules('upro_addr_detail', '상세주소', '');
+
+				// 이메일
+				$this->form_validation->set_rules('user_email', '이메일', 'trim|required|xss_clean|valid_email|duplicate[duplicate_email]|is_unique[users.username]|is_unique[users_admin.username]');
+				$this->form_validation->set_rules('duplicate_email', '이메일 중복 체크', '');
+				//$this->form_validation->set_rules('duplicate_email', '이메일을', '');
+				$this->form_validation->set_rules('upro_newsletter', '이메일 수신 동의', '');
+
+				/*
+				if( '' !== $this->input->post('user_email') ) {
+					$this->form_validation->set_rules('user_email', '이메일', 'trim|required|xss_clean|valid_email|duplicate[duplicate_email]');
+				}
+				*/
+
+				// 이메일 인증 사용 여부
+				//$email_activation = $this->config->item('email_activation', 'tank_auth');
+
+			if ($this->form_validation->run()) {	// validation ok
+
+				//print_r($this->input->post());
+				//exit;
+
+
+				// 신규회원 등록일 경우에만 아이디 등록
+				$username = (! $user_idx && $use_username) ? $this->form_validation->set_value('username') : '';
+				$email    = ($this->form_validation->set_value('user_email')) ? $this->form_validation->set_value('user_email') : '';
+				$password = ( $is_set_pw ) ? $this->form_validation->set_value('member_pw') : '';
+
+				if (!is_null($data = $this->tank_auth->write_user_by_admin($user_idx,$username,$email,$password))) {		// success
+					//$this->_show_message($this->lang->line('auth_message_registration_completed_1'));
+					if($user_idx) {
+
+						//$this->_show_message('회원 정보가 수정되었습니다.');
+						//redirect(current_url());
+
+						//alert('회원 정보가 수정되었습니다.',current_url());
+
+						sess_message('회원 정보가 수정되었습니다.');
+						redirect(current_url());
+					}
+					else {
+
+						//$this->_show_message('신규 회원 정보가 등록되었습니다.');
+						//redirect(current_url().'/'.$data['user_id']);
+
+						alert('신규 회원 정보가 등록되었습니다.',current_url().'/'.$data['user_id']);
+					}
+				} else {
+					$errors = $this->tank_auth->get_error_message();
+					foreach ($errors as $k => $v)	$data['errors'][$k] = $this->lang->line($v);
+				}
+			}
+
+		}
+
+
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// sql 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// [sql] where option 
+		$sql_where_option=array('users.id'=>$user_idx);
+
+		$sql_select = 'users.id as user_idx, users.*, upro.*';
+		$sql_from = 'users';
+		$sql_where = $sql_where_option;            // where, group, order
+		// 조인
+		$sql_join_tbl = 'user_profiles as upro';
+		$sql_join_on = 'users.id = upro.user_id';
+		$sql_join_option = 'LEFT OUTER';
+
+		$arr = array(
+				'sql_select'     => $sql_select,
+				'sql_from'       => $sql_from,
+				'sql_join_tbl'       => $sql_join_tbl,
+				'sql_join_on'        => $sql_join_on,
+				'sql_join_option'    => $sql_join_option,
+				'sql_where'      => $sql_where, //array('PIDX' => $pidx),
+		);
+		$row = $this->basic_model->arr_get_row($arr);
+
+
+
+
+
+		//$arr_phone = (isset($row->phone) && ''!== $row->phone) ? explode('-',$row->phone) : array('','','');
+		$arr_tel = (isset($row->tel) && ''!== $row->tel) ? explode('-',$row->tel) : array('','','');
+
+		$arr_phone = array('','','');
+		$phone_str = '';
+		if( isset($row->phone) ) {
+			$arr_phone[0] = substr($row->phone,0,3);
+			$arr_phone[1] = substr($row->phone,3,4);
+			$arr_phone[2] = substr($row->phone,7,4);
+			$phone_str = implode('-',$arr_phone);
+		}
+
+
+
+
+
+		// Get data.
+			$breadcrumb = array(
+				'회원'=>base_url().'admin/user/main',
+				'회원 등록 및 수정'=>''
+			);
+
+			$data = array(
+				'user_idx'    => $user_idx,
+				'row'     => $row,
+				'arr_phone'  => $arr_phone,
+				'arr_tel'    => $arr_tel,
+
+				'arr_seg'   => $this->arr_seg, //$this->uri->segment_array(),
+				'breadcrumb'    => $breadcrumb,
+				'viewPage'  => 'admin/user_write_view'
+			);
+
+			$this->load->view('admin/layout_view', $data);
+	}
+
+
+
+	function del($user_idx=FALSE)
+	{
+		// 회원 정보를 완전히 삭제
+		if($this->tank_auth->delete_user_by_admin($user_idx,'관리자삭제')) {
+			//alert('회원 정보가 삭제되었습니다.','admin/user');
+			redirect(base_url().'admin/user');
+		}
+	}
+
+
+
+
+
+
+	function admlists() 
+	{
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// 페이징 정보 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$this->load->library('segment', array('offset'=>4), 'seg'); // 세그먼트 주소( page 위치 )
+		$this->load->library('querystring', NULL, 'param'); // 쿼리스트링 주소
+		$seg	  =& $this->seg;
+		$param	  =& $this->param;
+		
+		// [sql] where option 
+		$sql_where_option = array('deleted'=>NULL, 'username !='=>'sadmin');
+
+		// [페이징]
+		$qstr = '';
+
+		// 검색
+		if($sfl = $param->get('sfl',FALSE)) { // search field
+			$qstr .= ('' == $qstr) ? '?' : '&';
+			$qstr .= 'sfl='.$sfl;
+		}
+		if($stx = $param->get('stx',FALSE)) { // search text
+			// 휴대전화 검색인 경우
+			if(isset($sfl) && 'phone' == $sfl) {
+				$stx = trim(str_replace('-','',$stx));
+			}
+			$qstr .= ('' == $qstr) ? '?' : '&';
+			$qstr .= 'stx='.$stx;
+		}
+		/*
+		if($level = $param->get('level','all')) {
+			$qstr .= ('' == $qstr) ? '?' : '&';
+			$qstr .= 'level='.$level;
+			if(isset($level) && '' != $level && 'all' != $level) {
+				$sql_where_option['level'] = $level;
+			}
+		}
+		*/
+		// 정렬
+		if($ofl = $param->get('ofl','created DESC')) { // order_field
+			$qstr .= ('' == $qstr) ? '?' : '&';
+			$qstr .= 'ofl='.$ofl;
+		}
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// sql 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$sql_select = 'users_admin.id as user_idx,users_admin.*';
+		$sql_from = 'users_admin';
+		$like_field = $sfl;                         // search
+		$like_match = $stx;
+		$like_side = 'both';
+		$sql_where = $sql_where_option;            // where, group, order
+		$sql_group_by = FALSE;
+		$sql_order_by = $ofl;
+		// 페이징
+		$limit = '20';
+		$page  = $seg->get('page', 1); // 페이지
+		if(! isset($page) OR empty($page)) {
+			$page = '1';
+		}
+		$offset = ($page - 1) * $limit;
+
+		// 검색 상관없는 전체 수
+		$user_total_count = $this->basic_model->get_common_count($sql_from,$sql_where);
+
+		$arr = array(
+			'sql_select'     => $sql_select,
+			'sql_from'       => $sql_from,
+			'like_field'      => $like_field,
+			'like_match'      => $like_match,
+			'like_side'      => $like_side,
+			'sql_where'      => $sql_where, //array('PIDX' => $pidx),
+			'sql_group_by'   => $sql_group_by,
+			'sql_order_by'   => $sql_order_by,  // $order_field.' DESC, IDX DESC',
+			'page'      => $page,
+			'limit'      => $limit,
+			'offset'      => $offset,
+		);
+		//$result = $this->basic_model->arr_get_result($arr);
+		$list = $this->basic_lib->arr_user_list($arr);
+
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// pagination 설정
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$config['suffix']	   = $qstr; //$qstr;
+		$config['base_url']    = base_url() . 'admin/user/admlists/page/';
+		$config['per_page']    = $limit;
+		$config['total_rows']  = $list['total_count'];
+		$config['uri_segment'] = $seg->pos('page');  // 5
+
+		// 검색 목록 ADD
+		$btn_prev_part = $btn_next_part = '';
+		$config['full_tag_open']  = "<ul class='pagination'>".$btn_prev_part;
+		$config['full_tag_close'] = $btn_next_part.'</ul>';
+
+		//$CI =& get_instance();
+		//$CI->load->library('pagination', $config);
+		$this->load->library('pagination', $config);
+
+		// 엑셀 다운로드
+		//$btn_excel_download = '<a href="/admin/user/excel_download_admin/'.$level.'/'.$sfl.'/'.$stx.'" class="btn btn-dark btn-xs o_btn">엑셀 다운</a>';
+		$btn_excel_download = '<a href="/admin/user/excel_download_admin/'.$sfl.'/'.$stx.'" class="btn btn-dark btn-xs o_btn">엑셀 다운</a>';
+
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// Get data.
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$breadcrumb = array(
+			'회원'=>base_url().'admin/user/main',
+			'관리자 정보 관리'=>''
+		);
+
+		$data = array(
+			'sfl' => $sfl,
+			'stx' => $stx,
+			//'level' => $level,
+			'ofl' => $ofl,
+
+			'user_total_count' => $user_total_count,
+			'list'    => $list,
+			//'result'    => $result,
+			'page'      => $page,
+			'limit'      => $limit,
+			'paging'    => $this->pagination->create_links(),
+
+			'btn_excel_download'  => $btn_excel_download,
+
+			'arr_seg'   => $this->arr_seg, //$this->uri->segment_array(),
+			'breadcrumb'    => $breadcrumb,
+			'viewPage'  => 'admin/user_admlists_view'
+		);
+
+		$this->load->view('admin/layout_view', $data);
+	}
+
+
+
+
+
+
+	function admwrite($user_idx=FALSE)
+	//function admwrite($username=FALSE)
+	{
+
+
+		// 없는 회원인 경우, 등록 페이지로 back
+		if($user_idx  &&  ! $this->basic_model->get_common_count('users_admin',array('id'=>$user_idx))) {
+			alert('존재하지 않는 회원입니다.',BASEURL.'/admin/user/admwrite');
+		}
+		/*
+		if($username  &&  ! $this->basic_model->get_common_count('users_admin',array('username'=>$username))) {
+			alert('존재하지 않는 관리자입니다.',BASEURL.'/admin/user/admwrite');
+		}
+		*/
+
+		/** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		* [2017-02-17] 회원가입 에러 메시지 CSS */
+		$this->form_validation->set_error_delimiters('<div class="error_member_admin">','</div>');
+		$data['errors'] = array();
+
+
+		if( $this->input->post('submit') ) {
+
+			//print_r($this->input->post());
+			//exit;
+
+			// 신규회원 아이디
+				if(! $user_idx) {
+					//$use_username = $this->config->item('use_username', 'tank_auth');
+					$use_username = true;
+
+					if ($use_username) {
+						$this->form_validation->set_rules('username', '아이디', 'trim|required|xss_clean|min_length['.$this->config->item('username_min_length', 'tank_auth').']|max_length['.$this->config->item('username_max_length', 'tank_auth').']|alpha_dash|duplicate[duplicate_username]');
+						$this->form_validation->set_rules('duplicate_username', '아이디 중복 체크', '');
+					}
+
+					// 신규 가입시 비밀번호 등록 필수
+					$is_set_pw = TRUE;
+					$this->form_validation->set_rules('member_pw', '비밀번호', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
+					$this->form_validation->set_rules('member_pw_confirm', '비밀번호 확인', 'trim|required|xss_clean|matches[member_pw]');
+
+				}
+				else {
+					// 비밀번호 등록시에만 체크
+					$member_pw = $this->input->post('member_pw','');
+					$member_pw_confirm = $this->input->post('member_pw_confirm','');
+					$is_set_pw = FALSE;
+					if( '' !== $member_pw || '' !== $member_pw_confirm ) {
+					  $this->form_validation->set_rules('member_pw', '비밀번호', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
+					  $this->form_validation->set_rules('member_pw_confirm', '비밀번호 확인', 'trim|required|xss_clean|matches[member_pw]');
+					  $is_set_pw = TRUE;
+					}
+
+				}
+
+			// 공통
+				// 이름
+				$this->form_validation->set_rules('nickname', '이름', 'trim|required|xss_clean');
+
+				$this->form_validation->set_rules('user_banned', '차단 여부', '');
+				$this->form_validation->set_rules('ban_reason', '차단 사유', '');
+
+				// 이메일
+				$this->form_validation->set_rules('user_email', '이메일', 'trim|required|xss_clean|valid_email|duplicate[duplicate_email]');
+				$this->form_validation->set_rules('duplicate_email', '이메일 중복 체크', '');
+				//$this->form_validation->set_rules('duplicate_email', '이메일을', '');
+
+				/*
+				if( '' !== $this->input->post('user_email') ) {
+					$this->form_validation->set_rules('user_email', '이메일', 'trim|required|xss_clean|valid_email|duplicate[duplicate_email]');
+				}
+				*/
+
+				// 이메일 인증 사용 여부
+				//$email_activation = $this->config->item('email_activation', 'tank_auth');
+
+			if ($this->form_validation->run()) {	// validation ok
+
+				//print_r($this->input->post());
+				//exit;
+
+
+				// 신규회원 등록일 경우에만 아이디 등록
+				$username = (! $user_idx && $use_username) ? $this->form_validation->set_value('username') : '';
+				$email    = ($this->form_validation->set_value('user_email')) ? $this->form_validation->set_value('user_email') : '';
+				$password = ( $is_set_pw ) ? $this->form_validation->set_value('member_pw') : '';
+
+				if (!is_null($data = $this->tank_auth->write_manager($user_idx,$username,$email,$password))) {		// success
+					//$this->_show_message($this->lang->line('auth_message_registration_completed_1'));
+					if($user_idx) {
+
+						//$this->_show_message('관리자 정보가 수정되었습니다.');
+						//redirect(current_url());
+
+						//alert('관리자 정보가 수정되었습니다.',current_url());
+
+						sess_message('관리자 정보가 수정되었습니다.');
+						redirect(current_url());
+					}
+					else {
+
+						//$this->_show_message('신규 관리자 정보가 등록되었습니다.');
+						//redirect(current_url().'/'.$data['user_id']);
+
+						alert('신규 관리자 정보가 등록되었습니다.',current_url().'/'.$data['user_id']);
+					}
+				} else {
+					$errors = $this->tank_auth->get_error_message();
+					foreach ($errors as $k => $v)	$data['errors'][$k] = $this->lang->line($v);
+				}
+			}
+		}
+
+
+
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		// sql 
+		// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		$sql_select = 'users_admin.id as user_idx, users_admin.*';
+		$sql_from = 'users_admin';
+		$sql_where=array('users_admin.id'=>$user_idx);
+
+		$arr = array(
+			'sql_select'     => $sql_select,
+			'sql_from'       => $sql_from,
+			'sql_where'      => $sql_where, //array('PIDX' => $pidx),
+		);
+		$row = $this->basic_model->arr_get_row($arr);
+
+		// Get data.
+			$breadcrumb = array(
+				'회원'=>base_url().'admin/user/main',
+				'관리자 등록 및 수정'=>''
+			);
+
+			$data = array(
+				'user_idx'    => $user_idx,
+				'row'     => $row,
+
+				'arr_seg'   => $this->arr_seg, //$this->uri->segment_array(),
+				'breadcrumb'    => $breadcrumb,
+				'viewPage'  => 'admin/user_admwrite_view'
+			);
+
+			$this->load->view('admin/layout_view', $data);
+	}
+
+
+
+	function admdel($user_idx=FALSE)
+	{
+		// 회원 정보를 완전히 삭제
+		if($this->tank_auth->delete_manager_by_admin($user_idx,'관리자삭제')) {
+			//alert('회원 정보가 삭제되었습니다.','admin/user');
+			redirect(base_url().'admin/user/admlists');
+		}
+	}
+
+
+
+	// 이벤트 엑셀 변환
+	function excel_download_member($level='all',$sfl='',$stx='')
+	{
+
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			// 페이징 정보 
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			$this->load->library('querystring', NULL, 'param'); // 쿼리스트링 주소
+			$param	  =& $this->param;
+			
+			// [sql] where option 
+			$sql_where_option = array('deleted'=>NULL);
+
+			// [페이징]
+			$qstr = '';
+
+			// 검색
+			if($sfl = $param->get('sfl',FALSE)) { // search field
+				$qstr .= ('' == $qstr) ? '?' : '&';
+				$qstr .= 'sfl='.$sfl;
+			}
+			if($stx = $param->get('stx',FALSE)) { // search text
+				// 휴대전화 검색인 경우
+				if(isset($sfl) && 'phone' == $sfl) {
+					$stx = trim(str_replace('-','',$stx));
+				}
+				$qstr .= ('' == $qstr) ? '?' : '&';
+				$qstr .= 'stx='.$stx;
+			}
+			if($level = $param->get('level','all')) {
+				$qstr .= ('' == $qstr) ? '?' : '&';
+				$qstr .= 'level='.$level;
+				if(isset($level) && '' != $level && 'all' != $level) {
+					$sql_where_option['level'] = $level;
+				}
+			}
+			// 정렬
+			if($ofl = $param->get('ofl','created DESC')) { // order_field
+				$qstr .= ('' == $qstr) ? '?' : '&';
+				$qstr .= 'ofl='.$ofl;
+			}
+
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			// sql 
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			$sql_select = 'users.id as user_idx, users.*, upro.*';
+			$sql_from = 'users';
+			$like_field = $sfl;                         // search
+			$like_match = $stx;
+			$like_side = 'both';
+			$sql_where = $sql_where_option;            // where, group, order
+			$sql_group_by = FALSE;
+			$sql_order_by = $ofl;
+			// 조인
+			$sql_join_tbl = 'user_profiles as upro';
+			$sql_join_on = 'users.id = upro.user_id';
+			$sql_join_option = 'LEFT OUTER';
+
+			// 검색 상관없는 전체 수
+			$user_total_count = $this->basic_model->get_common_count($sql_from,$sql_where);
+
+			$arr = array(
+					'sql_select'     => $sql_select,
+					'sql_from'       => $sql_from,
+					'sql_join_tbl'       => $sql_join_tbl,
+					'sql_join_on'        => $sql_join_on,
+					'sql_join_option'    => $sql_join_option,
+					'like_field'      => $like_field,
+					'like_match'      => $like_match,
+					'like_side'      => $like_side,
+					'sql_where'      => $sql_where, //array('PIDX' => $pidx),
+					'sql_group_by'   => $sql_group_by,
+					'sql_order_by'   => $sql_order_by,  // $order_field.' DESC, IDX DESC',
+			);
+			$result = $this->basic_model->arr_get_result($arr);
+
+
+
+
+
+
+			//load our new PHPExcel library
+			$this->load->library('excel');
+			//activate worksheet number 1
+			$this->excel->setActiveSheetIndex(0);
+			//name the worksheet
+			$this->excel->getActiveSheet()->setTitle('회원 목록 다운로드');
+
+			//set cell A1 content with some text
+			$this->excel->getActiveSheet()->setCellValue('A1', '번호');
+			$this->excel->getActiveSheet()->setCellValue('B1', '그룹');
+			$this->excel->getActiveSheet()->setCellValue('C1', '아이디');
+			$this->excel->getActiveSheet()->setCellValue('D1', '성명');
+			$this->excel->getActiveSheet()->setCellValue('E1', '이메일');
+			$this->excel->getActiveSheet()->setCellValue('F1', '연락처');
+			$this->excel->getActiveSheet()->setCellValue('G1', '가입일자');
+
+			//change the font size
+			//$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+			$this->excel->getActiveSheet()->getStyle('A1:G1')->getFont()->setSize(10);
+
+			//make the font become bold
+			//$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+			$this->excel->getActiveSheet()->getStyle('A1:G1')->getFont()->setBold(true);
+
+			$this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(15);
+			$this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(30);
+			$this->excel->getActiveSheet()->getColumnDimension('D')->setWidth(15);
+			$this->excel->getActiveSheet()->getColumnDimension('E')->setWidth(30);
+			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(15);
+			$this->excel->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+
+			//merge cell A1 until D1
+			//$this->excel->getActiveSheet()->mergeCells('A1:D1');
+
+			//set aligment to center for that merged cell (A1 to D1)
+			//$this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			//$this->excel->getActiveSheet()->getStyle('A1:H1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			$this->excel->getActiveSheet()->getStyle('A1:G1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+			//set cell others content with some text
+			/*
+			for($i=2;$i<10;$i++) {
+				$this->excel->getActiveSheet()->setCellValue('A'.$i, '이름');
+				$this->excel->getActiveSheet()->setCellValue('B'.$i, '연락처');
+				$this->excel->getActiveSheet()->setCellValue('C'.$i, '이메일');
+				$this->excel->getActiveSheet()->setCellValue('D'.$i, '신청일');
+				$this->excel->getActiveSheet()->setCellValue('E'.$i, '비고');
+			}
+			*/
+
+
+			//set cell others content with some text
+			foreach($result['qry'] as $i => $o)
+			{
+
+				// 번호
+				//$num = ($result['total_count'] - $limit*($page-1) - $i);
+				$num = $i + 1;
+
+				$ino = $i + 2;
+
+				$group_str = '';
+				if('10' == $o->level) { $group_str = '일반회원'; }
+				elseif('20' == $o->level) { $group_str = 'NPO회원'; }
+				
+				$this->excel->getActiveSheet()->setCellValue('A'.$ino, $num);
+				$this->excel->getActiveSheet()->setCellValue('B'.$ino, $group_str);
+				$this->excel->getActiveSheet()->setCellValue('C'.$ino, $o->username);
+				$this->excel->getActiveSheet()->setCellValue('D'.$ino, $o->nickname);
+				$this->excel->getActiveSheet()->setCellValue('E'.$ino, $o->email);
+				$this->excel->getActiveSheet()->setCellValue('F'.$ino, $o->phone);
+				$this->excel->getActiveSheet()->setCellValue('G'.$ino, $o->created);
+
+			}
+
+
+
+			//$filename='just_some_random_name.xls'; //save our workbook as this file name
+			$filename='member_list_'.date('Ymd', TIME_STAMP).'.xls'; //save our workbook as this file name
+
+			header('Content-Type: application/vnd.ms-excel'); //mime type
+			header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
+			header('Cache-Control: max-age=0'); //no cache
+			//
+			//save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
+			//if you want to save it as .XLSX Excel 2007 format
+			$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+			//force user to download the Excel file without writing it to server's HD
+			$objWriter->save('php://output');
+
+
+	}
+
+
+	// 이벤트 엑셀 변환
+	function excel_download_admin($sfl='',$stx='')
+	{
+
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			// 페이징 정보 
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			$this->load->library('querystring', NULL, 'param'); // 쿼리스트링 주소
+			$param	  =& $this->param;
+			
+			// [sql] where option 
+			$sql_where_option = array('deleted'=>NULL, 'username !='=>'sadmin');
+
+			// [페이징]
+			$qstr = '';
+
+			// 검색
+			if($sfl = $param->get('sfl',FALSE)) { // search field
+				$qstr .= ('' == $qstr) ? '?' : '&';
+				$qstr .= 'sfl='.$sfl;
+			}
+			if($stx = $param->get('stx',FALSE)) { // search text
+				// 휴대전화 검색인 경우
+				if(isset($sfl) && 'phone' == $sfl) {
+					$stx = trim(str_replace('-','',$stx));
+				}
+				$qstr .= ('' == $qstr) ? '?' : '&';
+				$qstr .= 'stx='.$stx;
+			}
+			/*
+			if($level = $param->get('level','all')) {
+				$qstr .= ('' == $qstr) ? '?' : '&';
+				$qstr .= 'level='.$level;
+				if(isset($level) && '' != $level && 'all' != $level) {
+					$sql_where_option['level'] = $level;
+				}
+			}
+			*/
+			// 정렬
+			if($ofl = $param->get('ofl','created DESC')) { // order_field
+				$qstr .= ('' == $qstr) ? '?' : '&';
+				$qstr .= 'ofl='.$ofl;
+			}
+
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			// sql 
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			$sql_select = 'users_admin.id as user_idx,users_admin.*';
+			$sql_from = 'users_admin';
+			$like_field = $sfl;                         // search
+			$like_match = $stx;
+			$like_side = 'both';
+			$sql_where = $sql_where_option;            // where, group, order
+			$sql_group_by = FALSE;
+			$sql_order_by = $ofl;
+			// 페이징
+			/*
+			$limit = '20';
+			$page  = $seg->get('page', 1); // 페이지
+			if(! isset($page) OR empty($page)) {
+				$page = '1';
+			}
+			$offset = ($page - 1) * $limit;
+			*/
+
+			// 검색 상관없는 전체 수
+			$user_total_count = $this->basic_model->get_common_count($sql_from,$sql_where);
+
+			$arr = array(
+					'sql_select'     => $sql_select,
+					'sql_from'       => $sql_from,
+					'like_field'      => $like_field,
+					'like_match'      => $like_match,
+					'like_side'      => $like_side,
+					'sql_where'      => $sql_where, //array('PIDX' => $pidx),
+					'sql_group_by'   => $sql_group_by,
+					'sql_order_by'   => $sql_order_by,  // $order_field.' DESC, IDX DESC',
+					/*
+					'page'      => $page,
+					'limit'      => $limit,
+					'offset'      => $offset,
+					*/
+			);
+			$result = $this->basic_model->arr_get_result($arr);
+
+
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			// excel 
+			// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+			//load our new PHPExcel library
+			$this->load->library('excel');
+			//activate worksheet number 1
+			$this->excel->setActiveSheetIndex(0);
+			//name the worksheet
+			$this->excel->getActiveSheet()->setTitle('회원 목록 다운로드');
+
+			//set cell A1 content with some text
+			$this->excel->getActiveSheet()->setCellValue('A1', '번호');
+			$this->excel->getActiveSheet()->setCellValue('B1', '아이디');
+			$this->excel->getActiveSheet()->setCellValue('C1', '이름');
+			$this->excel->getActiveSheet()->setCellValue('D1', '이메일');
+			$this->excel->getActiveSheet()->setCellValue('E1', '가입일자');
+			$this->excel->getActiveSheet()->setCellValue('F1', '최종로그인');
+
+			//change the font size
+			//$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
+			$this->excel->getActiveSheet()->getStyle('A1:F1')->getFont()->setSize(10);
+
+			//make the font become bold
+			//$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
+			$this->excel->getActiveSheet()->getStyle('A1:F1')->getFont()->setBold(true);
+
+			$this->excel->getActiveSheet()->getColumnDimension('B')->setWidth(15);
+			$this->excel->getActiveSheet()->getColumnDimension('C')->setWidth(15);
+			$this->excel->getActiveSheet()->getColumnDimension('D')->setWidth(30);
+			$this->excel->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+			$this->excel->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+
+			//merge cell A1 until D1
+			//$this->excel->getActiveSheet()->mergeCells('A1:D1');
+
+			//set aligment to center for that merged cell (A1 to D1)
+			//$this->excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			//$this->excel->getActiveSheet()->getStyle('A1:H1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+			$this->excel->getActiveSheet()->getStyle('A1:F1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+			//set cell others content with some text
+			/*
+			for($i=2;$i<10;$i++) {
+				$this->excel->getActiveSheet()->setCellValue('A'.$i, '번호');
+				$this->excel->getActiveSheet()->setCellValue('B'.$i, '아이디');
+				$this->excel->getActiveSheet()->setCellValue('C'.$i, '이름');
+				$this->excel->getActiveSheet()->setCellValue('D'.$i, '이메일');
+				$this->excel->getActiveSheet()->setCellValue('E'.$i, '가입일자');
+				$this->excel->getActiveSheet()->setCellValue('F'.$i, '최종로그인');
+			}
+			*/
+
+
+			//set cell others content with some text
+			foreach($result['qry'] as $i => $o)
+			{
+
+				// 번호
+				//$num = ($result['total_count'] - $limit*($page-1) - $i);
+				$num = $i + 1;
+
+				$ino = $i + 2;
+
+				/*
+				$group_str = '';
+				if('10' == $o->level) { $group_str = '일반회원'; }
+				elseif('20' == $o->level) { $group_str = 'NPO회원'; }
+				*/
+				
+				$this->excel->getActiveSheet()->setCellValue('A'.$ino, $num);
+				$this->excel->getActiveSheet()->setCellValue('B'.$ino, $o->username);
+				$this->excel->getActiveSheet()->setCellValue('C'.$ino, $o->nickname);
+				$this->excel->getActiveSheet()->setCellValue('D'.$ino, $o->email);
+				$this->excel->getActiveSheet()->setCellValue('E'.$ino, $o->created);
+				$this->excel->getActiveSheet()->setCellValue('F'.$ino, $o->last_login);
+
+			}
+
+
+
+
+
+
+
+			//$filename='just_some_random_name.xls'; //save our workbook as this file name
+			$filename='admin_list_'.date('Ymd', TIME_STAMP).'.xls'; //save our workbook as this file name
+
+			header('Content-Type: application/vnd.ms-excel'); //mime type
+			header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
+			header('Cache-Control: max-age=0'); //no cache
+			//
+			//save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
+			//if you want to save it as .XLSX Excel 2007 format
+			$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel5');
+			//force user to download the Excel file without writing it to server's HD
+			$objWriter->save('php://output');
+
+
+	}
+
+
+
+	// 관리자의 회원 승인 처리
+	function proc_activate() {
+		
+			// jquery ajax 에서 success 의 response 값을 못가져오길래 검색해보니,
+			// 요 아래 코드를 ajax 페이지에서 호출하는 페이지에 넣어주라고 함.
+			header("Content-type: text/html; charset=utf-8");
+
+			$uidx      = $this->input->post('uidx');
+			$uidx2     = $this->input->post('uidx2');
+
+			// 회원 정보 확인, 미인증 상태인 회원만 인증 상태로 변경
+			if($res = $this->tank_auth->update_user_activate($uidx,$uidx2)) {
+				echo $res['user_id']; 
+			}
+
+	}
+
+
+
+
+}

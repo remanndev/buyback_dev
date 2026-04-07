@@ -1,0 +1,274 @@
+<?php
+/* 아이디 */
+if ($use_username) {
+	$username = array(
+		'name'	=> 'username',
+		'id'	=> 'username',
+		'class'	=> 'form-control required_field '.( ''!=form_error('username') ? 'err_color_red' : '' ),
+		'value'	=> (form_error('username')) ? '' : set_value('username'),
+		'maxlength'	=> $this->config->item('username_max_length', 'tank_auth'),
+		'size'	=> 30,
+		'placeholder' => form_error('username') ? strip_tags(form_error('username')) : '아이디',
+		'required' => 'required',
+		'autocomplete' => 'off'
+	);
+}
+/* 이름 */
+if ($use_nickname) {
+	$nickname = array(
+		'name'	=> 'nickname',
+		'id'	=> 'nickname',
+		'class'	=> 'form-control required_field '.( ''!=form_error('nickname') ? 'err_color_red' : '' ),
+		'value'	=> form_error('nickname') ? '' : set_value('nickname'),
+		'maxlength'	=> $this->config->item('nickname_max_length', 'tank_auth'),
+		'style' => '',
+		'placeholder' => form_error('nickname') ? strip_tags(form_error('nickname')) : '이름',
+		'required' => 'required',
+		'autocomplete' => 'off'
+	);
+}
+// 상호/법인명
+$company = array(
+	'name'	=> 'company',
+	'id'	=> 'company',
+	'value'	=> form_error('company') ? '' : set_value('company'),
+	'maxlength'	=> 100,
+	'class'	=> 'form-control '.( ''!=form_error('company') ? 'err_color_red' : '' ),
+	'placeholder' => form_error('company') ? strip_tags(form_error('company')) : '상호/법인명',
+	//'required' => 'required',
+	'autocomplete' => 'off'
+);
+
+$email = array(
+	'name'	=> 'email',
+	'id'	=> 'email',
+	'class'	=> 'form-control required_field '.( ''!=form_error('email') ? 'err_color_red' : '' ),
+	'value'	=> (form_error('email')) ? '' : set_value('email'),
+	'maxlength'	=> 80,
+	'size'	=> 30,
+	'placeholder' => form_error('email') ? strip_tags(form_error('email')) : '이메일',
+	'required' => 'required',
+	'autocomplete' => 'off'
+);
+$password = array(
+	'name'	=> 'password',
+	'type'	=> 'password',
+	'id'	=> 'password',
+	'class'	=> 'form-control required_field '.( ''!=form_error('password') ? 'err_color_red' : '' ),
+	//'value' => set_value('password'),
+	'maxlength'	=> $this->config->item('password_max_length', 'tank_auth'),
+	'size'	=> 30,
+	'placeholder' => form_error('password') ? strip_tags(form_error('password')) : '비밀번호',
+	'required' => 'required',
+	'autocomplete' => 'no'
+);
+$confirm_password = array(
+	'name'	=> 'confirm_password',
+	'type'	=> 'password',
+	'id'	=> 'confirm_password',
+	'class'	=> 'form-control required_field '.( ''!=form_error('confirm_password') ? 'err_color_red' : '' ),
+	//'value' => set_value('confirm_password'),
+	'maxlength'	=> $this->config->item('password_max_length', 'tank_auth'),
+	'size'	=> 30,
+	'placeholder' => form_error('confirm_password') ? strip_tags(form_error('confirm_password')) : '비밀번호 재확인',
+	'required' => 'required',
+	'autocomplete' => 'no'
+);
+$captcha = array(
+	'name'	=> 'captcha',
+	'id'	=> 'captcha',
+	'maxlength'	=> 8,
+	'class'	=> 'form-control required_field '.( ''!=form_error('captcha') ? 'err_color_red' : '' ),
+	'placeholder' => form_error('captcha') ? strip_tags(form_error('captcha')) : '인증코드',
+	'required' => 'required',
+	'autocomplete' => 'off'
+);
+
+// 모바일에서는 해당 요소 삭제
+if(IS_MOBILE) {
+	if ($use_username) {
+		unset($username['required']);
+	}
+	if ($use_nickname) {
+		unset($nickname['required']);
+	}
+	unset($email['required']);
+	unset($password['required']);
+	unset($confirm_password['required']);
+	unset($captcha['required']);
+}
+
+// NPO 회원
+$user_type_npo = 'NPO회원';
+?>
+
+<style type="text/css">
+/*  .layout_content {background-color: #eeeeee;} */
+</style>
+
+
+<div class="auth_table">
+	<div class="auth_table_cell">
+		<div class="contents_wrap">
+
+			<h2 class="auth_subject">회원 가입</h2>
+
+			<?php echo form_open($this->uri->uri_string()); ?>
+			  <input type="hidden" name="group_fk" id="group_fk" value="<?php echo set_value('group_fk',10) ?>" />
+			  <fieldset>
+				<legend class="screen_out">회원가입 입력폼</legend>
+
+				<?php if ($use_username) { ?>
+				<div class="form-floating mb-3">
+				  <?php echo form_input($username); ?>
+				  <?php echo form_label('아이디', $username['id']); ?>
+				  <div class="err_color_red"><?php echo form_error($username['name']); ?><?php echo isset($errors[$username['name']])?$errors[$username['name']]:''; ?></div>
+				</div>
+				<?php } ?>
+
+				<?php if ($use_nickname) { ?>
+				<div class="form-floating mb-3">
+				  <?php echo form_input($nickname); ?>
+				  <?php echo form_label('이름 <span style="color:red;">*</span>', $nickname['id']); ?>
+				  <div class="err_color_red"><?php echo form_error($nickname['name']); ?><?php echo isset($errors[$nickname['name']])?$errors[$nickname['name']]:''; ?></div>
+				</div>
+				<?php } ?>
+
+				<div class="form-floating mb-3">
+				  <?php echo form_input($email); ?>
+				  <?php echo form_label('이메일 <span style="color:red;">*</span>', $email['id']); ?>
+				  <div class="err_color_red"><?php echo form_error($email['name']); ?><?php echo isset($errors[$email['name']])?$errors[$email['name']]:''; ?></div>
+				</div>
+
+				<div class="form-floating mb-3">
+				  <?php echo form_password($password); ?>
+				  <?php echo form_label('비밀번호 <span style="color:red;">*</span>', $password['id']); ?>
+				  <div class="err_color_red"><?php echo form_error($password['name']); ?><?php echo isset($errors[$password['name']])?$errors[$password['name']]:''; ?></div>
+				</div>
+
+				<div class="form-floating mb-3">
+				  <?php echo form_password($confirm_password); ?>
+				  <?php echo form_label('비밀번호 확인 <span style="color:red;">*</span>', $confirm_password['id']); ?>
+				  <div class="err_color_red"><?php echo form_error($confirm_password['name']); ?><?php echo isset($errors[$confirm_password['name']])?$errors[$confirm_password['name']]:''; ?></div>
+				</div>
+
+				<!-- <div id="fld_company"> -->
+				<div class="form-floating mb-3">
+				  <?php echo form_input($company); ?>
+				  <?php echo form_label('상호/법인명', $company['id']); ?>
+				  <div class="err_color_red"><?php echo form_error($company['name']); ?><?php echo isset($errors[$company['name']])?$errors[$company['name']]:''; ?></div>
+				</div>
+				<!-- </div> -->
+
+				<?php if ($captcha_registration) {
+					if ($use_recaptcha) { ?>
+				<div class="mb-3">
+					<table>
+					<tr>
+						<td colspan="2">
+							<div id="recaptcha_image"></div>
+						</td>
+						<td>
+							<a href="javascript:Recaptcha.reload()">Get another CAPTCHA</a>
+							<div class="recaptcha_only_if_image"><a href="javascript:Recaptcha.switch_type('audio')">Get an audio CAPTCHA</a></div>
+							<div class="recaptcha_only_if_audio"><a href="javascript:Recaptcha.switch_type('image')">Get an image CAPTCHA</a></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="recaptcha_only_if_image">Enter the words above</div>
+							<div class="recaptcha_only_if_audio">Enter the numbers you hear</div>
+						</td>
+						<td><input type="text" id="recaptcha_response_field" name="recaptcha_response_field" /></td>
+						<td style="color: red;"><?php echo form_error('recaptcha_response_field'); ?></td>
+						<?php echo $recaptcha_html; ?>
+					</tr>
+					</table>
+				</div>
+				<?php } else { ?>
+				<div class="mb-3">
+					<div class="form-floating">
+					  <?php echo form_input($captcha); ?>
+					  <?php echo form_label('인증코드 <span style="color:red;">*</span>', $captcha['id']); ?>
+					</div>
+					<div id="btn_renew_code" class="mt-1" title="클릭하시면 새로운 코드로 갱신됩니다.">
+						<span id="span_captcha_html"  class="<?php echo ((mt_rand(1,100) % 2) < 1) ? 'gray_scale' : '' ?>"><?php echo $captcha_html; ?></span>
+					</div>
+					<div class="err_color_red"><?php echo form_error($captcha['name']); ?><?php echo isset($errors[$captcha['name']])?$errors[$captcha['name']]:''; ?></div>
+				</div>
+				<?php }
+				} ?>
+
+
+				<div class="d-grid gap-2">
+				  <?php echo form_submit('register', '회원가입', ' class="btn btn-dark btn-lg" style="font-size:14px; padding:15px; border-radius:0px;"'); ?>
+				</div>
+
+				<div style="margin-top:15px;">
+					<div>
+						<span class="glyphicon glyphicon glyphicon-arrow-left" aria-hidden="true"></span> 
+						<?php echo anchor('/auth/login/', '로그인 페이지로 이동', 'style="font-size:14px;"'); ?>
+					</div>
+				</div>
+
+			  </fieldset>
+			<?php echo form_close(); ?>
+
+			<hr />
+
+			<script src="<?php echo JS_DIR ?>/sns_login.js"></script>
+			<!-- 카카오 계정으로 로그인 -->
+			<div class="mt-4 text-sm-center" style="display: none;">
+				<a href="#"><img src="<?php echo IMG_DIR ?>/common/kakao_login_large_wide.png" alt="카카오 로그인" class="kakaoLoginBtn" style="width: 100%; "></a>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+
+
+
+<script type="text/javascript">
+/*
+	$(document).ready(function(){
+		let fld_company = $('#fld_company').html();
+		//console.log(fld_company);
+		$('#fld_company').html('');
+		var grp_fk = $('#group_fk').val();
+		chg_grp_fk(grp_fk,fld_company);
+
+		$('.btn_grp').on('click',function() {
+			grp_fk = $(this).data('level');
+			chg_grp_fk(grp_fk,fld_company);
+
+			if(grp_fk == 10) {
+				$('#ttl_user_type').html('일반');
+			}
+			else if(grp_fk == 20) {
+				$('#ttl_user_type').html('NPO');
+			}
+		});
+	});
+
+	function chg_grp_fk(level,fld_company) {
+		$('#group_fk').val(level);
+		$('.btn_grp').removeClass('btn-dark').removeClass('btn-secondary');
+		if(level == '10') {
+			$('.btn_grp_2').addClass('btn-dark');
+			$('.btn_grp_3').addClass('btn-secondary');
+			//$('#fld_company').hide();
+			$('#fld_company').html('');
+			$('#nickname').attr('placeholder','이름');
+		}
+		else if(level == '20') {
+			$('.btn_grp_2').addClass('btn-secondary');
+			$('.btn_grp_3').addClass('btn-dark');
+			//$('#fld_company').show();
+			$('#fld_company').html(fld_company);
+			$('#nickname').attr('placeholder','담당자 이름');
+		}
+	}
+*/
+</script>

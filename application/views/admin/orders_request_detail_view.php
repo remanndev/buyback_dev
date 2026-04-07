@@ -1,0 +1,259 @@
+<?php
+/** - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ * 검색
+*/
+
+// [1] 검색필드
+	$sfl_select_options = array(
+		//'all'       => '통합검색',
+		//'pr_order_id'   => '주문번호',
+		'itm_name'  => '제품명',
+		'barcode'    => '바코드',
+		'sku'       => 'SKU',
+		'location'  => '위치',
+	);
+// [2] 검색어
+	$search_text = array(
+		'name'	=> 'stx',
+		'id'	=> 'stx_inven',
+		'value' => set_value('stx'),
+		'maxlength'	=> 20,
+		'class'	=> 'o_input',
+		'style' => 'width:60%; max-width:500px;'
+	);
+
+?>
+<style type="text/css">
+  .wrap_pr_detail {}
+  .pr_step1,.pr_step2,.pr_step3 {position:relative; display:inline-block; vertical-align:top;}
+  .pr_step1 {width:48.5%; margin-right:2.5%;}
+  .pr_step2 {width:48.5%; margin-right:0;}
+  .pr_step3 {width:100%; }
+
+</style>
+
+<div class="admin_wrap" style="max-width:100%;">
+
+	<h1>구매의뢰 상세</h1>
+
+	<div class="wrap_pr_detail">
+
+		<div class="pr_step1">
+
+
+			<ul class="nav nav-tabs">
+			  <li class="nav-item">
+				<a class="nav-link active" aria-current="page" href="#"><h6>1. 주문정보</h6></a>
+			  </li>
+			</ul>
+			<br />
+
+			<div class="tbl_basic">
+				<table class="table table-hover">
+				<thead>
+				<tr>
+				  <th>온라인 몰</th>
+				  <th>순번</th>
+				  <th>주문번호</th>
+				  <th>통화</th>
+				  <th>배송비</th>
+				  <th>총금액</th>
+				  <th style="width:90px;">구매일시</th>
+				</tr>
+				</thead>
+				<tbody>
+				  <td><?php echo $row->pr_mall ?></td>
+				  <td><?php echo $row->pr_order_num ?></td>
+				  <td><?php echo $row->pr_order_id ?></td>
+				  <td><?php echo $row->currency ?></td>
+				  <td><?php echo $row->pr_shipping ?></td>
+				  <td><?php echo $row->pr_total ?></td>
+				  <td><?php echo $row->pr_datetime ?></td>
+				</tbody>
+				</table>
+			</div>
+
+			<!-- <ul class="nav nav-tabs">
+			  <li class="nav-item">
+				<a class="nav-link active" aria-current="page" href="#"><h6>2. 주문상세</h6></a>
+			  </li>
+			</ul>
+			<br /> -->
+
+			<div class="tbl_basic">
+				<table class="table table-hover">
+				<thead>
+				<tr class='text-center'>
+				  <th class='text-center'>NO</th>
+				  <th>제품명</th>
+				  <th>단가</th>
+				  <th>수량</th>
+				  <th><strong style="color:red;">발주</strong></th>
+				  <th><strong style="color:red;">포장</strong></th>
+				  <th>관리</th>
+				</tr>
+				</thead>
+				<tbody>
+				<?php
+				foreach($result['qry'] as $i => $o)
+				{
+					// 번호
+					$num = ($result['total_count'] - $i);
+				?>
+				<tr class="text-center">
+				  <td class="text-center"><?php echo $num ?></td>
+				  <td class="text-left"><span id="itm_name_<?php echo $i ?>"><?php echo $o->itm_name ?></span></td>
+				  <td><?php echo $o->unitprice ?></td>
+				  <td><?php echo $o->itm_qty ?></td>
+				  <td><strong style="color:red;">0</strong></td>
+				  <td><strong style="color:red;">0</strong></td>
+				  <td class="text-center">
+					<button type="button" class="btn btn-warning btn-xs btn_srh_itm" style="color:#fff;" data-itm_name="itm_name_<?php echo $i ?>">재고검색</button>
+					<button type="button" class="btn btn-success btn-xs">신규발주</button>
+				  </td>
+				</tr>
+
+				<?php
+				}
+				?>
+				<tbody>
+				</table>
+			</div>
+
+
+
+
+			<!-- <div style="margin-top:100px;"></div>
+			<ul class="nav nav-tabs">
+			  <li class="nav-item">
+				<a class="nav-link active" aria-current="page" href="#"><h6>3. 재고출고요청</h6></a>
+			  </li>
+			</ul>
+			<br />
+
+
+			<div style="margin-top:100px;"></div>
+			<ul class="nav nav-tabs">
+			  <li class="nav-item">
+				<a class="nav-link active" aria-current="page" href="#"><h6>4. 신규발주요청</h6></a>
+			  </li>
+			</ul>
+			<br /> -->
+
+
+
+
+		</div>
+
+
+		<div class="pr_step2">
+
+
+			<ul class="nav nav-tabs">
+			  <li class="nav-item">
+				<!-- <a class="nav-link active" aria-current="page" href="#" style="background-color:#ffc107;"><h6>출고요청</h6></a> -->
+				<a class="nav-link active" aria-current="page" href="#"><h6 style="color:#ffc107; font-weight:bold;">2-1. 재고검색</h6></a>
+			  </li>
+			  <li class="nav-item">
+				<a class="nav-link" href="#"><h6 style="color:#198754;">2-2. 신규발주</h6></a>
+			  </li>
+			</ul>
+			<br />
+
+
+			<div>
+
+				<?php 
+				//echo form_open($this->uri->uri_string(), array('id'=>'search_form','name'=>'search_form','method'=>'get', 'onsubmit'=>'return false;'));
+				?>
+					<!-- <h6>재고 검색</h6> -->
+
+					<div class="panel panel-default-flat">
+					  <div class="panel-heading">
+						<div>
+							<?php echo form_dropdown('sfl', $sfl_select_options, '', 'id="sfl_inven" class="o_selectbox"'); ?>
+							<?php echo form_input($search_text); ?>
+							<button type="button" id="search_inven" class="btn btn-dark btn-xs">재고 검색</button>
+						</div>
+					  </div>
+					</div>
+
+				<?php
+				//echo form_close();
+				?>
+
+				<div id="result_search_inven">
+
+				</div>
+
+			</div>
+
+
+		</div>
+
+
+		<div class="pr_step3">
+
+		</div>
+
+-
+
+
+</div>
+
+
+<script type="text/javascript">
+
+	/* - - - - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - - 
+	 * 재고 검색
+	 * - - - - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - -  - - - */
+	$(document).ready(function(){
+
+		$('#search_inven').on('click',function() {
+			var sfl = $('#sfl_inven').val();
+			var stx = $('#stx_inven').val();
+
+			search_inven(sfl,stx);
+		});
+
+		// 재고 검색 버튼 클릭시 제품명 자동 입력
+		$('.btn_srh_itm').on('click',function() {
+			var itm_name_id = $(this).data('itm_name');
+			var itm_name = $('#'+itm_name_id).html();
+			$('#stx_inven').val(itm_name);
+
+
+		});
+
+
+
+		function search_inven(sfl,stx) {
+
+			//console.log(cate_name+'/'+cate_depth+'/'+pcate1+'/'+pcate2+'/'+pcate3); 
+			if('' != sfl && '' != stx) {
+
+				var request = $.ajax({
+				  url: "/trans/search_inven_pr",
+				  method: "POST",
+				  data: { 'sfl':sfl,'stx':stx},
+				  dataType: "html"
+				});
+
+				request.done(function( res ) {
+					//console.log(res);
+					$('#result_search_inven').html(res);
+				});
+
+				request.fail(function( jqXHR, textStatus ) {
+				  alert( "Request failed: " + textStatus );
+				  return false;
+				});
+
+			}
+
+		}
+
+
+
+	});
+</script>

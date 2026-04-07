@@ -1,0 +1,147 @@
+<style>
+.main_campaign_item {
+    position: relative;
+    overflow: hidden;
+}
+.item_tile {
+    width: 100%;
+    position: absolute;
+    padding-left: 6%;
+    padding-right: 6%;
+    padding-bottom: 6%;
+    padding-top: 10%;
+    margin-bottom: -2em;
+    bottom: 0;
+    background: -webkit-gradient(linear,left top,left bottom,color-stop(0,rgba(41,53,65,0)),color-stop(50%,rgba(41,53,65,.8)),color-stop(100%,#293541));
+    background: -webkit-linear-gradient(top,rgba(41,53,65,0) 0,rgba(41,53,65,.8) 50%,#293541 100%);
+    background: linear-gradient(to bottom,rgba(41,53,65,0) 0,rgba(41,53,65,.8) 50%,#293541 100%);
+    background-position-y: -1px;
+    bottom: -1px;
+    transition: padding-bottom .25s ease-in-out;
+}
+
+</style>
+<div style="width:100%;">
+	<div class="row" style="margin:0;">
+
+		<div class="col-12 col-lg-6" style="padding:0 2px 2px 0 ; ">
+
+			<div class="main_campaign_item">
+				<a href="/campaign/detail/<?php echo $cmp_first->code ?>" class="">
+					<div class="item_img_wrap"><img class="img-cover" src="<?php echo $cmp_first->campaign_main_src ?>" /></div>
+				</a>
+				<a href="/campaign/detail/<?php echo $cmp_first->code ?>" class="color">
+				  <div class="item_content item_tile">
+
+					<div class="item_planner pb-1" style="font-size:14px;">
+						<span><?php echo $cmp_first->cmp_org_name ?></span>
+					</div>
+					<div class="item_ctnt_title ellipsis" style="font-size:18px; font-weight:bold;">
+						<span><?php echo $cmp_first->cmp_title ?></span>
+					</div>
+					
+					<!-- <div class="item_process_bar" aria-label="모금률" title="목표수량 대비 기부율"><span class="item_process_bar_collection" style="width: <?php echo $cmp_first->left_date_per ?>%;"></span></div>
+					<span class="item_percent" title="목표수량 대비 기부율"><?php echo $cmp_first->left_date_str ?></span>
+					<div class="item_money"><?php echo $cmp_first->donation_value; ?><span class="item_text">원</span></div> -->
+					<div style="width:100%; height: 30px;"></div>
+				  </div>
+				</a>
+			</div>
+
+		</div>
+		<div class="col-12 col-lg-6" style="padding:0;">
+
+
+		  <div class="row" style="margin:0;">
+		  <?php foreach($cmp_others as $kcnt => $cmp) { ?>
+			<div class="col-6" style="padding:0 2px 2px 0;">
+				<div class="main_campaign_item">
+					<a href="/campaign/detail/<?php echo $cmp->code ?>" class="">
+						<div class="item_img_wrap"><img class="img-cover" src="<?php echo $cmp->campaign_main_src ?>" /></div>
+					</a>
+					<a href="/campaign/detail/<?php echo $cmp_first->code ?>" class="color">
+					  <div class="item_content item_tile">
+						<div class="item_planner pb-1" style="font-size:14px;">
+							<span><?php echo $cmp_first->cmp_org_name ?></span>
+						</div>
+						<div class="item_ctnt_title ellipsis" style="font-size:18px; font-weight:bold;">
+							<span><?php echo $cmp_first->cmp_title ?></span>
+						</div>
+					  <div style="width:100%; height: 30px;"></div>
+					  </div>
+					</a>
+				</div>
+			</div>
+		  <?php } ?>
+		  </div>
+
+		</div>
+	</div>
+</div>
+
+
+
+<!-- 기부캠페인 최신 -->
+<div class="contents_wrap py-4 text-center font_nunitosans" style="background-color:#f7f7f7;">
+	<p class="my-4 py-4" style="font-size:18px; line-height:32px;">
+		<strong>REPLUS</strong>는 도움이 필요한 비영리 단체에 전국의 기부자 및 기업의 지원을 이어드립니다. <br class="d-none d-md-block" />
+		앞으로도 스마트 기기를 지원받아 나눔으로써 정보의 불균형을 해소할 수 있도록 돕겠습니다. <br class="d-none d-md-block" />
+	</p>
+</div>
+
+
+<style>
+#donate_counter {color:#ffffff;}
+#donate_counter .donate_year { color:#f7c084;}
+#donate_counter .device_cnt { font-size:40px; font-weight:600; font-family: 'Noto Sans KR', AppleSDGothicNeo-Regular,'맑은 고딕','Malgun Gothic',dotum,'돋움',sans-serif;}
+#donate_counter .device_type { padding-top:7px; font-family: 'Noto Sans KR', AppleSDGothicNeo-Regular,'맑은 고딕','Malgun Gothic',dotum,'돋움',sans-serif;}
+
+@media screen and (max-width: 991px) {
+	#donate_counter .device_cnt { font-size:28px; }
+	#donate_counter .device_type { font-size:15px; }
+}
+</style>
+<div id="donate_counter" class="py-3" style="width:100%; background-color:#407b9d;">
+	<div class="contents_wrap py-3 wrap_limit">
+		<div class="row text-center">
+			<!-- <div class="col-4 col-lg-2 py-4">
+				<div class="device_cnt donate_year"><?php echo (intVal(date('Y')) - 2021);?></div>
+				<div class="device_type donate_year">Years</div>
+			</div> -->
+			
+			<?php foreach($result_device['qry'] as $k => $o) { ?>
+			<div class="col-4 col-lg-2 py-4">
+				<div id="device_<?php echo $o->idx ?>" class="device_cnt device_amt" data-amt="<?php echo $o->device_amount ?>"><?php echo number_format($o->device_amount) ?></div>
+				<div class="device_type"><?php echo $o->device_name ?></div>
+			</div>
+			<?php } ?>
+
+		</div>
+	</div>
+</div>
+
+<div id="donate_map" class="py-4" style="width:100%; background-color:#fafafa;">
+	<div class="contents_wrap py-4 wrap_limit">
+		<div class="row">
+			<div class="col-7 col-md-6 px-3">
+				<div class="font_nunitosans" style="font-size:32px; font-weight:600;">REPLUS</div>
+				<div>
+					<div class="pt-2 pb-1">리플러스를 통해 더 나은 정보통신 환경을 기부하세요.</div>
+					<div class="py-1">나눔은 누군가의 꿈이 되어 더 나은 세상을 만들어 갑니다.</div>
+				</div>
+
+				<!-- <div class="pt-4 font_nunitosans" style="font-size:32px; font-weight:600;">plus</div>
+				<div>
+					<div class="pt-2 pb-1">나눔을 통해 </div>
+					<div class="py-1">나눔은 누군가의 꿈이 되어 더 나은 세상을 만들어 갑니다.</div>
+				</div> -->
+
+			</div>
+			<div class="col-5 col-md-6">
+				<div class="text-center"><img class="img-cover" src="<?php echo IMG_DIR ?>/replus/skorea_map.png" style="margin:0 auto; width:100%; max-width:240px;" /></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+

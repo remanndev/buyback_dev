@@ -1,0 +1,238 @@
+	<style>
+		.mobile_wrap {}
+
+		.mobile_wrap .bg_gray_circle {
+		  margin:15px auto;
+		  width: 115px;
+		  height: 115px;
+		  flex-grow: 0;
+		  padding: 30px 10px 49px;
+		  background-color: #f8f8f8;
+		  border-radius: 50%;
+		}
+		.mobile_wrap .circle_device {width:100%; margin:0 auto; text-align:center; font-size:16px; font-weight:bold;}
+		.mobile_wrap .circle_desc {width:100%; margin:0 auto; padding-top: 5px; text-align:center; font-size:10px;}
+	</style>
+
+	<!-- 캠페인 탑 비주얼 배너 영역 -->
+	<div class="bnr_wrap">
+		<div class="wrap_top_bnr">
+		  <?php foreach($top_bnr_mobile as $i => $bnr) { ?>
+			<div class="list_top_bnr" style="background-image:url('<?php echo $bnr->banner_src ?>'); ">
+				<div class="txt"><?php echo nl2br($bnr->bn_memo) ?></div>
+			</div>
+		  <?php } ?>
+		</div>
+	</div>
+	<script type="text/javascript">
+	$(document).ready(function(){
+	  $('.wrap_top_bnr').not('.slick-initialized').slick({
+		  slidesToShow: 1,
+		  slidesToScroll: 1,
+		  arrows: false,
+		  dots: false
+	  });
+	});
+	</script>
+
+
+
+	<!-- 나눔 캠페인이란? -->
+	<div class="ctnt_wrap">
+	  <div class="ctnt_inside">
+		<div class="subpage_wrap">
+
+			<div class="subpage_ttl">
+			  <h3 class="subpage_ttl_text">나눔 캠페인이란?</h3>
+			  <div class="subpage_ttl_line"></div>
+			</div>
+			<div class="subpage_desc">
+				기관/기업 등에서 기증 받은 중고 IT자산(데스크탑, 노트북, 테블릿 등)들을
+				재생하여 정보취약계층에게 무료로 
+				보급하는 캠페인입니다.
+			</div>
+
+			<div class="subpage_dl">
+			  <dl class="row">
+				<dt class="col-12 col-lg-2 pt-2">[신청대상]</dt>
+				<dd class="col-12 col-lg-10 pt-2">
+					<div class="mb-1" style="line-height:150%;">· 개인: 기초생활수급자, 소년소녀가정, 차상위계층, 장애인, 다문화가정, 한부모가정, 북한이탈주민, 국가유공자 등</div>
+					<div class="mb-1" style="line-height:150%;">· 단체: 사회복지시설 및 단체(장애인복지시설, 지역아동센터, 노인센터 등)</div>
+					<div class="mb-1" style="line-height:150%; font-size:15px; color:red;">*제외 대상: 지원 대상 자격을 증명할 수 없는 경우, 최근 N년 이내의 기수혜자(단체)</div>
+				</dd>
+			  </dl>
+			</div>
+
+			<div class="subpage_dl">
+			  <dl class="row">
+				<dt class="col-12 col-lg-2 pt-2">[나눔제품]</dt>
+				<dd class="col-12 col-lg-10 pt-2">
+					<div class="mb-1" style="line-height:150%;">협력기관인 ㈜리맨에서 기증받은 IT자산들을 재생(재제조)과정을 거쳐 제작된 리퍼비시(Refurbish) 제품으로 교육 및 사무용에 적합합니다.</div>
+				</dd>
+			  </dl>
+			</div>
+
+			<div class="subpage_dl">
+			  <dl class="row">
+				<dt class="col-12 col-lg-2 pt-2">[리퍼비시 제품]</dt>
+				<dd class="col-12 col-lg-10 pt-2">
+					<div class="mb-1" style="line-height:150%;">초기 불량품이나 환불된 개봉품을 신상품 수준으로 정비하여 다시 내놓은 제품</div>
+				</dd>
+			  </dl>
+			</div>
+
+			<div class="subpage_dl">
+			  <dl class="row">
+				<dt class="col-12 col-lg-2 pt-2">[나눔 제품 사양]</dt>
+				<dd class="col-12 col-lg-10 pt-2">
+					<div class="mb-1" style="line-height:150%; font-size:15px; color:red;">*아래 내용은 나눔 제품 사양 예시 입니다.</div>
+				</dd>
+			  </dl>
+			</div>
+
+
+			<div class="py-3 px-3">
+				<div class="row" style="width: 100%; margin:0; ">
+
+					  <div class="bg_gray_circle">
+						<div class="circle_device">CPU</div>
+						<div class="circle_desc">
+							(인텔) i3-5세대 이상<br />
+							(AMD) 라이젠1세대 이상
+						</div>
+					  </div>
+
+					  <div class="bg_gray_circle">
+						<div class="circle_device">SSD</div>
+						<div class="circle_desc">
+							120GB 이상
+						</div>
+					  </div>
+					  <div class="bg_gray_circle">
+						<div class="circle_device">RAM</div>
+						<div class="circle_desc">
+							4GB 이상
+						</div>
+					  </div>
+					  <div class="bg_gray_circle">
+						<div class="circle_device">모니터</div>
+						<div class="circle_desc">
+							21인치 이상
+						</div>
+					  </div>
+					  <div class="bg_gray_circle">
+						<div class="circle_device">OS</div>
+						<div class="circle_desc">
+							정품 window 10
+						</div>
+					  </div>
+					  <div class="bg_gray_circle">
+						<div class="circle_device">주변기기</div>
+						<div class="circle_desc">
+							신품 키보드, 마우스
+						</div>
+					  </div>
+					  <div class="bg_gray_circle">
+						<div class="circle_device">S/W</div>
+						<div class="circle_desc">
+							정품 MS Office
+						</div>
+					  </div>
+				</div>
+			</div>
+
+		</div>
+	  </div>
+	</div>
+
+
+	<!-- REPLUS 나눔 이야기 -->
+	<div class="py-1" style="background-color:#1d3b71;">
+		<div class="ctnt_wrap">
+		  <div class="ctnt_inside">
+			<div class="subpage_wrap">
+				
+				<div class="row">
+					<div class="col-12" style="color:#ffffff;">
+						<img src="<?php echo IMG_DIR ?>/replus/replus_title_white.png" style="height:35px;" /><br />
+						<div style="padding-top:15px; font-size: 40px; font-weight:bolder;">나눔 이야기</div>
+					</div>
+				</div>
+
+				<div style="width: 100%; overflow:hidden;">
+				  <div style="width: 140%; margin-top: 25px;">
+
+					<!-- 캠페인 탑 비주얼 배너 영역 -->
+					<div class="bnr_wrap">
+						<div class="cases_share_bnr_mob">
+						  <?php foreach($this->cases_share_bnr as $i => $bnr) { ?>
+							<div style="width:100%; padding:15px; ">
+							  <a href="<?php echo $bnr->bn_link ?>" target="_blank">
+								<div style="width:100%; border:1px solid #ffffff; background-color:#ffffff;">
+									<div style="height: 200px; background-image:url('<?php echo $bnr->banner_src ?>'); background-size:cover;"></div>
+									<div style="padding:25px 20px;">
+										<h3 class="ellipsis" style="font-size: 18px; font-weight:bold; color:#000000; "><?php echo $bnr->bn_memo_ttl ?></h3>
+										<div class="ellipsis4" style="margin-top:15px;"><?php echo nl2br($bnr->bn_memo) ?></div>
+									</div>
+								</div>
+							  </a>
+							</div>
+						  <?php } ?>
+						</div>
+					</div>
+					<script type="text/javascript">
+					$(document).ready(function(){
+					  $('.cases_share_bnr_mob').not('.slick-initialized').slick({
+						  infinite: true,
+						  slidesToShow: 2,
+						  slidesToScroll: 1,
+						  arrows: false,
+						  dots: false,
+					  });
+					});
+					</script>
+
+				  </div>
+				</div>
+
+			</div>
+		  </div>
+		</div>
+	</div>
+
+
+	<!-- 나눔 신청절차 -->
+	<div class="ctnt_wrap">
+	  <div class="ctnt_inside">
+		<div class="subpage_wrap">
+
+			<div class="subpage_ttl">
+			  <h3 class="subpage_ttl_text">나눔 신청절차</h3>
+			  <div class="subpage_ttl_line"></div>
+			</div>
+			<div class="subpage_desc">
+				<img src="<?php echo IMG_DIR ?>/replus/mob_share_process_1.png" style="width: 100%; max-width:1166px; margin:0 auto;" />
+			</div>
+
+		</div>
+	  </div>
+	</div>
+
+
+	<!-- 진행중인 나눔 캠페인 -->
+	<div class="ctnt_wrap">
+	  <div class="ctnt_inside">
+		<div class="subpage_wrap">
+
+			<div class="subpage_ttl">
+			  <h3 class="subpage_ttl_text">진행중인 나눔 캠페인</h3>
+			  <div class="subpage_ttl_line"></div>
+			</div>
+			<div class="subpage_desc">
+
+			</div>
+
+		</div>
+	  </div>
+	</div>
+

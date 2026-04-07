@@ -1,0 +1,457 @@
+
+<h1>기부자 정보</h1>
+
+<!-- 캠페인 좌측 컨텐츠 -->
+<div class="mypage_ctnt mb_50">
+
+	<div class="tbl_purple">
+		<table id="dsp_goods_table" style="width:100%;">
+			<colgroup>
+				<col width="140" />
+				<col />
+			</colgroup>
+			<tr>
+				<th>기부자 구분</th>
+				<td><?php echo $dn_row->donor_type_text; ?></td>
+			</tr>
+			<?php if('B' == $dn_row->donor_type_code) { ?>
+			<tr>
+				<th>상호명(법인명)</th>
+				<td><?php echo $dn_row->company; ?></td>
+			</tr>
+			<tr>
+				<th>담당자 부서</th>
+				<td><?php echo $dn_row->manager_dept; ?></td>
+			</tr>
+			<tr>
+				<th>담당자 직함</th>
+				<td><?php echo $dn_row->manager_title; ?></td>
+			</tr>
+			<?php } ?>
+			<tr>
+				<th><?php echo ('B' == $dn_row->donor_type_code) ? '담당자' : '이름'; ?></th>
+				<td><?php echo $dn_row->donor_name; ?>  <?php echo ($dn_row->user_idx > 0) ? '('.$dn_row->user_username.')' : '(비회원)'; ?></td>
+			</tr>
+			<tr>
+				<th>휴대전화</th>
+				<td><?php echo $dn_row->cellphone; ?></td>
+			</tr>
+			<tr>
+				<th>이메일</th>
+				<td><?php echo $dn_row->email; ?></td>
+			</tr>
+			<tr>
+				<th>방문주소</th>
+				<td><?php echo $dn_row->postcode; ?> <?php echo $dn_row->addr; ?> <?php echo $dn_row->addr_detail; ?></td>
+			</tr>
+		</table>
+	</div>
+
+
+
+</div>
+
+
+
+<h1 class="">기부 상세 정보</h1>
+
+<!-- 캠페인 좌측 컨텐츠 -->
+<div class="mypage_ctnt">
+
+	<dl class="mt_30">
+		<dt>1. 캠페인명</dt>
+		<dd class="mt_10 py_20 px_20" style="background-color:#f7f7fb;">
+			<?php echo $cmp_row->cmp_title; ?>
+		</dd>
+	</dl>
+
+	<dl class="mt_30">
+		<dt>2. 내 기부 물품 현재 상태</dt>
+		<dd class="mt_10 py_20 px_20" style="background-color:#f7f7fb;">
+			<h4 style="font-weight:bold;"><?php echo date('Y년 m월 d일') ?> [<?php echo $dn_row->state_good_proc ?>]</h4>
+		</dd>
+	</dl>
+
+	<dl class="mt_30">
+		<dt>
+			3. 기부 물품 수량
+			<span class="color_red ml_15">입력하시는 대로 바로 저장됩니다.</span>
+		</dt>
+		<dd>
+			<div class="tbl_purple mt_5">
+				<table id="dsp_goods_table" style="width:100%;">
+					<tr>
+						<th>종류</th>
+						<th>수량</th>
+						<th>제조사</th>
+						<th>모델명</th>
+						<th>구성부품</th>
+						<th>비고</th>
+					</tr>
+					<?php foreach($dngoods_list as $i => $o) { ?>
+					<tr>
+						<td class="text_center"><?php echo $o->gd_type; ?></td>
+						<td class="text_center"><input type="text" class="o_input save_dngood" id="gd_amt_<?php echo $o->idx ?>" value="<?php echo $o->gd_amt; ?>" data-idx="<?php echo $o->idx ?>" data-fld="gd_amt" /> <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_center"><input type="text" class="o_input save_dngood" id="gd_maker_<?php echo $o->idx ?>" value="<?php echo $o->gd_maker; ?>" data-idx="<?php echo $o->idx ?>" data-fld="gd_maker" /> <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_center"><input type="text" class="o_input save_dngood" id="gd_model_<?php echo $o->idx ?>" value="<?php echo $o->gd_model; ?>" data-idx="<?php echo $o->idx ?>" data-fld="gd_model" /> <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_center"><input type="text" class="o_input save_dngood" id="gd_part_<?php echo $o->idx ?>" value="<?php echo $o->gd_part; ?>" data-idx="<?php echo $o->idx ?>" data-fld="gd_part" /> <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_center"><input type="text" class="o_input save_dngood" id="gd_memo_<?php echo $o->idx ?>" value="<?php echo $o->gd_memo; ?>" data-idx="<?php echo $o->idx ?>" data-fld="gd_memo" /> <span class="save_msg_absolute">saved!!!</span></td>
+					</tr>
+					<?php } ?>
+				</table>
+			</div>
+		</dd>
+	</dl>
+
+	<dl class="mt_30">
+		<dt>4. 기부 물품 처리 상황 <span class="color_red ml_15">입력하시는 대로 바로 저장됩니다.</span></dt>
+		<dd>
+			<div class="tbl_purple mt_5">
+				<table id="dsp_goods_table" style="width:100%;">
+					<colgroup>
+						<col width="200">
+						<col width="200">
+						<col width="180">
+						<col>
+					</colgroup>
+					<tr>
+						<th>진행 상태</th>
+						<th>진행 일자</th>
+						<th>완료 여부</th>
+						<th>비고</th>
+					</tr>
+					<tr>
+						<td class="text_center">접수</td>
+						<td class="text_center">
+							<?php echo substr($dn_row->reg_datetime,0,10); ?>
+						</td>
+						<td><label for="dn_state_reg_<?php echo $dn_row->idx ?>"><input type="checkbox" class="o_input save_dn_chkbox" id="dn_state_reg_<?php echo $dn_row->idx ?>" value="1" data-idx="<?php echo $dn_row->idx ?>" data-fld="state_reg" <?php echo (1 == $dn_row->state_reg) ? 'checked' : ''; ?> /> 완료 <span class="save_msg">saved!!!</span></label> </td>
+						<td class="text_center"><input type="text" class="o_input save_dn" id="dn_memo_reg_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->memo_reg; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="memo_reg" style="width:100%;" /> <span class="save_msg_absolute">saved!!!</span></td>
+					</tr>
+					<tr>
+						<td class="text_center">수거</td>
+						<td class="text_center"><input type="text" class="o_input save_dn datepicker" id="dn_pickup_date_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->pickup_date; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="pickup_date" /> <span class="save_msg_absolute">saved!!!</span></td>
+						<td><label for="dn_state_pickup_<?php echo $dn_row->idx ?>"><input type="checkbox" class="o_input save_dn_chkbox" id="dn_state_pickup_<?php echo $dn_row->idx ?>" value="1" data-idx="<?php echo $dn_row->idx ?>" data-fld="state_pickup" <?php echo (1 == $dn_row->state_pickup) ? 'checked' : ''; ?> /> 완료 <span class="save_msg">saved!!!</span></label></td>
+						<td class="text_center"><input type="text" class="o_input save_dn" id="dn_memo_pickup_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->memo_pickup; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="memo_pickup" style="width:100%;" /> <span class="save_msg_absolute">saved!!!</span></td>
+					</tr>
+					<tr>
+						<td class="text_center">검수</td>
+						<td class="text_center"><input type="text" class="o_input save_dn datepicker" id="dn_check_date_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->check_date; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="check_date" /> <span class="save_msg_absolute">saved!!!</span></td>
+						<td><label for="dn_state_check_<?php echo $dn_row->idx ?>"><input type="checkbox" class="o_input save_dn_chkbox" id="dn_state_check_<?php echo $dn_row->idx ?>" value="1" data-idx="<?php echo $dn_row->idx ?>" data-fld="state_check" <?php echo (1 == $dn_row->state_check) ? 'checked' : ''; ?> /> 완료 <span class="save_msg">saved!!!</span></label></td>
+						<td class="text_center"><input type="text" class="o_input save_dn" id="dn_memo_check_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->memo_check; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="memo_check" style="width:100%;" /> <span class="save_msg_absolute">saved!!!</span></td>
+					</tr>
+					<tr>
+						<td class="text_center">재생</td>
+						<td class="text_center"><input type="text" class="o_input save_dn datepicker" id="dn_recycle_date_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->recycle_date; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="recycle_date" /> <span class="save_msg_absolute">saved!!!</span></td>
+						<td><label for="dn_state_recycle_<?php echo $dn_row->idx ?>"><input type="checkbox" class="o_input save_dn_chkbox" id="dn_state_recycle_<?php echo $dn_row->idx ?>" value="1" data-idx="<?php echo $dn_row->idx ?>" data-fld="state_recycle" <?php echo (1 == $dn_row->state_recycle) ? 'checked' : ''; ?> /> 완료 <span class="save_msg">saved!!!</span></label></td>
+						<td class="text_center"><input type="text" class="o_input save_dn" id="dn_memo_recycle_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->memo_recycle; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="memo_recycle" style="width:100%;" /> <span class="save_msg_absolute">saved!!!</span></td>
+					</tr>
+					<tr>
+						<td class="text_center">나눔</td>
+						<td class="text_center"><input type="text" class="o_input save_dn datepicker" id="dn_handout_date_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->handout_date; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="handout_date" /> <span class="save_msg_absolute">saved!!!</span></td>
+						<td><label for="dn_state_handout_<?php echo $dn_row->idx ?>"><input type="checkbox" class="o_input save_dn_chkbox" id="dn_state_handout_<?php echo $dn_row->idx ?>" value="1" data-idx="<?php echo $dn_row->idx ?>" data-fld="state_handout" <?php echo (1 == $dn_row->state_handout) ? 'checked' : ''; ?> /> 완료 <span class="save_msg">saved!!!</span></label></td>
+						<td class="text_center"><input type="text" class="o_input save_dn" id="dn_memo_handout_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->memo_handout; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="memo_handout" style="width:100%;" /> <span class="save_msg_absolute">saved!!!</span></td>
+					</tr>
+					<tr>
+						<td class="text_center">나눔완료</td>
+						<td class="text_center"><input type="text" class="o_input save_dn datepicker" id="dn_handout_finish_date_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->handout_finish_date; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="handout_finish_date" /> <span class="save_msg_absolute">saved!!!</span></td>
+						<td><label for="dn_state_handout_finish_<?php echo $dn_row->idx ?>"><input type="checkbox" class="o_input save_dn_chkbox" id="dn_state_handout_finish_<?php echo $dn_row->idx ?>" value="1" data-idx="<?php echo $dn_row->idx ?>" data-fld="state_handout_finish" <?php echo (1 == $dn_row->state_handout_finish) ? 'checked' : ''; ?> /> 완료 <span class="save_msg">saved!!!</span></label></td>
+						<td class="text_center"><input type="text" class="o_input save_dn" id="dn_memo_handout_finish_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->memo_handout_finish; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="memo_handout_finish" style="width:100%;" /> <span class="save_msg_absolute">saved!!!</span></td>
+					</tr>
+				</table>
+			</div>
+		</dd>
+	</dl>
+
+	<dl class="mt_30">
+		<dt>5. 기부 물품 검수 현황</dt>
+		<dd class="mt_10 py_20 px_20" style="background-color:#f7f7fb;">	
+			<div>기부된 물품의 상세 검수 현황을 확인할 수 있습니다.</div>
+			<a href="<?php echo base_url() ?>admin/campaign/donate/report_check/<?php echo $cmp_row->code; ?>/<?php echo $dn_row->idx ?>/<?php echo $dn_row->user_idx ?>"><button type="button" class="o_btn btn btn-purple-line mt_10">상세 검수 현황</button></a>
+		</dd>
+	</dl>
+
+	<dl class="mt_30">
+		<dt>6. 기부 가치 평가 <span class="color_red ml_15">입력하시는 대로 바로 저장됩니다.</span> <span class="color_red_light ml_5">새로고침하시면 저장 상태를 확인하실 수 있습니다.</span></dt>
+		<dd class="mt_10 py_20 px_20" style="background-color:#f7f7fb;">
+			<div style="position:relative; display:inline-block; min-width: 500px;">* 당신의 기부는 총 <input type="text" class="o_input save_dn total_donation_value treat_comma" style="color:red; text-align:right;" id="donation_value" value="<?php echo number_format($dn_row->donation_value); ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="donation_value" />  <span class="save_msg_absolute">saved!!!</span> <span class="color_red">원</span>의 가치로 평가되었습니다. </div>
+			<div>* 검수결과 B등급 이상의 제품만 재생됩니다.</div>
+		</dd>
+		<dd>
+			<div class="tbl_purple mt_5">
+				<table id="dsp_goods_table" style="width:100%;">
+					<colgroup>
+						<col width="260" />
+						<col />
+						<col />
+						<col />
+						<col />
+						<col />
+					</colgroup>
+					<tr>
+						<th>기부명</th>
+						<th>검수평가</th>
+						<th>수량</th>
+						<th>평가금액</th>
+						<th>재생/재활용비용</th>
+						<th>기부가치</th>
+					</tr>
+					<tr>
+						<td rowspan="2" class=""><?php echo $cmp_row->cmp_title; ?></td>
+						<td class="text_center">재생 대상</td>
+						<td class="text_right"><input type="text" class="o_input save_dn" style="width:calc(100% - 20px);" id="dn_chk_recycle_amt_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->chk_recycle_amt; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="chk_recycle_amt" /> 대 <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_right"><input type="text" class="o_input save_dn treat_comma chk_recycle_money" style="width:calc(100% - 20px);" id="dn_chk_recycle_money_<?php echo $dn_row->idx ?>" value="<?php echo number_format($dn_row->chk_recycle_money); ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="chk_recycle_money" /> 원 <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_right"><input type="text" class="o_input save_dn treat_comma chk_recycle_cost" style="width:calc(100% - 20px);" id="dn_chk_recycle_cost_<?php echo $dn_row->idx ?>" value="<?php echo number_format($dn_row->chk_recycle_cost); ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="chk_recycle_cost" /> 원 <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_right"><input type="text" class="o_input save_dn treat_comma chk_recycle_worth" style="width:calc(100% - 20px);" id="dn_chk_recycle_worth_<?php echo $dn_row->idx ?>" value="<?php echo number_format($dn_row->chk_recycle_worth); ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="chk_recycle_worth" /> 원 <span class="save_msg_absolute">saved!!!</span></td>
+					</tr>
+					<tr>
+						<td class="text_center">재활용 대상</td>
+						<td class="text_right"><input type="text" class="o_input save_dn" style="width:calc(100% - 20px);" id="dn_chk_reuse_amt_<?php echo $dn_row->idx ?>" value="<?php echo $dn_row->chk_reuse_amt; ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="chk_reuse_amt" /> 대 <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_right"><input type="text" class="o_input save_dn treat_comma" style="width:calc(100% - 20px);" id="dn_chk_reuse_money_<?php echo $dn_row->idx ?>" value="<?php echo number_format($dn_row->chk_reuse_money); ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="chk_reuse_money" /> 원 <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_right"><input type="text" class="o_input save_dn treat_comma" style="width:calc(100% - 20px);" id="dn_chk_reuse_cost_<?php echo $dn_row->idx ?>" value="<?php echo number_format($dn_row->chk_reuse_cost); ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="chk_reuse_cost" /> 원 <span class="save_msg_absolute">saved!!!</span></td>
+						<td class="text_right"><input type="text" class="o_input save_dn treat_comma chk_reuse_worth" style="width:calc(100% - 20px);" id="dn_chk_reuse_worth_<?php echo $dn_row->idx ?>" value="<?php echo number_format($dn_row->chk_reuse_worth); ?>" data-idx="<?php echo $dn_row->idx ?>" data-fld="chk_reuse_worth" /> 원 <span class="save_msg_absolute">saved!!!</span></td>
+					</tr>
+				</table>
+			</div>
+		</dd>
+	</dl>
+
+	<dl class="mt_30">
+		<dt>7. 데이터 완전 삭제 현황</dt>
+		<dd class="mt_10 py_20 px_20" style="background-color:#f7f7fb;">
+			<div>데이터 삭제 리포트를 확인할 수 있습니다.</div>
+			<a href="<?php echo base_url() ?>admin/campaign/donate/report_del/<?php echo $cmp_row->code; ?>/<?php echo $dn_row->idx ?>/list"><button type="button" class="o_btn btn btn-purple-line mt_10">데이터 완전 삭제 리포트</button></a>
+		</dd>
+	</dl>
+
+	<dl class="mt_30">
+		<dt>8. 기부금 영수증 확인</dt>
+		<dd class="mt_10 py_20 px_20" style="background-color:#f7f7fb;">
+			<div>기부금 영수증 사본을 확인 할 수 있습니다.</div>
+			<a href="<?php echo base_url() ?>admin/campaign/donate/report_receipt/<?php echo $cmp_row->code; ?>/<?php echo $dn_row->idx ?>"><button type="button" class="o_btn btn btn-purple-line mt_10">기부금 영수증 보기</button></a>
+		</dd>
+	</dl>
+
+</div>
+
+<!-- <div class="mt_30" style="text-align:center;">
+	<button id="btn_save" class="btn btn-purple-flat px_50">저장</button>
+</div> -->
+
+
+<script type="text/javascript">
+	// datetimepicker
+	$.datetimepicker.setLocale('kr');
+	$('.datepicker').datetimepicker({
+		lang:'kr',
+		timepicker:false,
+		format:'Y-m-d',
+		scrollMonth : false 
+	});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	// focus on
+	$('.save_dngood').on('click keypress', function() {
+		$(this).css('color','red');
+	});
+	$('.save_dn').on('click keypress', function() {
+		$(this).css('color','red');
+	});
+	// focus off
+	$('.save_dngood').on('blur', function() {
+		$(this).css('color','#000000');
+	});
+	$('.save_dn').on('blur', function() {
+		$(this).css('color','#000000');
+	});
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	// 기부 물품 관련 정보 저장
+	$('.save_dngood').on('blur keyup', function() {
+
+		var obj = $(this);
+
+		// focus off
+		//$(this).css('color','#000000');
+
+		//var tbl = 'donation_goods';
+		var fld = $(this).data('fld');
+		var idx = $(this).data('idx');
+		var val = $(this).val();
+		if( $(this).hasClass('treat_comma') ) {
+			val = removeComma(val);
+		}
+		//console.log(idx +'/'+ fld +'/'+ val);
+		var request = $.ajax({
+		  url: "/admin/campaign/trans/dngood_update",
+		  method: "POST",
+		  data: { 'idx':idx,'fld':fld,'val':val },
+		  dataType: "html"
+		});
+		request.done(function( res ) {
+		  //console.log(res);
+		  obj.next().css('display', 'inline-block');;
+		  setTimeout(msgAutoHide, 1000, obj);
+		});
+		request.fail(function( jqXHR, textStatus ) {
+		  alert( "Request failed: " + textStatus );
+		  return false;
+		});
+	});
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	// 기부자 관련 정보 저장
+	$('.save_dn').on('blur keyup', function() {
+
+		var obj = $(this);
+
+		// focus off
+		//$(this).css('color','#000000');
+
+		//var tbl = 'donation';
+		var fld = $(this).data('fld');
+		var idx = $(this).data('idx');
+		var val = $(this).val();
+		if( $(this).hasClass('treat_comma') ) {
+			val = removeComma(val);
+		}
+		//console.log(idx +'/'+ fld +'/'+ val);
+		var request = $.ajax({
+		  url: "/admin/campaign/trans/dn_update",
+		  method: "POST",
+		  data: { 'idx':idx,'fld':fld,'val':val },
+		  dataType: "html"
+		});
+		request.done(function( res ) {
+		  //console.log(res);
+		  obj.next().css('display', 'inline-block');;
+		  setTimeout(msgAutoHide, 1000, obj);
+		});
+		request.fail(function( jqXHR, textStatus ) {
+		  alert( "Request failed: " + textStatus );
+		  return false;
+		});
+
+	});
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	// 기부가치 금액
+	/*
+	//$('.total_donation_value').on('propertychange change keyup paste input', function() {
+	$('.total_donation_value').change(function() {
+
+		//alert('11');
+
+		var obj = $(this);
+
+		// focus off
+		//$(this).css('color','#000000');
+
+		//var tbl = 'donation';
+		var fld = $(this).data('fld');
+		var idx = $(this).data('idx');
+		var val = $(this).val();
+		if( $(this).hasClass('treat_comma') ) {
+			val = removeComma(val);
+		}
+		//console.log(idx +'/'+ fld +'/'+ val);
+		var request = $.ajax({
+		  url: "/admin/campaign/trans/dn_update",
+		  method: "POST",
+		  data: { 'idx':idx,'fld':fld,'val':val },
+		  dataType: "html"
+		});
+		request.done(function( res ) {
+		  //console.log(res);
+		  obj.next().css('display', 'inline-block');;
+		  setTimeout(msgAutoHide, 1000, obj);
+		});
+		request.fail(function( jqXHR, textStatus ) {
+		  alert( "Request failed: " + textStatus );
+		  return false;
+		});
+
+	});
+	*/
+
+
+
+
+
+	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	// 기부자 물품 완료 처리
+	$('.save_dn_chkbox').on('click', function() {
+		var chked = $(this).is(":checked");
+		var chked_val = '0';
+		if( chked ) {
+			chked_val = '1';
+		}
+
+		var obj = $(this);
+
+		//var tbl = 'donation';
+		var fld = $(this).data('fld');
+		var idx = $(this).data('idx');
+		var val = chked_val;
+		if( $(this).hasClass('treat_comma') ) {
+			val = removeComma(val);
+		}
+		//console.log(idx +'/'+ fld +'/'+ val);
+		var request = $.ajax({
+		  url: "/admin/campaign/trans/dn_update",
+		  method: "POST",
+		  data: { 'idx':idx,'fld':fld,'val':val },
+		  dataType: "html"
+		});
+		request.done(function( res ) {
+		  //console.log(res);
+		  obj.next().css('display', 'inline-block');;
+		  setTimeout(msgAutoHide, 1000, obj);
+		});
+		request.fail(function( jqXHR, textStatus ) {
+		  alert( "Request failed: " + textStatus );
+		  return false;
+		});
+
+	});
+
+	// saved 완료 메시지 출력 후 사라짐
+	function msgAutoHide(obj) {
+	  obj.next().fadeOut();
+	}
+
+	
+
+
+
+	// 금액 콤마 처리
+	$('.treat_comma').on('keyup blur', function() {
+		str = addComma(removeComma($(this).val()));
+		$(this).val(str);
+	});
+
+
+	// 기부가치 합산 기부가치로 더해주기.
+	$('.chk_recycle_worth').on('blur', function() {
+		obj = $(this);
+		calc_donation_value(obj);
+	});
+	$('.chk_reuse_worth').on('blur', function() {
+		obj = $(this);
+		calc_donation_value(obj);
+	});
+
+	function calc_donation_value(obj) {
+		var dn_val = addComma( Number(removeComma($('.chk_recycle_worth').val())) + Number(removeComma($('.chk_reuse_worth').val())) );
+		$('#donation_value').val(dn_val);
+		$('#donation_value').focus();
+		$('#donation_value').blur();
+	}
+
+});
+</script>

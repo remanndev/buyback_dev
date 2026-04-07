@@ -1,0 +1,527 @@
+<?php
+// [1] 카테고리메뉴
+/*
+$ca_code_options = array();
+if('' !== trim($bbs_cf->bo_category)) {
+	$arr_bbs_menu = explode(',',$bbs_cf->bo_category);
+	foreach($arr_bbs_menu as $i=>$menu) {
+		$ca_code_options[$menu] = $menu;
+	}
+}
+*/
+
+$selected_ca_code =  isset($cate_menu) ? $cate_menu : (isset($row->ca_code) ? $row->ca_code : set_value('ca_code'));
+$ca_code_options = array('' => '전체');
+if('' !== trim($bbs_cf->bo_category)) {
+	$arr_bbs_menu = explode(',',$bbs_cf->bo_category);
+	foreach($arr_bbs_menu as $i=>$menu) {
+		$ca_code_options[$menu] = $menu;
+	}
+}
+$ca_code_selected =  isset($cate_menu) ? $cate_menu : (isset($row->ca_code) ? $row->ca_code : set_value('ca_code'));
+$ca_code_selected = ('' != $ca_code_selected) ? $ca_code_selected : '전체';
+
+//$ca_code_selected_val = ('' != $ca_code_selected || '전체' != $ca_code_selected ) ? $ca_code_selected : '';
+$ca_code_selected_val = ('' != $ca_code_selected && '전체' != $ca_code_selected ) ? $ca_code_selected : '';
+
+
+// [2] 정렬
+$ofl = $this->input->get('ofl',FALSE);
+$ordered_selected = ($ofl) ? $ofl : 'wr_idx DESC';
+//echo $ordered_selected.'<<<<';
+$order_select_options = array(
+				  'wr_datetime DESC'    => '등록일자 ↓',
+				  'wr_datetime ASC'     => '등록일자 ↑',
+                );
+
+$ordered_selected_txt = isset($order_select_options[$ordered_selected]) ? $order_select_options[$ordered_selected] : '정렬';
+$ordered_selected_val = $ordered_selected;
+
+//echo $this->arr_seg[1];
+?>
+
+<style type="text/css">
+	h3.o_content_ttl {position:relative; font-size:45px; font-weight:bold; text-align:center;}
+	h4.o_content_ttl {position:relative; font-size:34px; font-weight:bold; }
+
+	.border_none {border:none;}
+	.border_none:focus, .border_none:active {outline: none;}
+	.faq_srh_wrap input[type="text"] {font-size: 18px; color:#787878;}
+
+	/* 추천 검색어 */
+	.faq_hit {margin:30px 0 0 0; padding:0 30px; display:flex; font-size:18px; }
+	.faq_hit dt { margin-right:25px; color: #353535;}
+	.faq_hit dd { color:#787878;}
+	.faq_hit dd > a { padding: 0 7px; color:#787878;}
+	.faq_hit dd:first-child > a { padding-left:0;}
+	.faq_hit dd::after{
+	  content: "|";
+	  float: right;
+	  display: block;
+	}
+	.faq_hit dd:last-child::after{ content: ""; }
+	hr.faq_bottom_mobile {display:none; border:none; margin:0; padding:0; height:0;}
+	/*  모바일 */
+	@media screen and (max-width: 991px) {
+		.faq_hit {display: block;padding:0 30px 0 3px; }
+		.faq_hit dt { margin-right:10px;}
+		.faq_hit dt, .faq_hit dd {float: left;}
+		hr.faq_bottom_mobile {display:block; margin:0; padding:0; clear:both;}
+	}
+
+	/* 카테고리 nav pills */
+	.bo_cate_wrap ul.nav-pills .nav-link { color: #000000; font-size: 16px; }
+	.bo_cate_wrap ul.nav-pills .nav-link.active { color: #ffffff; background-color:#5b636a;}
+	.bo_cate_wrap ul.nav-pills li{position:relative; padding-left: 8px;}
+	.bo_cate_wrap ul.nav-pills li::before{
+	  content: "|";
+	  position:absolute;
+	  left:2px;
+	}
+	.bo_cate_wrap ul.nav-pills li:first-child {padding:0;}
+	.bo_cate_wrap ul.nav-pills li:first-child::before {content:"";}
+	/*  모바일 */
+	@media screen and (max-width: 991px) {
+		.bo_cate_wrap ul {display:block; width: 100%;}
+		.bo_cate_wrap ul li {display:inline-block; white-space:nowrap; }
+		.bo_cate_wrap ul.nav-pills li::before{
+		  left:0px;
+		}
+
+
+	}
+</style>
+
+<!-- 타이틀 -->
+<div class="ctnt_wrap pt_40 pb_15">
+	<div class="ctnt_inside">
+		<?php if( isset($this->arr_seg[1]) && $this->arr_seg[1] != 'admin' ) { ?>
+		<div>
+			<?php echo $bbs_cf->bo_head; ?>
+		</div>
+		<?php } ?>
+		<div class="contents_wrap">
+			<div class="bbs_basic">
+				<!-- 페이지 내용 -->
+				<section>
+					<h3 class="bo_title">
+						<strong><?php echo isset($bbs_cf->bo_title) ? $bbs_cf->bo_title : '게시판'; ?></strong>
+						<div class="d-none bo_count" style="font-size:14px; line-height:38px;">
+							(검색 <span style="color:red;"><?php echo $total_srh_cnt ?></span> 개 / 전체 <span style="color:red;"><?php echo $total_count_all ?></span> 개)
+						</div>
+					</h3>
+				</section>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- 검색 -->
+<div class="faq_srh_wrap " style="background-color:#f5f5f5; padding:35px 0 20px;">
+	<div class="ctnt_wrap">
+		<div class="ctnt_inside">
+		  <?php echo form_open($this->uri->uri_string(), array('id'=>'search_form','name'=>'search_form','method'=>'get')); ?>
+			<div class="" style="position:relative; width:100%;">
+				<input type="hidden" name="sfl" value="wr_subject" />
+				<input type="text" name="stx" value="<?php echo $stx ?>" class="roundbox_30 class_shadow_silver border_none" style="width: 100%; border:none; padding:20px 30px;" placeholder="검색어를 입력해 주세요." />
+				<button type="submit" style="border:none; position:absolute; top: 10px; right: 20px; margin:0; padding:0; "><img src="<?php echo IMG_DIR ?>/common/faq_srh_btn.png" style="width: 45px;" /></button>
+			</div>
+		  <?php echo form_close(); ?>
+		</div>
+		<div class="ctnt_inside">
+			<dl class="faq_hit">
+				<dt>추천 검색어</dt>
+				<dd><a href="?sfl=wr_subject&stx=물품수거">물품수거</a></dd>
+				<dd><a href="?sfl=wr_subject&stx=기부">기부</a></dd>
+				<dd><a href="?sfl=wr_subject&stx=재생">재생</a></dd>
+				<dd><a href="?sfl=wr_subject&stx=가치 산정">가치 산정</a></dd>
+				<dd><a href="?sfl=wr_subject&stx=기부금 영수증">기부금 영수증</a></dd>
+			</dl>
+		</div>
+		<hr class="faq_bottom_mobile" />
+	</div>
+</div>
+
+
+<div class="ctnt_wrap py_35">
+	<div class="ctnt_inside">
+		<div class="contents_wrap">
+			<div class="bbs_basic">
+
+				<!-- 페이지 내용 -->
+				<section>
+					<!-- <h3 class="bo_title d-none">
+						<strong><?php echo isset($bbs_cf->bo_title) ? $bbs_cf->bo_title : '게시판'; ?></strong>
+						<div class="d-none bo_count" style="font-size:14px; line-height:38px;">
+							(검색 <span style="color:red;"><?php echo $total_srh_cnt ?></span> 개 / 전체 <span style="color:red;"><?php echo $total_count_all ?></span> 개)
+						</div>
+					</h3> -->
+
+
+					<div class="bo_cate_wrap">
+					<?php echo form_open($this->uri->uri_string(), array('id'=>'search_form','name'=>'search_form','method'=>'get')); ?>
+						<div class="d-flex" style="position:relative; vertical-align:bottom; min-height:32px;">
+
+							<div class="" style="width:100%; font-size:14px; line-height:30px; vertical-align:baseline; padding-bottom:5px;">
+									<?php
+										if($bbs_cf->bo_use_category &&  trim($bbs_cf->bo_category) !== '' ) { 
+									?>
+										<ul class="nav nav-pills" id="pills-tab" role="tablist">
+										<?php foreach($ca_code_options as $menu_code => $menu_ttl) { ?>
+										  <li class="nav-item" role="presentation">
+											<button class="nav-link py-0 <?php echo ($selected_ca_code == $menu_code) ? 'active' : ''; ?>" style="display:inline-block; padding:0 5px; margin:0 1px;" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true" onclick="goto_cate('<?php echo $menu_code ?>');"><?php echo $menu_ttl ?></button>
+										  </li>
+										<?php } ?>
+										</ul>
+									<?php
+										}
+									?>
+							</div>
+						</div>
+					<?php echo form_close(); ?>
+					<!-- <hr /> -->
+					</div>
+								
+					<div class="bbs_faq_list" style="border-top:2px solid #00a0df;">
+
+						<table class="table table-md">
+						  <colgroup class="dsp-none-mobile">
+							<col class="d-none d-md-table-cell" style="<?php echo (IS_MOBILE) ? '' : 'width:70px;' ?>">
+							<?php if($bbs_cf->bo_use_category && NULL !== $bbs_cf->bo_category && '' !== $bbs_cf->bo_category) { ?>
+							<col class="d-none d-md-table-cell" style="<?php echo (IS_MOBILE) ? 'width:60px;' : 'width:10%;' ?>">
+							<?php } ?>
+							<col>
+						  </colgroup>
+
+						  <thead class="dsp-none-mobile">
+							<tr>
+							  <th class="text-center d-none d-md-table-cell" scope="col" style="<?php echo (IS_MOBILE) ? '' : 'width:70px;' ?>"><?php echo (IS_MOBILE) ? '' : '번호' ?></th>
+							  <?php if($bbs_cf->bo_use_category && NULL !== $bbs_cf->bo_category && '' !== $bbs_cf->bo_category) { ?>
+							  <th class="text-center d-none d-md-table-cell" scope="col" style="<?php echo (IS_MOBILE) ? 'width:60px;' : 'width:10%;' ?>">분류</th>
+							  <?php } ?>
+							  <th class="text-center" scope="col">제목</th>
+							</tr>
+						  </thead>
+						  <tbody>
+
+						  <?php
+							// 공지체크한 목록
+							$dsp_notice_list = ( 'all' === $bbs_cf->bo_notice_type  OR  ( $page === '1' && 'first' === $bbs_cf->bo_notice_type ) ) ? TRUE : FALSE;
+
+							if( $dsp_notice_list ) {
+							foreach($result_notice['qry'] as $i => $o) {
+							?>
+							<tr style="background-color:#fbfbfb;border-bottom:1px dashed #eeeeee;">
+							  <td class="text-center  d-none d-md-table-cell" style="font-weight:bolder;" style="<?php echo (IS_MOBILE) ? '' : 'width:90px;' ?>"><button class="btn btn-dark btn-xs">공지</button></td>
+							  <?php if($bbs_cf->bo_use_category && NULL !== $bbs_cf->bo_category && '' !== $bbs_cf->bo_category) { ?>
+							  <td class="text-center d-none d-md-table-cell" style="<?php echo (IS_MOBILE) ? 'width:60px;' : 'width:10%;' ?>"><?php echo $o->ca_code ?></td>
+							  <?php } ?>
+							  <td class=""><a href="<?php echo $bbs_code_url ?>/detail/<?php echo $o->wr_idx ?>/page/<?php echo $page ?>" style="font-weight:bold; display:block;"><?php echo $o->wr_subject ?></a></td>
+							</tr>
+							<?php
+							} // foreach
+							} // if
+						  ?>
+
+						  <?php
+							// 전체 목록
+							foreach($result['qry'] as $i => $o)
+							{
+								//echo $bbs_code_url .'/detail/'.$o->wr_idx.'/page/'.$page;
+
+								// 번호
+								$num = ($result['total_count'] - $limit*($page-1) - $i);
+
+								// 비밀글
+								$icon_secret = ('1'===$o->opt_secret) ? '<img src="'. IMG_DIR .'/common/icon_secret.png" style="margin-right:5px;" />' : '';
+
+								// 파일
+								$icon_file = ($o->wr_count_file > 0) ? '<img src="'. IMG_DIR .'/common/icon_file.png" style="margin-left:5px;" />' : '';
+
+								// 답글
+								$depth = strlen($o->wr_reply) * 15;
+								$re_space = "";
+								if($depth > 0) {
+									$re_space = "<span style='display:inline-block; margin-left:". $depth ."px;'>ㄴ</span>";
+								}
+						  ?>
+							<tr style="border-bottom:1px dashed #eeeeee;">
+							  <td class="text-center d-none d-md-table-cell"><?php //echo (IS_MOBILE) ? '' : $num  ?><?php echo $num ?></td>
+							  <?php if($bbs_cf->bo_use_category && NULL !== $bbs_cf->bo_category && '' !== $bbs_cf->bo_category) { ?>
+							  <td class="text-center d-none d-md-table-cell"><?php echo $o->ca_code ?></td>
+							  <?php } ?>
+							  <td style="position:relative;">
+
+								<?php if($this->tank_auth->is_admin()) { ?>
+								<div style="position:absolute; top: 7px; right: 10px; z-index:1;">
+								  <a href="<?php echo $bbs_code_url ?>/write/<?php echo $o->wr_idx ?>/page/<?php echo $page ?>" style=""><button class="btn btn-dark btn-xs" type="button">수정</button></a>
+								  <a href="<?php echo $bbs_code_url ?>/delete/<?php echo $o->wr_idx ?>/page/<?php echo $page ?>" onclick="del_url('<?php echo $bbs_code_url ?>/delete/<?php echo $o->wr_idx ?>/page/<?php echo $page ?>'); return false;"  class="mx-1" style="text-decoration:none;">
+									<button class="btn btn-danger btn-xs" type="button">삭제</button>
+								  </a>
+
+
+								</div>
+
+								<?php } ?>
+
+								<div onclick="dsp_ans('faq_ans_<?php echo $i ?>'); return false; " style="cursor: pointer; ;z-index:0;">
+									<div class="d-block d-md-none" style="font-weight:bolder;">[<?php echo $o->ca_code ?>]</div>
+									<?php echo $re_space ?><?php echo $icon_secret ?>
+									<?php echo $o->wr_subject ?>
+									<?php echo $icon_file ?>
+									<div class="d-block d-md-none" style="padding-top:5px; font-size:13px; color:#838383;"><?php echo substr($o->wr_datetime,0,10) ?> / 조회 <?php echo $o->wr_hit ?></div>
+								</div>
+							  </td>
+							</tr>
+							<tr id="faq_ans_<?php echo  $i ?>" class="faq_ans">
+							  <td class="text-center d-none d-md-table-cell">&nbsp;</td>
+							  <?php if($bbs_cf->bo_use_category && NULL !== $bbs_cf->bo_category && '' !== $bbs_cf->bo_category) { ?>
+							  <td class="text-center d-none d-md-table-cell">&nbsp;</td>
+							  <?php } ?>
+							  <td>
+								<?php echo $o->wr_content ?>
+							  </td>
+							</tr>
+						  <?php 
+							}
+						  ?>
+						  </tbody>
+						</table>
+
+					</div>
+
+					<div class="row">
+					  <div class="col-md-12 text-center mb-4">
+						<?php echo $paging ?>
+					  </div>
+					</div>
+
+					<?php //echo $bbs_code_url ?>
+
+					<?php
+					// ▼▼▼ 사용자 페이지 전용 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+					if( (isset($user->level) ? $user->level : 1) >= $bbs_cf->bo_level_write    OR     $this->tank_auth->is_admin()) {
+					?>
+					  <div style="width:100%; text-align:right;">
+						<a href="<?php echo $bbs_code_url ?>/write/new/page/<?php echo $page ?>"><button class="btn btn-dark btn-sm" type="button">글쓰기</button></a>
+					  </div>
+					<?php
+					}
+					?>
+				</section>
+
+			</div>
+		</div>
+
+
+		<!-- 비밀번호 입력팝업창 ---->
+		<div class="modal fade modal-small" id="passModal" tabindex="-1" role="dialog" data-toggle="modal" aria-labelledby="passModal" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-body z-bigger">
+						<div class="container-fluid">
+
+						<?php echo form_open($this->uri->uri_string(), array('id'=>'fboardpassword','name'=>'fboardpassword')); ?>
+
+							<button type="button" class="close2" data-dismiss="modal" aria-label="Close">
+								<i class="uil uil-multiply"></i>
+							</button>
+							<div class="row justify-content-center">
+								<div class="col-12 text-center">
+									<h3 class="mb-2">비밀번호 입력</h3>
+									<p class="mb-3">비밀번호 입력 후 열람가능합니다.</p>
+								</div>
+								<div class="col-12">
+									<div class="col-12 section divider-dark3"></div>
+								</div>
+
+								<div class="col-12 pt-4"> 
+									<div class="form-group">
+										<input type="password" id="password" name="password" class="form-style form-style-with-icon" placeholder="" autocomplete="off">
+									</div>   													
+								</div>	
+								<div class="col-12 text-center mt-2">
+									<input type="submit" name="submit" class="btn btn-fluid btn-dark" value="확인"></input>
+								</div>
+							</div>
+
+						<?php echo form_close(); ?>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div><!-- // .ctnt_inside -->
+</div><!-- // .ctnt_wrap -->
+
+<script type='text/javascript' src='<?php echo LIB_DIR?>/jquery/jquery_validate.js'></script>
+<script type='text/javascript'>
+//<![CDATA[
+$(function() {
+	$('#fboardpassword').validate({
+		rules: { 
+			password: { required:true, minlength:3 }
+		},
+		messages: {
+			password: { required:'비밀번호를 입력하세요.', minlength:'최소 3자 이상 입력하세요.' }
+		},
+		errorPlacement: function(error, element) {
+			error.appendTo(element.parent()).wrap('<p></p>');
+		}
+	});
+});
+
+/*
+function set_action(bo_code,idx,page) {
+	var actionpage = '/B/'+bo_code+'/password/'+idx+'/page/'+page;
+	console.log( actionpage );
+	$('#fboardpassword').attr('action',actionpage);
+}
+*/
+function set_action(page_code,bo_code,idx,page) {
+	var actionpage = '/B/'+page_code+'/'+bo_code+'/password/'+idx+'/page/'+page;
+	console.log( actionpage );
+	$('#fboardpassword').attr('action',actionpage);
+}
+
+//]]>
+</script>
+
+
+
+<?php
+$arr_segstring = explode('page',SEG_STRING);
+
+?>
+<script type="text/javascript">
+	function goto_cate(cate) {
+		var enc_cate = encodeURI(cate);
+		location.href='<?php echo BASEURL ?><?php echo $arr_segstring[0] ?>?cate='+enc_cate;
+	}
+</script>
+
+
+<script type="text/javascript">
+$(function() {
+/*
+	// dropdown 메뉴가 보이기 직전에 호출되는 이벤트
+	$('.cate_dropdown').on('show.bs.dropdown', function () {
+		console.log("메뉴가 열리기 전 이벤트!");
+	});
+	// dropdown 메뉴가 보이기 직후에 호출되는 이벤트
+	$('.cate_dropdown').on('shown.bs.dropdown', function () {
+		console.log("메뉴가 열린 후 이벤트!");
+	});
+	// dropdown 메뉴가 사라지기 직전에 호출되는 이벤트
+	$('.cate_dropdown').on('hide.bs.dropdown', function () {
+		console.log("메뉴가 닫히기 전 이벤트!");
+	});
+	// dropdown 메뉴가 사라진 직후에 호출되는 이벤트
+	$('.cate_dropdown').on('hidden.bs.dropdown ', function () {
+		console.log("메뉴가 닫힌 후 이벤트!");
+	});
+*/
+
+	var slt_cate = "<?php echo $ca_code_selected_val ?>";
+	var slt_order = "<?php echo $ordered_selected ?>";
+
+	$('#cate_dropdown .dropdown-menu li > a').bind('click',function (e) {
+		var cate_val = $(this).html();
+		//$('#cate_dropdown button.dropdown-toggle').html(cate_val +' <span class="caret"></span>');
+		$('#cate_dropdown button.dropdown-toggle').html(cate_val +' ');
+
+		cate_val = (cate_val == '전체') ? '' : cate_val;
+		$('#cate').val(cate_val);
+		document.search_form.submit();
+	});
+
+	$('#order_dropdown .dropdown-menu li > a').bind('click',function (e) {
+		var order = $(this).html();
+		var order_val = $(this).attr('alt');
+
+		//console.log(order);
+		//console.log(order_val);
+
+		//$('#order_dropdown button.dropdown-toggle').html(order_val +' <span class="caret"></span>');
+		$('#order_dropdown button.dropdown-toggle').html(order +' ');
+
+		$('#ofl').val(order_val);
+		document.search_form.submit();
+	});
+
+
+	$('.dropdown-menu-cate-item').removeClass('on');
+	$('.dropdown-menu-cate-item').each(function(){
+		var $this = $(this);
+		var cateVal = $this.data('value');
+		//console.log(cateVal);
+
+		if(slt_cate == cateVal) {
+			$this.addClass('on');
+		}
+	});
+
+
+	$('.dropdown-menu-order-item').removeClass('on');
+	$('.dropdown-menu-order-item').each(function(){
+		var $this = $(this);
+		var cateVal = $this.data('value');
+		//console.log(cateVal);
+
+		if(slt_order == cateVal) {
+			$this.addClass('on');
+		}
+	});
+
+	var stx = '<?php echo $stx ?>';
+	if( stx != '') {
+		click_srh_btn();
+	}
+	function click_srh_btn() {
+		$('.btn_dsp_srh').hide();
+		$('.bbs_search').addClass('srh_show');
+	}
+
+	$('.btn_dsp_srh').click(function() {
+		click_srh_btn();
+	});
+});
+</script>
+
+
+<script type="text/javascript">
+/*
+$(function() {
+	$('.mob_proc_dn_box').on('click',function(){
+		if( $('.mob_proc_dn_drop_arrow').hasClass('mob_proc_dn_drop_arrow_up') ) {
+			$('.mob_proc_dn_drop_arrow').removeClass('mob_proc_dn_drop_arrow_up').addClass('mob_proc_dn_drop_arrow_down');
+			$('.mob_proc_dn_drop_ctnt').show();
+		}
+		else if( $('.mob_proc_dn_drop_arrow').hasClass('mob_proc_dn_drop_arrow_down') ) {
+			$('.mob_proc_dn_drop_arrow').removeClass('mob_proc_dn_drop_arrow_down').addClass('mob_proc_dn_drop_arrow_up');
+			$('.mob_proc_dn_drop_ctnt').hide();
+		}
+	});
+});
+*/
+</script>
+
+
+
+<script type="text/javascript">
+function dsp_ans(ans_tr_id) {
+	var dsp = $('#'+ans_tr_id).css('display');
+	$('.faq_ans').hide();
+	if('none' == dsp) {
+		$('#'+ans_tr_id).css('display','table-row');
+	}
+	else {
+		$('#'+ans_tr_id).css('display','none');
+	}
+	return false;
+}
+</script>

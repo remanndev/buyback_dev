@@ -1,0 +1,270 @@
+<style type="text/css">
+.mobile_wrap .share_about {
+  position: relative;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+  padding: 0 0 50px 0;
+}
+
+.mobile_wrap .share_about .about_bg {
+  position: relative;
+  width: 100%;
+  background-image:url('/assets/images/replus/share_topbgcolor.png');
+  background-repeat:repeat-x;
+  background-size: auto 300px;
+}
+
+.mobile_wrap .share_about .about_ctnt {
+  position:relative;
+  padding-top: 60px;
+}
+.mobile_wrap .share_about .about_ctnt dt {
+  font-size: 28px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: -2px;
+  text-align: center;
+  color: #55a635;
+}
+.mobile_wrap .share_about .about_ctnt dd {
+  margin-top: 30px;
+  font-size: 15px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.56;
+  letter-spacing: -0.88px;
+  text-align: center;
+  color: #000;
+}
+
+.mobile_wrap .about_box {
+  margin-top: 30px;
+  position: relative;
+  width: 100%;
+  overflow:hidden;
+}
+.mobile_wrap .about_box .box_outline {
+  width: 100%;
+  text-align: center;
+}
+
+.mobile_wrap .about_box .box_outline > div {
+	width: 94%; 
+	height: 100%; 
+	padding-top: 25px;
+	border: 1px solid #e0e0e0;
+	background-color: #ffffff;
+}
+.mobile_wrap .about_box .box_outline > div > dl {
+	width: 100%;
+	padding-top: 40px; 
+	background-image:url('/assets/images/replus/circle_2times.png');
+	background-repeat:no-repeat;
+	background-position:center top;
+	background-size: 4px auto;
+}
+.mobile_wrap .about_box .box_left {
+	margin-left: 3%;
+}
+.mobile_wrap .about_box .box_right {
+	margin-left: 2%;
+}
+
+.mobile_wrap .about_box .box_outline dl dt {
+  font-size: 20px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: -1.2px;
+  text-align: center;
+  color: #55a635;
+}
+.mobile_wrap .about_box .box_outline dl dd {
+  margin-top: 30px;
+  font-size: 15px;
+  font-weight: normal;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.56;
+  letter-spacing: -0.88px;
+  text-align: center;
+  color: #000;
+}
+
+.mobile_wrap .share_about .about_share_tree_left {
+	position: absolute; 
+	left: 5px;
+	bottom: 0;
+	width: 80px;
+	height: 80px;
+	background-image:url('/assets/images/replus/mob_main_about_share_tree_left.png');
+	background-repeat:no-repeat;
+	background-position:center top;
+	background-size: 85px auto;
+}
+.mobile_wrap .share_about .about_share_tree_right {
+	position: absolute; 
+	right: 5px;
+	bottom: 0;
+	width: 80px;
+	height: 80px;
+	background-image:url('/assets/images/replus/mob_main_about_share_tree_right.png');
+	background-repeat:no-repeat;
+	background-position:center top;
+	background-size: 85px auto;
+}
+
+</style>
+
+
+	<div class="share_about">
+		<div class="about_bg">
+
+			<div class="ctnt_wrap">
+			  <div class="ctnt_inside" style="width:100%;">
+
+				<div class="about_ctnt">
+					<dl>
+					  <dt>나눔 신청이란?</dt>
+					  <dd style="padding:0 10px;">
+						기관/기업 등에서 기증 받은 디지털 기기를 재생하여<br />
+						정보취약계층에게 무료로 보급하는 캠페인입니다.
+					  </dd>
+					</dl>
+				</div>
+
+				<div class="about_box">
+					<div style="display: flex;">
+						<div class="box_outline">
+							<div class="box_left roundbox_20">
+								<dl>
+								  <dt>신청대상</dt>
+								  <dd>나눔 캠페인을 개설한 NPO의 신청 조건에 따름</dd>
+								</dl>
+							</div>
+						</div>
+						<div class="box_outline">
+							<div class="box_right roundbox_20">
+								<dl>
+								  <dt>나눔제품</dt>
+								  <dd>
+									리플러스를 통해 기부 받은 IT자산으로 제작된 리퍼비시(Refurbish) 제품으로 교육 및 사무용에 적합합니다.
+								  </dd>
+								</dl>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			  </div>
+			</div>
+
+		</div>
+
+		<div class="about_share_tree_left"></div>
+		<div class="about_share_tree_right"></div>
+	</div>
+
+
+
+
+
+
+
+
+
+	<!-- REPLUS 나눔 이야기 -->
+	<div class="py-1" style="background-color:#1d3b71;">
+		<div class="ctnt_wrap">
+		  <div class="ctnt_inside">
+			<div class="subpage_wrap">
+				
+				<div class="row">
+					<div class="col-12" style="color:#ffffff;">
+						<img src="<?php echo IMG_DIR ?>/replus/replus_title_white.png" style="height:35px;" /><br />
+						<div style="padding-top:15px; font-size: 40px; font-weight:bolder;">나눔 이야기</div>
+					</div>
+				</div>
+
+				<div style="width: 100%; overflow:hidden;">
+				  <div style="width: 140%; margin-top: 25px;">
+
+					<!-- 캠페인 탑 비주얼 배너 영역 -->
+					<div class="bnr_wrap">
+						<div class="cases_share_bnr_mob">
+						  <?php foreach($this->cases_share_bnr as $i => $bnr) { ?>
+							<div style="width:100%; padding:15px; ">
+							  <a href="<?php echo $bnr->bn_link ?>" target="_blank">
+								<div style="width:100%; border:1px solid #ffffff; background-color:#ffffff;">
+									<div style="height: 200px; background-image:url('<?php echo $bnr->banner_src ?>'); background-size:cover;"></div>
+									<div style="padding:25px 20px;">
+										<h3 class="ellipsis" style="font-size: 18px; font-weight:bold; color:#000000; "><?php echo $bnr->bn_memo_ttl ?></h3>
+										<div class="ellipsis4" style="margin-top:15px;"><?php echo nl2br($bnr->bn_memo) ?></div>
+									</div>
+								</div>
+							  </a>
+							</div>
+						  <?php } ?>
+						</div>
+					</div>
+					<script type="text/javascript">
+					$(document).ready(function(){
+					  $('.cases_share_bnr_mob').not('.slick-initialized').slick({
+						  infinite: true,
+						  slidesToShow: 2,
+						  slidesToScroll: 1,
+						  arrows: false,
+						  dots: false,
+					  });
+					});
+					</script>
+
+				  </div>
+				</div>
+
+			</div>
+		  </div>
+		</div>
+	</div>
+
+
+	<!-- 나눔 신청절차 -->
+	<div class="ctnt_wrap">
+	  <div class="ctnt_inside">
+		<div class="subpage_wrap">
+
+			<div class="subpage_ttl">
+			  <h3 class="subpage_ttl_text">나눔 신청절차</h3>
+			  <div class="subpage_ttl_line"></div>
+			</div>
+			<div class="subpage_desc">
+				<img src="<?php echo IMG_DIR ?>/replus/mob_share_process_1.png" style="width: 100%; max-width:1166px; margin:0 auto;" />
+			</div>
+
+		</div>
+	  </div>
+	</div>
+
+
+	<!-- 진행중인 나눔 캠페인 -->
+	<div class="ctnt_wrap">
+	  <div class="ctnt_inside">
+		<div class="subpage_wrap">
+
+			<div class="subpage_ttl">
+			  <h3 class="subpage_ttl_text">진행중인 나눔 캠페인</h3>
+			  <div class="subpage_ttl_line"></div>
+			</div>
+			<div class="subpage_desc">
+
+			</div>
+
+		</div>
+	  </div>
+	</div>
+

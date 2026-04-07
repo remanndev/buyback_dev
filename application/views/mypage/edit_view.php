@@ -1,0 +1,240 @@
+<?php
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+* 회원 가입 결과 페이지 주소
+* /application/views/auth/message_succ_join.php
+*/
+
+
+// 회원 아이디
+if ($use_username) {
+	$username = array(
+		'name'	=> '',
+		'id'	=> 'username',
+		'value' => isset($user->username) ? $user->username : set_value('username'),
+		'maxlength'	=> $this->config->item('username_max_length', 'tank_auth'),
+		'class'	=> 'form-style big gray-version no-shadow form-style-with-icon section-shadow-blue reg_required',
+		'style' => 'background-color:#eeeeee;',
+		'placeholder' => '아이디',
+		'autocomplete' => 'off',
+		'readonly' => true,
+		'disabled' => true
+	);
+}
+// 회원 이름
+$nickname = array(
+	'name'	=> 'nickname',
+	'id'	=> 'nickname',
+	'value' => isset($user->nickname) ? $user->nickname : set_value('nickname'),
+	'maxlength'	=> 80,
+	'class'	=> 'form-style big gray-version no-shadow form-style-with-icon section-shadow-blue',
+	'placeholder' => '실명',
+	'autocomplete' => 'off'
+);
+$email = array(
+	'name'	=> 'email',
+	'id'	=> 'email',
+	'value' => isset($user->email) ? $user->email : set_value('email'),
+	'maxlength'	=> 80,
+	'class'	=> 'form-style big gray-version no-shadow form-style-with-icon section-shadow-blue reg_required',
+	'style' => 'background-color:#eeeeee;',
+	'placeholder' => '이메일',
+	'autocomplete' => 'off',
+	'readonly' => true,
+	'disabled' => true
+);
+$password = array(
+	'name'	=> 'password',
+	'id'	=> 'password',
+	'value' => set_value('password'),
+	'maxlength'	=> $this->config->item('password_max_length', 'tank_auth'),
+	'class'	=> 'form-style big gray-version no-shadow form-style-with-icon section-shadow-blue reg_required',
+	'placeholder' => '비밀번호',
+	'autocomplete' => 'off'
+);
+$password_confirm = array(
+	'name'	=> 'password_confirm',
+	'id'	=> 'password_confirm',
+	'value' => set_value('password_confirm'),
+	'maxlength'	=> $this->config->item('password_max_length', 'tank_auth'),
+	'class'	=> 'form-style big gray-version no-shadow form-style-with-icon section-shadow-blue reg_required',
+	'placeholder' => '비밀번호 확인',
+	'autocomplete' => 'off'
+);
+$captcha = array(
+	'name'	=> 'captcha',
+	'id'	=> 'captcha',
+	'maxlength'	=> 8,
+	'style' => 'width:100px; padding:10px 9px;  border: 1px solid #999999; '
+);
+
+
+// 업체명(선택)
+$comp_name = array(
+	'name'	=> 'comp_name',
+	'id'	=> 'comp_name',
+	'value' => isset($user->comp_name) ? $user->comp_name : set_value('comp_name'),
+	'maxlength'	=> 80,
+	'class'	=> 'form-style big gray-version no-shadow form-style-with-icon section-shadow-blue',
+	'placeholder' => '업체명(선택)',
+	'autocomplete' => 'off'
+);
+// 전화번호
+$phone = array(
+	'name'	=> 'phone',
+	'id'	=> 'phone',
+	'value' => isset($user->phone) ? $user->phone : set_value('phone'),
+	'maxlength'	=> 80,
+	'class'	=> 'form-style big gray-version no-shadow form-style-with-icon section-shadow-blue',
+	'placeholder' => '전화번호',
+	'autocomplete' => 'off'
+);
+?>
+
+
+<!-- 페이지 서브 비주얼 -->
+<div class="o_page_visual o_mypage_visual o-fade-in">
+	<div class="o_ctnt o-slide-up">
+		<dl>
+			<dt class="o_page_ttl color_white">마이페이지</dt>
+			<dd class="o_page_desc color_white">World Best Professional CCTV Manufacture</dd>
+			<div style="width:32px; height:5px;background-color:#ffffff; margin:30px auto 0;"></div>
+		</dl>
+	</div>
+</div>
+
+<!-- 페이지 탭메뉴 -->
+<div class="o_page_nav o-slide-up">
+	<div class="o_ctnt">
+		<ul class="row o_none" style="margin:0 auto; text-align:center;">
+			<li class="col"><span class="1"><a href="/mypage/zzim">관심제품</a></span></li>
+			<li class="col"><span class="1"><a href="/board/myestimate">견적문의내역</a></span></li>
+			<li class="col active"><span class="1"><a href="/mypage/user/edit">내정보수정</a></span></li>
+		</ul>
+	</div>
+</div>
+
+
+<!-- 페이지 내용 -->
+<div class="o_page_content" style="padding:75px 0;" >
+	<section class="o_ctnt o-slide-up" style="padding-top:20px;" >
+
+
+		<div class="row">
+			<div class="col-12 col-sm-10 col-lg-6 col-xl-6" style="margin:0 auto;">
+
+				<div style="padding:50px; border:1px solid #dddddd;">
+				
+
+								
+								<!-- 내정보수정 -->
+								<?php //echo form_open($this->uri->uri_string(),' onsubmit="proc_edit()"'); ?>
+								<?php echo form_open($this->uri->uri_string()); ?>
+								<div id="collapseTwo" class="collapse p-0 show" data-parent="#accordionExample">
+									<h3 class="mb-4 font-noto-700 text-sm-center" style="font-weight:bold;">내정보수정</h3>
+									<div class="row">
+
+										<?php // if ($use_username) { ?>
+										<div class="col-12">
+											<div class="form-group wrap_id">
+												<i class="input-icon big uil uil-user"></i>
+												<?php echo form_input($username); ?>
+												<?php echo form_error($username['name']); ?>
+												<?php echo isset($errors[$username['name']])?'<div class="error2">'.$errors[$username['name']].'</div>':''; ?>
+											</div>
+										</div>
+										<?php // } ?>
+
+										<div class="col-12 mt-3">
+											<div class="form-group  wrap_email">
+												<i class="input-icon big uil uil-at"></i>
+												<?php echo form_input($email); ?>
+												<?php echo form_error($email['name']); ?>
+												<?php echo isset($errors[$email['name']])?'<div class="error2">'.$errors[$email['name']].'</div>':''; ?>
+											</div>	
+										</div>	
+
+										<div class="col-12 mt-3">
+											<div class="form-group  wrap_passwd">
+												<i class="input-icon big uil uil-unlock-alt"></i>
+												<?php echo form_password($password); ?>
+												<?php echo form_error($password['name']); ?>
+												<?php echo isset($errors[$password['name']])?'<div class="error2">'.$errors[$password['name']].'</div>':''; ?>
+											</div>
+										</div>
+
+										<div class="col-12 mt-3">
+											<div class="form-group wrap_passwdconfirm">
+												<i class="input-icon big uil uil-lock-alt"></i>
+												<?php echo form_password($password_confirm); ?>
+												<?php echo form_error($password_confirm['name']); ?>
+												<?php echo isset($errors[$password_confirm['name']])?'<div class="error2">'.$errors[$password_confirm['name']].'</div>':''; ?>
+											</div>
+										</div>
+
+										<div class="col-12 mt-3">
+											<div class="form-group wrap_id">
+												<i class="input-icon big uil uil-user"></i>
+												<?php echo form_input($nickname); ?>
+												<?php echo form_error($nickname['name']); ?>
+												<?php echo isset($errors[$nickname['name']])?'<div class="error2">'.$errors[$nickname['name']].'</div>':''; ?>
+											</div>
+										</div>
+
+										<div class="col-12 mt-3">
+											<div class="form-group wrap_id">
+												<i class="input-icon big uil uil-building"></i>
+												<?php echo form_input($comp_name); ?>
+												<?php echo form_error($comp_name['name']); ?>
+												<?php echo isset($errors[$comp_name['name']])?'<div class="error2">'.$errors[$comp_name['name']].'</div>':''; ?>
+											</div>
+										</div>
+
+										<div class="col-12 mt-3">
+											<div class="form-group wrap_id">
+												<i class="input-icon big uil uil-mobile-android"></i>
+												<?php echo form_input($phone); ?>
+												<?php echo form_error($phone['name']); ?>
+												<?php echo isset($errors[$phone['name']])?'<div class="error2">'.$errors[$phone['name']].'</div>':''; ?>
+											</div>
+										</div>
+
+										<div class="col-12 mt-5 text-sm-center">
+											<input type="submit" name="submit" value="수정하기" id="btn_edit" class="btn btn-dark btn-block" style="line-height: 60px; padding:0; font-size:18px; font-weight:bold;" />
+											<a href="/auth/unregister"><button type="button" id="btn_out" class="btn btn-secondary btn-block mt-3" style="line-height: 60px; padding:0; font-size:18px; font-weight:bold;" href="#page-top">탈퇴하기</button></a>
+										</div>
+
+									</div>
+								</div>
+
+								<input type="hidden" id="password_min_length" value="<?php echo $this->config->item('password_min_length', 'tank_auth') ?>" />
+
+								<input type="hidden" id="requestnumber" name="requestnumber" value="<?php echo set_value('requestnumber', (isset($requestnumber) ? $requestnumber : '' )); ?>" />
+								<input type="hidden" id="succ_nice" name="succ_nice" value="<?php echo set_value('succ_nice', (isset($succ_nice) ? $succ_nice : '' )); ?>" />
+								<input type="hidden" id="dupinfo" name="dupinfo" value="<?php echo set_value('dupinfo') ?>" /> 
+								<input type="hidden" id="birth" name="birth" value="<?php echo set_value('birthdate') ?>" /> 
+								<input type="hidden" id="mobile" name="mobile" value="<?php echo set_value('mobile') ?>" /> 
+								<input type="hidden" id="gender" name="gender" value="<?php echo set_value('gender') ?>" />
+
+								<?php echo form_close(); ?>
+
+				</div>
+
+			</div>
+		</div>
+
+	</section>
+</div>
+
+
+
+
+<!-- JAVASCRIPT
+================================================== -->
+<script type="text/javascript">
+
+	// 내정보수정  onsubmit 실행
+	function proc_edit() {
+
+	}
+
+</script>

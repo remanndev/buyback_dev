@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
+
+    <title><?php echo $this->config->item('website_name', 'tank_auth') ?> <?php echo $this->session->userdata('admin_title') ?></title>
+
+	<?php /*
+	<!-- Favicon - ->
+	<link rel="shortcut icon" href="<?php echo BASEURL ?>/assets/images/favicon.ico" type="image/x-icon">
+	<link rel="icon" href="<?php echo BASEURL ?>/assets/images/favicon.ico" type="image/x-icon">
+	<!-- // Favicon -->
+	*/ ?>
+
+	<!-- Favicon -->
+	<link rel="shortcut icon" href="<?php echo BASEURL ?>/favicon.ico?v=1" type="image/x-icon">
+	<link rel="icon" href="<?php echo BASEURL ?>/favicon.ico?v=1" type="image/x-icon">
+	<!-- // Favicon -->
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<!-- <link rel="stylesheet" href="<?php echo LIB_DIR ?>/bootstrap/bootstrap-5.0.2-dist/css/bootstrap.min.css" /> -->
+
+	<link rel="stylesheet" href="<?php echo CSS_DIR ?>/common.css?v=<?php echo rand() ?>" />
+	<link rel="stylesheet" href="<?php echo CSS_DIR ?>/admin.css?v=<?php echo rand() ?>" />
+	<?php
+	// CSS 파일을 로드 한다.
+	if(isset($GLOBALS['hoksi_css']) && $GLOBALS['hoksi_css']) { foreach($GLOBALS['hoksi_css'] as $css_file) { echo $css_file . PHP_EOL;}}
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 load_css('<link rel="stylesheet" type="text/css" media="screen" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/blitzer/jquery-ui.css" />');
+	 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 */
+	?>
+
+    <!-- jQuery and Bootstrap Bundle (includes Popper) -->
+	<script src="<?php echo ASSETS_DIR ?>/lib/jquery/jquery-1.11.3.min.js"></script>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	<!-- <script src="<?php echo LIB_DIR ?>/bootstrap/bootstrap-5.0.2-dist/js/bootstrap.bundle.min.js"></script> -->
+
+	<!-- Scripts -->
+	<script src="<?php echo JS_DIR ?>/common.js?v=<?php echo rand() ?>"></script>
+	<script src="<?php echo JS_DIR ?>/admin.js?v=<?php echo rand() ?>"></script>
+
+	<?php
+	// 자바 스크립트 파일을 로드 한다.
+	if(isset($GLOBALS['hoksi_js']) && $GLOBALS['hoksi_js']) { foreach($GLOBALS['hoksi_js'] as $js_file) { echo $js_file . PHP_EOL;}}
+	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 load_js('<script src="/js/plugins/jqgrid/4.6.0/jquery.jqGrid.min.js" type="text/javascript"></script>');
+	 * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	 */
+	?>
+
+
+  </head>
+  <body>
+    <header class="site_header">
+	<?php
+		// 헤더
+		$this->load->view('admin/layout_header_view');
+	?>
+	</header>
+
+	<div class="page-container">
+
+		<!-- <div id="scroll-fix-snb" style="width:225px;"></div>
+		<div id="snb" class="app-sidebar snb_scroll_fixed"> -->
+
+
+		<div id="snb" class="app-sidebar">
+		<?php
+			// 사이드바
+			$snb_view = 'admin/layout_snb_view';
+			$this->load->view($snb_view);
+		?>
+		</div>
+
+		<!-- Begin page content -->
+		<main role="main" class="app-main">
+			<?php
+				// 페이지 상단
+				$breadcrumb_view = 'admin/layout_breadcrumb_view';
+				$this->load->view($breadcrumb_view);
+			?>
+			<div class="app-contents">
+				<?php
+					if ( isset($viewPage) && $viewPage ) $this->load->view($viewPage); // 페이지 내용
+				?>
+			</div>
+		</main>
+	</div>
+
+	<footer class="site_footer">
+	<?php
+		// 푸터
+		$this->load->view('admin/layout_footer_view');
+	?>
+	</footer>
+
+  </body>
+</html>

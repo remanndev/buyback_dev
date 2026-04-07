@@ -1,0 +1,844 @@
+<?php if ($this->session->flashdata('complete_message')): ?>
+    <script>
+        alert("<?php echo $this->session->flashdata('complete_message'); ?>");
+    </script>
+<?php endif; ?>
+
+<main class="flex-grow py-8 md:py-12">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="mb-8 text-center md:text-left">
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">중고 기기 매입 신청</h1>
+<p class="text-gray-500 dark:text-gray-400">빠르고 안전한 리맨 매입 서비스를 통해 최적의 가격을 확인하세요.</p>
+</div>
+<div class="flex flex-col lg:flex-row gap-8">
+<div class="flex-grow lg:w-2/3">
+
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden mb-6">
+<div class="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+<h2 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2"><span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">1</span>판매하실 기기를 선택해주세요</h2>
+</div>
+<div class="p-6">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div id="device-notebook" onclick="selectDevice('notebook', '노트북')" class="device-selector cursor-pointer border-2 border-primary bg-primary/5 dark:bg-primary/10 rounded-xl p-4 flex flex-col items-center justify-center gap-3 transition-all relative">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-icons text-3xl">laptop_mac</span>
+</div>
+<span class="font-bold text-primary">노트북</span>
+<span class="absolute top-2 right-2 text-primary material-icons text-lg check-icon">check_circle</span>
+</div>
+<div id="device-desktop" onclick="selectDevice('desktop', '데스크탑')" class="device-selector cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-primary/50 rounded-xl p-4 flex flex-col items-center justify-center gap-3 transition-all hover:bg-gray-50 dark:hover:bg-gray-700 opacity-60 relative">
+<div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+<span class="material-icons text-3xl">desktop_windows</span>
+</div>
+<span class="font-medium text-gray-600 dark:text-gray-300">데스크탑</span>
+<span class="absolute top-2 right-2 text-primary material-icons text-lg check-icon hidden">check_circle</span>
+</div>
+<div id="device-monitor" onclick="selectDevice('monitor', '모니터')" class="device-selector cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-primary/50 rounded-xl p-4 flex flex-col items-center justify-center gap-3 transition-all hover:bg-gray-50 dark:hover:bg-gray-700 opacity-60 relative">
+<div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+<span class="material-icons text-3xl">monitor</span>
+</div>
+<span class="font-medium text-gray-600 dark:text-gray-300">모니터</span>
+<span class="absolute top-2 right-2 text-primary material-icons text-lg check-icon hidden">check_circle</span>
+</div>
+<div id="device-parts" onclick="selectDevice('parts', '부품')" class="device-selector cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-primary/50 rounded-xl p-4 flex flex-col items-center justify-center gap-3 transition-all hover:bg-gray-50 dark:hover:bg-gray-700 opacity-60 relative">
+<div class="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-gray-500">
+<span class="material-icons text-3xl">memory</span>
+</div>
+<span class="font-medium text-gray-600 dark:text-gray-300">부품</span>
+<span class="absolute top-2 right-2 text-primary material-icons text-lg check-icon hidden">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-primary/20 overflow-hidden">
+<div class="p-6 border-b border-gray-100 dark:border-gray-700">
+<h2 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+<span class="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-xs">2</span>
+              상세 스펙 입력
+            </h2>
+<p class="mt-1 text-sm text-gray-500 ml-8">정확한 모델명과 사양을 입력하시면 더 정확한 견적을 받으실 수 있습니다.</p>
+</div>
+<div class="p-6 space-y-6">
+<div id="dynamic-specs-container" class="space-y-6"></div>
+<div class="pt-4 border-t border-gray-100 dark:border-gray-700">
+<h3 class="text-sm font-bold text-gray-900 dark:text-white mb-4">기기 상태 (Condition)</h3>
+<div class="space-y-3">
+<label class="condition-label relative flex items-center p-4 border rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 border-primary bg-primary/5 dark:bg-primary/10 transition-all group">
+<input onchange="updateCondition(this, 'A급 (정상)')" checked="" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary" name="condition" type="radio"/>
+<div class="ml-3 flex-grow">
+<span class="block text-sm font-bold text-gray-900 dark:text-white">정상 작동 (A급)</span>
+<span class="block text-xs text-gray-500 mt-1">모든 기능이 정상이며, 외관에 눈에 띄는 흠집이 거의 없음</span>
+</div>
+<span class="text-primary font-bold text-sm">+ 최고가</span>
+</label>
+<label class="condition-label relative flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:border-primary/50 transition-all group">
+<input onchange="updateCondition(this, 'B급 (생활 기스)')" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary" name="condition" type="radio"/>
+<div class="ml-3 flex-grow">
+<span class="block text-sm font-medium text-gray-900 dark:text-white">생활 기스 (B급)</span>
+<span class="block text-xs text-gray-500 mt-1">기능은 정상이나 외관에 사용감이나 작은 흠집이 있음</span>
+</div>
+</label>
+<label class="condition-label relative flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-xl cursor-pointer hover:border-primary/50 transition-all group">
+<input onchange="updateCondition(this, 'C급 (파손/불량)')" class="h-4 w-4 text-primary border-gray-300 focus:ring-primary" name="condition" type="radio"/>
+<div class="ml-3 flex-grow">
+<span class="block text-sm font-medium text-gray-900 dark:text-white">기능 불량 / 파손 (C급)</span>
+<span class="block text-xs text-gray-500 mt-1">화면 파손, 전원 불량, 키보드 고장 등 수리가 필요한 상태</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+<div class="bg-gray-50 dark:bg-gray-900/50 px-6 py-4 flex justify-between items-center border-t border-gray-100 dark:border-gray-700">
+<button onclick="alert('이전 단계로 이동합니다.')" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 font-medium text-sm flex items-center gap-1 transition-colors">
+<span class="material-icons text-base">arrow_back</span>
+              이전 단계
+            </button>
+            <button id="add-device-btn" onclick="addCurrentDevice()" class="bg-primary hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg shadow-blue-500/30 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+              판매할 기기 추가
+              <span class="material-icons text-sm">add_circle</span>
+            </button>
+</div>
+</div>
+</div>
+<div class="lg:w-1/3">
+<div class="sticky top-24 space-y-6">
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden relative">
+<div class="h-2 bg-gradient-to-r from-primary to-blue-400"></div>
+<div class="p-6">
+<h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+<span class="material-icons text-primary">receipt_long</span>
+                매입 요약
+              </h3>
+<div class="space-y-4 mb-6 text-sm">
+<div class="flex justify-between items-start pb-3 border-b border-gray-100 dark:border-gray-700 border-dashed">
+<span class="text-gray-500">기기 종류</span>
+<span id="summary-device" class="font-medium text-gray-900 dark:text-white text-right">노트북</span>
+</div>
+<div class="flex justify-between items-start pb-3 border-b border-gray-100 dark:border-gray-700 border-dashed">
+<span class="text-gray-500">제조사</span>
+<span id="summary-manufacturer" class="font-medium text-gray-900 dark:text-white text-right">삼성전자 (Samsung)</span>
+</div>
+<div class="flex justify-between items-start pb-3 border-b border-gray-100 dark:border-gray-700 border-dashed">
+<span class="text-gray-500">주요 사양</span>
+<div class="text-right">
+<div id="summary-cpu" class="font-medium text-gray-900 dark:text-white">Intel Core i5</div>
+<div id="summary-memory" class="text-xs text-gray-500">16GB RAM / 512GB SSD</div>
+</div>
+</div>
+<div class="flex justify-between items-start">
+<span class="text-gray-500">기기 상태</span>
+<span id="summary-condition" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                      A급 (정상)
+                    </span>
+</div>
+</div>
+<div class="bg-primary/5 dark:bg-gray-700/50 rounded-xl p-5 text-center border border-primary/10 mb-4">
+<p class="text-sm text-gray-500 dark:text-gray-400 mb-1">예상 매입가</p>
+<div id="summary-price" class="text-3xl font-bold text-primary tracking-tight">
+                  ₩ 650,000 ~
+                </div>
+<p class="text-xs text-gray-400 mt-2">* 실제 검수 후 가격이 변동될 수 있습니다.</p>
+</div>
+              <div id="added-devices-section" class="mb-4 hidden">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">추가된 기기</span>
+                  <span id="added-count" class="text-xs text-gray-500">0대</span>
+                </div>
+                <div id="added-device-list" class="space-y-2 max-h-[60vh] overflow-auto pr-1"></div>
+                <div class="mt-3 text-right text-sm">
+                  <span class="text-gray-500">예상 총액</span>
+                  <span id="added-total" class="ml-2 font-bold text-primary">₩ 0</span>
+                </div>
+              </div>
+<button onclick="goToCollection()" class="w-full bg-white dark:bg-gray-800 border-2 border-primary text-primary hover:bg-primary/5 dark:hover:bg-primary/10 font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2 group"><span class="material-icons group-hover:scale-110 transition-transform">local_shipping</span> 수거 신청하기</button>
+</div>
+</div>
+<div class="text-center">
+<p class="text-xs text-gray-400">진행 중 어려움이 있으신가요?</p>
+<a class="text-sm font-medium text-primary hover:underline" href="#">고객센터 문의하기 (1588-0000)</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+<div class="fixed bottom-0 right-0 p-8 pointer-events-none opacity-20 hidden xl:block">
+<div class="w-64 h-64 bg-primary/30 rounded-full blur-3xl"></div>
+</div>
+
+<script>
+  
+const priceDB = [{"type": "CPU", "category": "AMD 1세대", "name": "라이젠 1200", "price": 3000}, {"type": "CPU", "category": "AMD 1세대", "name": "라이젠 1300", "price": 4000}, {"type": "CPU", "category": "AMD 1세대", "name": "라이젠 1400", "price": 4000}, {"type": "CPU", "category": "AMD 1세대", "name": "라이젠 1500", "price": 4839}, {"type": "CPU", "category": "AMD 1세대", "name": "라이젠 1600", "price": 10516}, {"type": "CPU", "category": "AMD 1세대", "name": "라이젠 1700", "price": 20000}, {"type": "CPU", "category": "AMD 1세대", "name": "라이젠 1800", "price": 22000}, {"type": "CPU", "category": "AMD 2세대", "name": "라이젠 2200", "price": 10000}, {"type": "CPU", "category": "AMD 2세대", "name": "라이젠 2400", "price": 16000}, {"type": "CPU", "category": "AMD 2세대", "name": "라이젠 2600", "price": 17500}, {"type": "CPU", "category": "AMD 2세대", "name": "라이젠 2700", "price": 31000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3100", "price": 10000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3200", "price": 15000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3300", "price": 12000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3400", "price": 20000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3500", "price": 19000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3600", "price": 28000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3600X/XT", "price": 30000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3700", "price": 50000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3800X/XT", "price": 55000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 3900X/XT", "price": 80000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 4350", "price": 20000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 4650", "price": 35000}, {"type": "CPU", "category": "AMD 3세대", "name": "AMD 라이젠 4750", "price": 45000}, {"type": "CPU", "category": "AMD 4세대", "name": "AMD 라이젠 5500", "price": 40000}, {"type": "CPU", "category": "AMD 4세대", "name": "AMD 라이젠 5600", "price": 58871}, {"type": "CPU", "category": "AMD 4세대", "name": "AMD 라이젠 5700", "price": 75000}, {"type": "CPU", "category": "AMD 4세대", "name": "AMD 라이젠 5800", "price": 110000}, {"type": "CPU", "category": "AMD 4세대", "name": "AMD 라이젠 5800X3D", "price": 150000}, {"type": "CPU", "category": "AMD 4세대", "name": "AMD 라이젠 5900", "price": 140000}, {"type": "CPU", "category": "AMD 4세대", "name": "AMD 라이젠 5950", "price": 180000}, {"type": "CPU", "category": "AMD 5세대", "name": "AMD 라이젠 7500", "price": 60000}, {"type": "CPU", "category": "AMD 5세대", "name": "AMD 라이젠 7600", "price": 80000}, {"type": "CPU", "category": "AMD 5세대", "name": "AMD 라이젠 7700", "price": 120000}, {"type": "CPU", "category": "AMD 5세대", "name": "AMD 라이젠 7800X3D", "price": 220000}, {"type": "CPU", "category": "AMD 5세대", "name": "AMD 라이젠 7900", "price": 170000}, {"type": "CPU", "category": "AMD 5세대", "name": "AMD 라이젠 7900X3D", "price": 230000}, {"type": "CPU", "category": "AMD 5세대", "name": "AMD 라이젠 7950", "price": 280000}, {"type": "CPU", "category": "AMD 5세대", "name": "AMD 라이젠 7950X3D", "price": 370000}, {"type": "CPU", "category": "AMD 6세대", "name": "AMD 라이젠5 9600", "price": 110000}, {"type": "CPU", "category": "AMD 6세대", "name": "AMD 라이젠5 9700", "price": 150000}, {"type": "CPU", "category": "AMD 6세대", "name": "AMD 라이젠7 9800X3D", "price": 330000}, {"type": "CPU", "category": "AMD 6세대", "name": "AMD 라이젠9 9900", "price": 220000}, {"type": "CPU", "category": "AMD 6세대", "name": "AMD 라이젠9 9900X3D", "price": 300000}, {"type": "CPU", "category": "AMD 6세대", "name": "AMD 라이젠9 9950", "price": 330000}, {"type": "CPU", "category": "AMD 6세대", "name": "AMD 라이젠9 9950X3D", "price": 430000}, {"type": "CPU", "category": "인텔 10세대", "name": "인텔 셀러론 G5900", "price": 14710}, {"type": "CPU", "category": "인텔 10세대", "name": "인텔 코어i3 10100", "price": 54548}, {"type": "CPU", "category": "인텔 10세대", "name": "인텔 코어i5 10400", "price": 83710}, {"type": "CPU", "category": "인텔 10세대", "name": "인텔 코어i5 10500", "price": 86694}, {"type": "CPU", "category": "인텔 10세대", "name": "인텔 코어i5 10600", "price": 78508}, {"type": "CPU", "category": "인텔 10세대", "name": "인텔 코어i7 10700", "price": 170726}, {"type": "CPU", "category": "인텔 10세대", "name": "인텔 코어i9 10850", "price": 186452}, {"type": "CPU", "category": "인텔 10세대", "name": "인텔 코어i9 10900", "price": 229839}, {"type": "CPU", "category": "인텔 10세대", "name": "인텔 펜티엄 G6400", "price": 30000}, {"type": "CPU", "category": "인텔 11세대", "name": "인텔 코어i5 11400", "price": 73710}, {"type": "CPU", "category": "인텔 11세대", "name": "인텔 코어i5 11500", "price": 78710}, {"type": "CPU", "category": "인텔 11세대", "name": "인텔 코어i5 11600", "price": 69960}, {"type": "CPU", "category": "인텔 11세대", "name": "인텔 코어i7 11700", "price": 144839}, {"type": "CPU", "category": "인텔 11세대", "name": "인텔 코어i9 11900", "price": 166008}, {"type": "CPU", "category": "인텔 12세대", "name": "인텔 코어i3 12100", "price": 54919}, {"type": "CPU", "category": "인텔 12세대", "name": "인텔 코어i5 12400", "price": 89355}, {"type": "CPU", "category": "인텔 12세대", "name": "인텔 코어i5 12500", "price": 116452}, {"type": "CPU", "category": "인텔 12세대", "name": "인텔 코어i5 12600", "price": 98495}, {"type": "CPU", "category": "인텔 12세대", "name": "인텔 코어i7 12700", "price": 190927}, {"type": "CPU", "category": "인텔 12세대", "name": "인텔 코어i9 12900", "price": 232968}, {"type": "CPU", "category": "인텔 12세대", "name": "인텔 펜티엄 G6900", "price": 30000}, {"type": "CPU", "category": "인텔 12세대", "name": "인텔 펜티엄 G7400", "price": 37419}, {"type": "CPU", "category": "인텔 13세대", "name": "인텔 코어i3 13100", "price": 57016}, {"type": "CPU", "category": "인텔 13세대", "name": "인텔 코어i5 13400", "price": 95645}, {"type": "CPU", "category": "인텔 13세대", "name": "인텔 코어i5 13500", "price": 116452}, {"type": "CPU", "category": "인텔 13세대", "name": "인텔 코어i5 13600", "price": 98226}, {"type": "CPU", "category": "인텔 13세대", "name": "인텔 코어i7 13700", "price": 199234}, {"type": "CPU", "category": "인텔 13세대", "name": "인텔 코어i9 13900", "price": 306000}, {"type": "CPU", "category": "인텔 14세대", "name": "인텔 코어I3 14100", "price": 62419}, {"type": "CPU", "category": "인텔 14세대", "name": "인텔 코어I5 14400", "price": 104032}, {"type": "CPU", "category": "인텔 14세대", "name": "인텔 코어I5 14500", "price": 124839}, {"type": "CPU", "category": "인텔 14세대", "name": "인텔 코어I5 14600", "price": 106613}, {"type": "CPU", "category": "인텔 14세대", "name": "인텔 코어I7 14700", "price": 217823}, {"type": "CPU", "category": "인텔 14세대", "name": "인텔 코어I9 14900", "price": 323306}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 제온 G6950", "price": 100}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i3 530", "price": 100}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i3 540", "price": 100}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i3 550", "price": 100}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i5 650", "price": 200}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i5 660", "price": 200}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i5 661", "price": 200}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i5 750", "price": 100}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i5 760", "price": 100}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i7 860", "price": 300}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i7 870", "price": 400}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i7 875", "price": 400}, {"type": "CPU", "category": "인텔 1세대", "name": "인텔 코어i7 880", "price": 400}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i3 2100", "price": 500}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i3 2105", "price": 500}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i3 2120", "price": 500}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i3 2130", "price": 500}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i5 2300", "price": 4000}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i5 2310", "price": 4000}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i5 2320", "price": 5000}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i5 2400", "price": 6000}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i5 2500", "price": 7000}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i7 2600", "price": 22000}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 코어i7 2700", "price": 22000}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G530", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G540", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G550", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G620", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G630", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G640", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G645", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G840", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G850", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G860", "price": 100}, {"type": "CPU", "category": "인텔 2세대", "name": "인텔 펜티엄 G870", "price": 100}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i3 3210", "price": 300}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i3 3220", "price": 500}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i3 3240", "price": 500}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i3 3250", "price": 500}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i5 3330", "price": 5000}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i5 3350", "price": 5000}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i5 3450", "price": 6000}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i5 3470", "price": 8000}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i5 3550", "price": 7000}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i5 3570", "price": 9000}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 코어i7 3770", "price": 29500}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 펜티엄 G1610", "price": 100}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 펜티엄 G1620", "price": 100}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 펜티엄 G1630", "price": 100}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 펜티엄 G2020", "price": 200}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 펜티엄 G2030", "price": 200}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 펜티엄 G2120", "price": 200}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 펜티엄 G2130", "price": 200}, {"type": "CPU", "category": "인텔 3세대", "name": "인텔 펜티엄 G2150", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i3 4130", "price": 500}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i3 4150", "price": 500}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i3 4160", "price": 500}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i3 4170", "price": 500}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i3 4330", "price": 700}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i3 4340", "price": 700}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i3 4360", "price": 700}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i3 4370", "price": 700}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i5 4430", "price": 11000}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i5 4440", "price": 12000}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i5 4450", "price": 12000}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i5 4460", "price": 13000}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i5 4570", "price": 14000}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i5 4590", "price": 14000}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i5 4670", "price": 14000}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i5 4690", "price": 14000}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i7 4770", "price": 32000}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 코어i7 4790", "price": 34500}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G1820", "price": 100}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G1830", "price": 100}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G1840", "price": 100}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G1850", "price": 100}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3220", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3240", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3250", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3258", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3260", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3420", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3430", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3440", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3450", "price": 200}, {"type": "CPU", "category": "인텔 4세대", "name": "인텔 펜티엄 G3460", "price": 200}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 코어i3 6100", "price": 3000}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 코어i3 6300", "price": 3000}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 코어i3 6320", "price": 3000}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 코어i5 6400", "price": 24000}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 코어i5 6500", "price": 25000}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 코어i5 6600", "price": 25000}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 코어i7 6700", "price": 47500}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 펜티엄 G3900", "price": 100}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 펜티엄 G3920", "price": 100}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 펜티엄 G4400", "price": 500}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 펜티엄 G4500", "price": 500}, {"type": "CPU", "category": "인텔 6세대", "name": "인텔 펜티엄 G4520", "price": 500}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 코어i3 7100", "price": 5323}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 코어i3 7300", "price": 5323}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 코어i3 7350", "price": 5323}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 코어i5 7400", "price": 34258}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 코어i5 7500", "price": 36258}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 코어i5 7600", "price": 36258}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 코어i7 7320", "price": 5323}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 코어i7 7700", "price": 67774}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 펜티엄 G3930", "price": 100}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 펜티엄 G3950", "price": 100}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 펜티엄 G4560", "price": 500}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 펜티엄 G4600", "price": 500}, {"type": "CPU", "category": "인텔 7세대", "name": "인텔 펜티엄 G4620", "price": 500}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 셀러론 G4900", "price": 468}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 셀러론 G4920", "price": 468}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 코어i3 8100", "price": 13000}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 코어i3 8350", "price": 14000}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 코어i5 8400", "price": 57000}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 코어i5 8500", "price": 60000}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 코어i5 8600", "price": 60000}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 코어i7 8700", "price": 111694}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 펜티엄 G5400", "price": 1000}, {"type": "CPU", "category": "인텔 8세대", "name": "인텔 펜티엄 G5600", "price": 1000}, {"type": "CPU", "category": "인텔 9세대", "name": "인텔 셀러론 G4930", "price": 474}, {"type": "CPU", "category": "인텔 9세대", "name": "인텔 코어i3 9100", "price": 16661}, {"type": "CPU", "category": "인텔 9세대", "name": "인텔 코어i5 9400", "price": 58177}, {"type": "CPU", "category": "인텔 9세대", "name": "인텔 코어i5 9500", "price": 58597}, {"type": "CPU", "category": "인텔 9세대", "name": "인텔 코어i5 9600", "price": 52218}, {"type": "CPU", "category": "인텔 9세대", "name": "인텔 코어i7 9700", "price": 116855}, {"type": "CPU", "category": "인텔 9세대", "name": "인텔 코어i9 9900", "price": 210538}, {"type": "CPU", "category": "인텔 9세대", "name": "인텔 펜티엄 G5420", "price": 1000}, {"type": "CPU", "category": "인텔 9세대", "name": "인텔 펜티엄 G5620", "price": 1000}, {"type": "CPU", "category": "인텔1366소켓", "name": "인텔 코어i7 920", "price": 200}, {"type": "CPU", "category": "인텔1366소켓", "name": "인텔 코어i7 930", "price": 200}, {"type": "CPU", "category": "인텔1366소켓", "name": "인텔 코어i7 940", "price": 200}, {"type": "CPU", "category": "인텔1366소켓", "name": "인텔 코어i7 950", "price": 200}, {"type": "CPU", "category": "인텔1366소켓", "name": "인텔 코어i7 960", "price": 300}, {"type": "CPU", "category": "인텔1366소켓", "name": "인텔 코어i7 965", "price": 300}, {"type": "CPU", "category": "인텔1366소켓", "name": "인텔 코어i7 975", "price": 300}, {"type": "CPU", "category": "인텔1366소켓", "name": "인텔 코어i7 980", "price": 450}, {"type": "CPU", "category": "인텔1366소켓", "name": "인텔 코어i7 990", "price": 1000}, {"type": "CPU", "category": "인텔2010소켓", "name": "인텔 i7 6900", "price": 4000}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 3820", "price": 500}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 3930", "price": 1000}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 3960", "price": 1500}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 3970", "price": 2000}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 4820", "price": 1000}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 4930", "price": 1500}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 4960", "price": 2000}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 5820", "price": 1500}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 5930", "price": 2000}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 5960", "price": 2500}, {"type": "CPU", "category": "인텔2011소켓", "name": "인텔 i7 6800", "price": 3000}, {"type": "HDD", "category": "노트북용HDD", "name": "노트북용 1.5TB SATA", "price": 7000}, {"type": "HDD", "category": "노트북용HDD", "name": "노트북용 1TB SATA", "price": 6000}, {"type": "HDD", "category": "노트북용HDD", "name": "노트북용 2TB SATA", "price": 12000}, {"type": "HDD", "category": "노트북용HDD", "name": "노트북용 500G SATA", "price": 1000}, {"type": "HDD", "category": "노트북용HDD", "name": "노트북용 640G SATA", "price": 1000}, {"type": "HDD", "category": "노트북용HDD", "name": "노트북용 750G SATA", "price": 1000}, {"type": "HDD", "category": "데스크탑", "name": "8TB SATA", "price": 40000}, {"type": "HDD", "category": "데스크탑HDD", "name": "1.5TB SATA", "price": 6000}, {"type": "HDD", "category": "데스크탑HDD", "name": "10TB SATA", "price": 40000}, {"type": "HDD", "category": "데스크탑HDD", "name": "12TB SATA", "price": 45000}, {"type": "HDD", "category": "데스크탑HDD", "name": "14TB SATA", "price": 50000}, {"type": "HDD", "category": "데스크탑HDD", "name": "16TB SATA", "price": 55000}, {"type": "HDD", "category": "데스크탑HDD", "name": "18TB SATA", "price": 60000}, {"type": "HDD", "category": "데스크탑HDD", "name": "1TB SATA", "price": 5000}, {"type": "HDD", "category": "데스크탑HDD", "name": "2TB SATA", "price": 10000}, {"type": "HDD", "category": "데스크탑HDD", "name": "3TB SATA", "price": 15000}, {"type": "HDD", "category": "데스크탑HDD", "name": "4TB SATA", "price": 20000}, {"type": "HDD", "category": "데스크탑HDD", "name": "500G SATA", "price": 1000}, {"type": "HDD", "category": "데스크탑HDD", "name": "5TB SATA", "price": 25000}, {"type": "HDD", "category": "데스크탑HDD", "name": "640G SATA", "price": 1000}, {"type": "HDD", "category": "데스크탑HDD", "name": "6TB SATA", "price": 30000}, {"type": "HDD", "category": "데스크탑HDD", "name": "750G SATA", "price": 1000}, {"type": "모니터", "category": "삼성/LG", "name": "삼성 LG LED 20인치", "price": 1000}, {"type": "모니터", "category": "삼성/LG", "name": "삼성 LG LED 22인치", "price": 5000}, {"type": "모니터", "category": "삼성/LG", "name": "삼성 LG LED 23인치", "price": 5000}, {"type": "모니터", "category": "삼성/LG", "name": "삼성 LG LED 24인치", "price": 10000}, {"type": "모니터", "category": "삼성/LG", "name": "삼성 LG LED 27인치", "price": 25000}, {"type": "모니터", "category": "삼성/LG", "name": "삼성 LG LED 32인치", "price": 35000}, {"type": "모니터", "category": "중소기업", "name": "중소기업 LED 20인치", "price": 1000}, {"type": "모니터", "category": "중소기업", "name": "중소기업 LED 22인치", "price": 3000}, {"type": "모니터", "category": "중소기업", "name": "중소기업 LED 23인치", "price": 3000}, {"type": "모니터", "category": "중소기업", "name": "중소기업 LED 24인치", "price": 5000}, {"type": "모니터", "category": "중소기업", "name": "중소기업 LED 27인치", "price": 15000}, {"type": "모니터", "category": "중소기업", "name": "중소기업 LED 32인치", "price": 35000}, {"type": "M.B", "category": "RYZEN", "name": "AMD A320 칩셋", "price": 12000}, {"type": "M.B", "category": "RYZEN", "name": "AMD A520 칩셋", "price": 15000}, {"type": "M.B", "category": "RYZEN", "name": "AMD A620 칩셋", "price": 25000}, {"type": "M.B", "category": "RYZEN", "name": "AMD B350 칩셋", "price": 15000}, {"type": "M.B", "category": "RYZEN", "name": "AMD B450 칩셋", "price": 20000}, {"type": "M.B", "category": "RYZEN", "name": "AMD B550 칩셋", "price": 20000}, {"type": "M.B", "category": "RYZEN", "name": "AMD B650 칩셋", "price": 30000}, {"type": "M.B", "category": "RYZEN", "name": "AMD B650E 칩셋", "price": 45000}, {"type": "M.B", "category": "RYZEN", "name": "AMD X370 칩셋", "price": 15000}, {"type": "M.B", "category": "RYZEN", "name": "AMD X399 칩셋", "price": 40000}, {"type": "M.B", "category": "RYZEN", "name": "AMD X470 칩셋", "price": 25000}, {"type": "M.B", "category": "RYZEN", "name": "AMD X570 칩셋", "price": 35000}, {"type": "M.B", "category": "RYZEN", "name": "AMD X670 칩셋", "price": 50000}, {"type": "M.B", "category": "RYZEN", "name": "AMD X670E 칩셋", "price": 55000}, {"type": "M.B", "category": "인텔 10,11세대", "name": "B460 계열 칩셋", "price": 17000}, {"type": "M.B", "category": "인텔 10,11세대", "name": "B560 계열 칩셋", "price": 20000}, {"type": "M.B", "category": "인텔 10,11세대", "name": "H410 계열 칩셋", "price": 15000}, {"type": "M.B", "category": "인텔 10,11세대", "name": "H470 계열 칩셋", "price": 22000}, {"type": "M.B", "category": "인텔 10,11세대", "name": "H510 계열 칩셋", "price": 17000}, {"type": "M.B", "category": "인텔 10,11세대", "name": "H570 계열 칩셋", "price": 23000}, {"type": "M.B", "category": "인텔 10,11세대", "name": "Z490 계열 칩셋", "price": 35000}, {"type": "M.B", "category": "인텔 10,11세대", "name": "Z590 계열 칩셋", "price": 40000}, {"type": "M.B", "category": "인텔 12세대", "name": "B660 계열 칩셋", "price": 30000}, {"type": "M.B", "category": "인텔 12세대", "name": "B760 계열 칩셋", "price": 35000}, {"type": "M.B", "category": "인텔 12세대", "name": "H610 계열 칩셋", "price": 20000}, {"type": "M.B", "category": "인텔 12세대", "name": "H670 계열 칩셋", "price": 35000}, {"type": "M.B", "category": "인텔 12세대", "name": "H770 계열 칩셋", "price": 40000}, {"type": "M.B", "category": "인텔 12세대", "name": "Z690 계열 칩셋", "price": 50000}, {"type": "M.B", "category": "인텔 12세대", "name": "Z790 계열 칩셋", "price": 55000}, {"type": "M.B", "category": "인텔 1366소켓", "name": "X58", "price": 3000}, {"type": "M.B", "category": "인텔 1세대", "name": "H55", "price": 1000}, {"type": "M.B", "category": "인텔 1세대", "name": "P55", "price": 1000}, {"type": "M.B", "category": "인텔 2,3세대", "name": "B75 칩셋 보드", "price": 2000}, {"type": "M.B", "category": "인텔 2,3세대", "name": "H61 칩셋 보드", "price": 2000}, {"type": "M.B", "category": "인텔 2,3세대", "name": "H67 칩셋 보드", "price": 2000}, {"type": "M.B", "category": "인텔 2,3세대", "name": "H77 칩셋 보드", "price": 2000}, {"type": "M.B", "category": "인텔 2,3세대", "name": "P67 칩셋 보드", "price": 2000}, {"type": "M.B", "category": "인텔 2,3세대", "name": "Z68 칩셋 보드", "price": 2000}, {"type": "M.B", "category": "인텔 2,3세대", "name": "Z77 칩셋 보드", "price": 2000}, {"type": "M.B", "category": "인텔 2011소켓", "name": "X79", "price": 3000}, {"type": "M.B", "category": "인텔 2011소켓", "name": "X99", "price": 5000}, {"type": "M.B", "category": "인텔 4세대", "name": "B85 계열 칩셋보드", "price": 4387}, {"type": "M.B", "category": "인텔 4세대", "name": "H81 계열 칩셋보드", "price": 3387}, {"type": "M.B", "category": "인텔 4세대", "name": "H87 계열 칩셋", "price": 4774}, {"type": "M.B", "category": "인텔 4세대", "name": "H97 계열 칩셋", "price": 5161}, {"type": "M.B", "category": "인텔 4세대", "name": "P85 계열 칩셋보드", "price": 4387}, {"type": "M.B", "category": "인텔 4세대", "name": "Z87 계열 칩셋", "price": 5548}, {"type": "M.B", "category": "인텔 4세대", "name": "Z97 계열 칩셋", "price": 6323}, {"type": "M.B", "category": "인텔 4세대", "name": "보드 H81 BTC", "price": 2000}, {"type": "M.B", "category": "인텔 6,7세대", "name": "B150 계열 칩셋", "price": 10000}, {"type": "M.B", "category": "인텔 6,7세대", "name": "B250 계열 칩셋", "price": 11000}, {"type": "M.B", "category": "인텔 6,7세대", "name": "H110 계열 칩셋", "price": 8000}, {"type": "M.B", "category": "인텔 6,7세대", "name": "H270 계열 칩셋", "price": 13000}, {"type": "M.B", "category": "인텔 6,7세대", "name": "Z170 계열 칩셋", "price": 15000}, {"type": "M.B", "category": "인텔 6,7세대", "name": "Z270 계열 칩셋", "price": 20000}, {"type": "M.B", "category": "인텔 6,7세대", "name": "보드 H110 GIGABYTE D3A", "price": 2000}, {"type": "M.B", "category": "인텔 6,7세대", "name": "보드 H170", "price": 12000}, {"type": "M.B", "category": "인텔 8,9세대", "name": "B360/365 계열 칩셋", "price": 12000}, {"type": "M.B", "category": "인텔 8,9세대", "name": "H310 계열 칩셋", "price": 10000}, {"type": "M.B", "category": "인텔 8,9세대", "name": "H370 계열 칩셋", "price": 15000}, {"type": "M.B", "category": "인텔 8,9세대", "name": "Z370 계열 칩셋", "price": 20000}, {"type": "M.B", "category": "인텔 8,9세대", "name": "Z390 계열 칩셋", "price": 25000}, {"type": "POWER", "category": "정격", "name": "Power 정격500W 이상", "price": 1000}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 1G", "price": 100}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 1G 10600", "price": 100}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 1G 8500", "price": 100}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 2G", "price": 100}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 2G 10600", "price": 500}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 2G 12800", "price": 500}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 2G 8500", "price": 500}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 4G", "price": 300}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 4G 10600", "price": 500}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 4G 12800", "price": 1000}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 4G 8500", "price": 1000}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 8G", "price": 2000}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 8G 10600", "price": 6645}, {"type": "RAM", "category": "DDR3 노트북", "name": "DDR3 8G 12800", "price": 8323}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 1G", "price": 100}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 1G 10600", "price": 100}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 1G 8500", "price": 100}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 2G", "price": 200}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 2G 10600", "price": 200}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 2G 12800", "price": 200}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 2G 8500", "price": 200}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 4G", "price": 300}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 4G 10600", "price": 500}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 4G 12800", "price": 500}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 4G 8500", "price": 500}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 8G", "price": 1000}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 8G 10600", "price": 3484}, {"type": "RAM", "category": "DDR3 데스크탑", "name": "DDR3 8G 12800", "price": 3968}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 16G", "price": 20161}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 16G 17000", "price": 31290}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 16G 19200", "price": 31806}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 16G 21300", "price": 34839}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 16G 25600", "price": 39194}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 32G 21300", "price": 60806}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 32G 25600", "price": 64194}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 4G", "price": 742}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 4G 17000", "price": 845}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 4G 19200", "price": 1484}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 4G 21300", "price": 3484}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 8G", "price": 6323}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 8G 17000", "price": 14097}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 8G 19200", "price": 14774}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 8G 21300", "price": 16581}, {"type": "RAM", "category": "DDR4 노트북", "name": "DDR4 8G 25600", "price": 17097}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 16G", "price": 20161}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 16G 17000", "price": 34839}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 16G 19200", "price": 35161}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 16G 21300", "price": 40161}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 16G 23400", "price": 29581}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 16G 25600", "price": 44839}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 32G 25600", "price": 47097}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 4G", "price": 742}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 4G 17000", "price": 3484}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 4G 19200", "price": 3484}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 4G 21300", "price": 3484}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 8G", "price": 6323}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 8G 17000", "price": 13774}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 8G 19200", "price": 14452}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 8G 21300", "price": 16258}, {"type": "RAM", "category": "DDR4 데스크탑", "name": "DDR4 8G 25600", "price": 16452}, {"type": "RAM", "category": "DDR5 노트북", "name": "DDR5 16G", "price": 29839}, {"type": "RAM", "category": "DDR5 노트북", "name": "DDR5 32G", "price": 59839}, {"type": "RAM", "category": "DDR5 노트북", "name": "DDR5 8G", "price": 12419}, {"type": "RAM", "category": "DDR5 데스크탑", "name": "DDR5 16G", "price": 33548}, {"type": "RAM", "category": "DDR5 데스크탑", "name": "DDR5 32G", "price": 59839}, {"type": "RAM", "category": "DDR5 데스크탑", "name": "DDR5 8G", "price": 13161}, {"type": "SSD", "category": "공용", "name": "SSD 120G", "price": 3000}, {"type": "SSD", "category": "공용", "name": "SSD 1TB", "price": 22500}, {"type": "SSD", "category": "공용", "name": "SSD 240G", "price": 8500}, {"type": "SSD", "category": "공용", "name": "SSD 2TB", "price": 40000}, {"type": "SSD", "category": "공용", "name": "SSD 500G", "price": 17500}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R7 240 2G", "price": 1000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R7 250 1G", "price": 1000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R7 260", "price": 1000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R7 260X 2G", "price": 1000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 270 2G", "price": 1000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 270X 2G", "price": 1000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 280 2G", "price": 1000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 280X 3G", "price": 1000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 290 4G", "price": 1000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 290X 4G", "price": 2000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 370 2G", "price": 2000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 370X 2G", "price": 3000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 380 4G", "price": 3000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 380X 4G", "price": 4000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 390 8G", "price": 5000}, {"type": "VGA", "category": "AMD(ATI)", "name": "ATI R9 390X 8G", "price": 6000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 460", "price": 2000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 470", "price": 3000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 480", "price": 7500}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 5300", "price": 10000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 550", "price": 2000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 5500", "price": 15000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 5500 XT", "price": 20000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 560", "price": 4000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 5600", "price": 25000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 5600 XT", "price": 30000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 570", "price": 9000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 5700", "price": 55000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 5700 XT", "price": 65000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 580", "price": 12500}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6400", "price": 20000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6500 XT", "price": 30000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6600", "price": 40000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6600 XT", "price": 60000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6700 XT", "price": 90000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6750 XT", "price": 95000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6800", "price": 130000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6800 XT", "price": 150000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6900 XT", "price": 170000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 6950 XT", "price": 230000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 7600", "price": 80000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 7600 XT", "price": 120000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 7700 XT", "price": 160000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 7800 XT", "price": 200000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 7900 GRE", "price": 280000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 7900 XT", "price": 300000}, {"type": "VGA", "category": "AMD(ATI)", "name": "RX 7900 XTX", "price": 450000}, {"type": "VGA", "category": "NVIDIA", "name": "GT 1030", "price": 10000}, {"type": "VGA", "category": "NVIDIA", "name": "GT 520", "price": 1000}, {"type": "VGA", "category": "NVIDIA", "name": "GT 610", "price": 2000}, {"type": "VGA", "category": "NVIDIA", "name": "GT 630", "price": 2000}, {"type": "VGA", "category": "NVIDIA", "name": "GT 640", "price": 2000}, {"type": "VGA", "category": "NVIDIA", "name": "GT 710", "price": 3000}, {"type": "VGA", "category": "NVIDIA", "name": "GT 730", "price": 3000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1050", "price": 35000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1050 TI", "price": 40000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1060", "price": 52500}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1070", "price": 70000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1070 TI", "price": 75000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1080", "price": 80000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1080 TI", "price": 90000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1650", "price": 70000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1660", "price": 90000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 1660 TI", "price": 100000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 550 TI", "price": 1000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 560", "price": 1000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 560 SE", "price": 1000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 560 TI", "price": 1000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 570", "price": 1000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 580", "price": 1000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 650", "price": 2000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 650 TI", "price": 2667}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 660", "price": 4000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 660 TI", "price": 5000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 670", "price": 6000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 680", "price": 7000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 690", "price": 8000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 750", "price": 8000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 750 TI", "price": 10000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 760", "price": 12000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 770", "price": 13000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 780", "price": 16000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 780 TI", "price": 20000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 950", "price": 15000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 960", "price": 26000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 970", "price": 28000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 980", "price": 30000}, {"type": "VGA", "category": "NVIDIA", "name": "GTX 980 TI", "price": 35000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 2060", "price": 112500}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 2070", "price": 120000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 2080", "price": 130000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 2080 SUPER", "price": 140000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 2080 TI", "price": 150000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 3050", "price": 100000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 3060", "price": 160000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 3060 TI", "price": 170000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 3070", "price": 200000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 3070 TI", "price": 220000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 3080", "price": 240000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 3080 TI", "price": 280000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 3090", "price": 450000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 3090 TI", "price": 500000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 4060", "price": 170000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 4060 TI", "price": 190000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 4070", "price": 310000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 4070 SUPER", "price": 380000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 4070 TI", "price": 430000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 4070 TI SUPER", "price": 480000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 4080", "price": 570000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 4080 SUPER", "price": 620000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 4090", "price": 2300000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 5060", "price": 280000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 5060 TI", "price": 380000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 5070", "price": 490000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 5070 TI", "price": 670000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 5080", "price": 980000}, {"type": "VGA", "category": "NVIDIA", "name": "RTX 5090", "price": 2500000}, {"type": "VGA", "category": "NVIDIA", "name": "쿼드로 A100", "price": 4300000}, {"type": "VGA", "category": "NVIDIA", "name": "쿼드로 A4000", "price": 300000}, {"type": "VGA", "category": "NVIDIA", "name": "쿼드로 A5000", "price": 500000}, {"type": "VGA", "category": "NVIDIA", "name": "쿼드로 A6000", "price": 3000000}, {"type": "VGA", "category": "NVIDIA", "name": "쿼드로 H100", "price": 17741935}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 10세대 14 / 15인치", "price": 90000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 11세대 14 / 15인치", "price": 140000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 12세대 14 / 15인치", "price": 170000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 13세대 14 / 15인치", "price": 180000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 1세대 14 / 15인치", "price": 5000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 2세대 14 / 15인치", "price": 5000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 3세대 14 / 15인치", "price": 5000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 4세대 14 / 15인치", "price": 10000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 5세대 14 / 15인치", "price": 10000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 6세대 14 / 15인치", "price": 25000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 7세대 14 / 15인치", "price": 45000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 8세대 14 / 15인치", "price": 70000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I3 9세대 14 / 15인치", "price": 70000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 10세대 14 / 15인치", "price": 135000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 11세대 14 / 15인치", "price": 190000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 12세대 14 / 15인치", "price": 220000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 13세대 14 / 15인치", "price": 280000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 1세대 14 / 15인치", "price": 5000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 2세대 14 / 15인치", "price": 10000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 3세대 14 / 15인치", "price": 10000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 4세대 14 / 15인치", "price": 15000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 5세대 14 / 15인치", "price": 20000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 6세대 14 / 15인치", "price": 35000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 7세대 14 / 15인치", "price": 55000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 8세대 14 / 15인치", "price": 110000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I5 9세대 14 / 15인치", "price": 110000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 10세대 14 / 15인치", "price": 175000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 11세대 14 / 15인치", "price": 200000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 12세대 14 / 15인치", "price": 250000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 13세대 14 / 15인치", "price": 320000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 1세대 14 / 15인치", "price": 5000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 2세대 14 / 15인치", "price": 10000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 3세대 14 / 15인치", "price": 15000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 4세대 14 / 15인치", "price": 25000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 5세대 14 / 15인치", "price": 25000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 6세대 14 / 15인치", "price": 45000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 7세대 14 / 15인치", "price": 65000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 8세대 14 / 15인치", "price": 120000}, {"type": "노트북", "category": "HP / DELL / 기타", "name": "인텔 I7 9세대 14 / 15인치", "price": 120000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 10세대 14 / 15인치", "price": 130000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 11세대 14 / 15인치", "price": 160000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 12세대 14 / 15인치", "price": 180000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 13세대 14 / 15인치", "price": 180000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 1세대 14 / 15인치", "price": 10000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 2세대 14 / 15인치", "price": 10000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 3세대 14 / 15인치", "price": 10000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 4세대 14 / 15인치", "price": 15000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 5세대 14 / 15인치", "price": 25000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 6세대 14 / 15인치", "price": 35000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 7세대 14 / 15인치", "price": 55000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 8세대 14 / 15인치", "price": 80000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I3 9세대 14 / 15인치", "price": 80000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 10세대 14 / 15인치", "price": 170000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 11세대 14 / 15인치", "price": 220000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 12세대 14 / 15인치", "price": 250000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 13세대 14 / 15인치", "price": 320000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 1세대 14 / 15인치", "price": 15000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 2세대 14 / 15인치", "price": 20000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 3세대 14 / 15인치", "price": 20000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 4세대 14 / 15인치", "price": 25000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 5세대 14 / 15인치", "price": 35000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 6세대 14 / 15인치", "price": 45000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 7세대 14 / 15인치", "price": 65000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 8세대 14 / 15인치", "price": 120000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I5 9세대 14 / 15인치", "price": 120000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 10세대 14 / 15인치", "price": 210000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 11세대 14 / 15인치", "price": 240000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 12세대 14 / 15인치", "price": 290000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 13세대 14 / 15인치", "price": 360000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 1세대 14 / 15인치", "price": 20000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 2세대 14 / 15인치", "price": 25000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 3세대 14 / 15인치", "price": 25000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 4세대 14 / 15인치", "price": 35000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 5세대 14 / 15인치", "price": 45000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 6세대 14 / 15인치", "price": 55000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 7세대 14 / 15인치", "price": 75000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 8세대 14 / 15인치", "price": 130000}, {"type": "노트북", "category": "삼성 / LG", "name": "인텔 I7 9세대 14 / 15인치", "price": 130000}];
+
+  // State
+  const state = {
+    device: '노트북',
+    specs: {},
+    condition: 'A급 (정상)'
+  };
+
+  const secondPriceTable = {
+    "노트북": {
+      "Dell": {
+        "10세대 i5/8G/X": 96000,
+        "11세대 i5/8G/X": 104000,
+        "12세대 i5/8G/X": 120000,
+        "13세대 i5/8G/X": 160000,
+        "14세대 i5/8G/X": 184000,
+        "1세대 i5/4G/X": 4000,
+        "2세대 i5/4G/X": 4000,
+        "3세대 i5/4G/X": 4000,
+        "4세대 i5/4G/X": 8000,
+        "5세대 i5/4G/X": 16000,
+        "6세대 i5/8G/X": 48000,
+        "7세대 i5/8G/X": 48000,
+        "8세대 i5/8G/X": 64000,
+        "9세대 i5/8G/X": 72000,
+        "Core2Duo이하": 4000
+      },
+      "HP": {
+        "10세대 i5/8G/X": 96000,
+        "11세대 i5/8G/X": 104000,
+        "12세대 i5/8G/X": 120000,
+        "13세대 i5/8G/X": 160000,
+        "14세대 i5/8G/X": 184000,
+        "1세대 i5/4G/X": 4000,
+        "2세대 i5/4G/X": 4000,
+        "3세대 i5/4G/X": 4000,
+        "4세대 i5/4G/X": 8000,
+        "5세대 i5/4G/X": 16000,
+        "6세대 i5/8G/X": 48000,
+        "7세대 i5/8G/X": 48000,
+        "8세대 i5/8G/X": 64000,
+        "9세대 i5/8G/X": 72000,
+        "Core2Duo이하": 4000
+      },
+      "Lenovo": {
+        "10세대 i5/8G/X": 96000,
+        "11세대 i5/8G/X": 104000,
+        "12세대 i5/8G/X": 120000,
+        "13세대 i5/8G/X": 160000,
+        "14세대 i5/8G/X": 184000,
+        "1세대 i5/4G/X": 4000,
+        "2세대 i5/4G/X": 4000,
+        "3세대 i5/4G/X": 4000,
+        "4세대 i5/4G/X": 8000,
+        "5세대 i5/4G/X": 16000,
+        "6세대 i5/8G/X": 48000,
+        "7세대 i5/8G/X": 48000,
+        "8세대 i5/8G/X": 64000,
+        "9세대 i5/8G/X": 72000,
+        "Core2Duo이하": 4000
+      },
+      "기타": {
+        "10세대 i5/8G/X": 72000,
+        "11세대 i5/8G/X": 80000,
+        "12세대 i5/8G/X": 96000,
+        "13세대 i5/8G/X": 128000,
+        "14세대 i5/8G/X": 160000,
+        "1세대 i5/4G/X": 4000,
+        "2세대 i5/4G/X": 4000,
+        "3세대 i5/4G/X": 4000,
+        "4세대 i5/4G/X": 8000,
+        "5세대 i5/4G/X": 16000,
+        "6세대 i5/8G/X": 24000,
+        "7세대 i5/8G/X": 24000,
+        "8세대 i5/8G/X": 40000,
+        "9세대 i5/8G/X": 48000,
+        "Core2Duo이하": 4000
+      },
+      "삼성": {
+        "10세대 i5/8G/X": 160000,
+        "11세대 i5/8G/X": 200000,
+        "12세대 i5/8G/X": 240000,
+        "13세대 i5/8G/X": 280000,
+        "14세대 i5/8G/X": 320000,
+        "1세대 i5/4G/X": 4000,
+        "2세대 i5/4G/X": 4000,
+        "3세대 i5/4G/X": 4000,
+        "4세대 i5/4G/X": 16000,
+        "5세대 i5/4G/X": 24000,
+        "6세대 i5/8G/X": 64000,
+        "7세대 i5/8G/X": 64000,
+        "8세대 i5/8G/X": 120000,
+        "9세대 i5/8G/X": 120000,
+        "Core2Duo이하": 4000
+      },
+      "애플": {
+        "10세대 i5/8G/X": 240000,
+        "1세대 i5/4G/X": 4000,
+        "2세대 i5/4G/X": 4000,
+        "3세대 i5/4G/X": 4000,
+        "4세대 i5/4G/X": 16000,
+        "5세대 i5/4G/X": 24000,
+        "6세대 i5/8G/X": 88000,
+        "7세대 i5/8G/X": 88000,
+        "8세대 i5/8G/X": 160000,
+        "9세대 i5/8G/X": 200000,
+        "Core2Duo이하": 4000,
+        "M1/8G/256G": 280000,
+        "M2/8G/256G": null,
+        "M3/8G/X": null,
+        "M4/8G/X": null
+      },
+      "엘지": {
+        "10세대 i5/8G/X": 184000,
+        "11세대 i5/8G/X": 224000,
+        "12세대 i5/8G/X": 264000,
+        "13세대 i5/8G/X": 304000,
+        "14세대 i5/8G/X": 344000,
+        "1세대 i5/4G/X": 4000,
+        "2세대 i5/4G/X": 4000,
+        "3세대 i5/4G/X": 4000,
+        "4세대 i5/4G/X": 16000,
+        "5세대 i5/4G/X": 24000,
+        "6세대 i5/8G/X": 88000,
+        "7세대 i5/8G/X": 88000,
+        "8세대 i5/8G/X": 144000,
+        "9세대 i5/8G/X": 144000,
+        "Core2Duo이하": 4000
+      }
+    },
+    "데스크탑": {
+      "Dell": {
+        "10세대": 40000,
+        "11세대": 48000,
+        "12세대": 64000,
+        "13세대": 64000,
+        "14세대": 80000,
+        "1세대": 6000,
+        "2세대": 6000,
+        "3세대": 6000,
+        "4세대": 6000,
+        "5세대": null,
+        "6세대": 16000,
+        "7세대": 16000,
+        "8세대": 32000,
+        "9세대": 32000,
+        "Core2Duo이하": 6000
+      },
+      "HP": {
+        "10세대": 40000,
+        "11세대": 48000,
+        "12세대": 64000,
+        "13세대": 64000,
+        "14세대": 80000,
+        "1세대": 6000,
+        "2세대": 6000,
+        "3세대": 6000,
+        "4세대": 6000,
+        "5세대": null,
+        "6세대": 16000,
+        "7세대": 16000,
+        "8세대": 32000,
+        "9세대": 32000,
+        "Core2Duo이하": 6000
+      },
+      "Lenovo": {
+        "10세대": 40000,
+        "11세대": 48000,
+        "12세대": 64000,
+        "13세대": 64000,
+        "14세대": 80000,
+        "1세대": 6000,
+        "2세대": 6000,
+        "3세대": 6000,
+        "4세대": 6000,
+        "5세대": null,
+        "6세대": 16000,
+        "7세대": 16000,
+        "8세대": 32000,
+        "9세대": 32000,
+        "Core2Duo이하": 6000
+      },
+      "기타": {
+        "10세대": 40000,
+        "11세대": 48000,
+        "12세대": 64000,
+        "13세대": 64000,
+        "14세대": 80000,
+        "1세대": 6000,
+        "2세대": 6000,
+        "3세대": 6000,
+        "4세대": 6000,
+        "5세대": null,
+        "6세대": 16000,
+        "7세대": 16000,
+        "8세대": 32000,
+        "9세대": 32000,
+        "Core2Duo이하": 6000
+      },
+      "삼성": {
+        "10세대": 120000,
+        "11세대": 128000,
+        "12세대": 144000,
+        "13세대": 152000,
+        "14세대": 176000,
+        "1세대": 6000,
+        "2세대": 6000,
+        "3세대": 6000,
+        "4세대": 16000,
+        "5세대": null,
+        "6세대": 24000,
+        "7세대": 56000,
+        "8세대": 72000,
+        "9세대": 72000,
+        "Core2Duo이하": 6000
+      },
+      "애플": {
+        "10세대 i5/8G/X": null,
+        "1세대 i5/4G/X": 6000,
+        "2세대 i5/4G/X": 6000,
+        "3세대 i5/4G/X": 6000,
+        "4세대 i5/4G/X": 6000,
+        "5세대 i5/4G/X": null,
+        "6세대 i5/8G/X": null,
+        "7세대 i5/8G/X": null,
+        "8세대 i5/8G/X": null,
+        "9세대 i5/8G/X": null,
+        "Core2Duo이하": 6000,
+        "M1/8G/X": null,
+        "M2/8G/X": null,
+        "M3/8G/X": null,
+        "M4/8G/X": null
+      },
+      "엘지": {
+        "10세대": 40000,
+        "11세대": 48000,
+        "12세대": 64000,
+        "13세대": 64000,
+        "14세대": 80000,
+        "1세대": 6000,
+        "2세대": 6000,
+        "3세대": 6000,
+        "4세대": 6000,
+        "5세대": null,
+        "6세대": 16000,
+        "7세대": 16000,
+        "8세대": 32000,
+        "9세대": 32000,
+        "Core2Duo이하": 6000
+      }
+    }
+  };
+
+  function getSecondManufacturers(device) {
+    const src = secondPriceTable[device];
+    if (!src) return [];
+    return Object.keys(src).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+  }
+
+  function getSecondModels(device, manufacturer) {
+    const src = secondPriceTable[device] && secondPriceTable[device][manufacturer];
+    if (!src) return [];
+    return Object.keys(src).sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
+  }
+
+  function getSecondPrice(device, manufacturer, model) {
+    const src = secondPriceTable[device] && secondPriceTable[device][manufacturer];
+    if (!src) return null;
+    const val = src[model];
+    return typeof val === 'number' ? val : null;
+  }
+
+  // Helper to get unique items from priceDB
+  function getCategories(type) {
+    const cats = new Set();
+    priceDB.forEach(d => { if (d.type === type && d.category) cats.add(d.category); });
+    return Array.from(cats).sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
+  }
+  
+  function getNames(type, category) {
+    return priceDB.filter(d => d.type === type && (!category || d.category === category)).map(d => d.name).sort((a, b) => a.localeCompare(b, undefined, {numeric: true, sensitivity: 'base'}));
+  }
+
+  // Populate dropdown logic
+  function renderDynamicSpecs() {
+    const container = document.getElementById('dynamic-specs-container');
+    let html = '';
+    state.specs = {}; // reset specs
+    
+    if (state.device === '노트북' || state.device === '데스크탑') {
+      const typeValue = state.device;
+      const mans = getSecondManufacturers(typeValue);
+      html = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">제조사</label>
+            <select id="spec-category" onchange="updateSecondModels('${typeValue}'); updateSummary()" class="w-full pl-3 pr-10 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm">
+              <option value="">선택해주세요</option>
+              ${mans.map(c => `<option value="${c}">${c}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">세대/모델</label>
+            <select id="spec-name" onchange="updateSummary()" class="w-full pl-3 pr-10 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm">
+              <option value="">제조사를 먼저 선택해주세요</option>
+            </select>
+          </div>
+        </div>
+      `;
+    } else if (state.device === '모니터') {
+      const typeValue = state.device;
+      const cats = getCategories(typeValue);
+      html = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">제조사 (분류)</label>
+            <select id="spec-category" onchange="updateNames('${typeValue}'); updateSummary()" class="w-full pl-3 pr-10 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm">
+              <option value="">선택해주세요</option>
+              ${cats.map(c => `<option value="${c}">${c}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">상세 사양 (모델/크기)</label>
+            <select id="spec-name" onchange="updateSummary()" class="w-full pl-3 pr-10 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm">
+              <option value="">제조사를 먼저 선택해주세요</option>
+            </select>
+          </div>
+        </div>
+      `;
+    } else if (state.device === '부품') {
+      const types = ['CPU', 'RAM', 'SSD', 'VGA'];
+      html = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">부품 종류</label>
+            <select id="spec-part-type" onchange="updatePartCategories(); updateSummary()" class="w-full pl-3 pr-10 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm">
+              <option value="">선택해주세요</option>
+              ${types.map(t => `<option value="${t}">${t}</option>`).join('')}
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">분류/세대</label>
+            <select id="spec-category" onchange="updateNames(document.getElementById('spec-part-type').value); updateSummary()" class="w-full pl-3 pr-10 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm">
+              <option value="">종류를 먼저 선택해주세요</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">상세 사양</label>
+            <select id="spec-name" onchange="updateSummary()" class="w-full pl-3 pr-10 py-3 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm">
+              <option value="">분류를 먼저 선택해주세요</option>
+            </select>
+          </div>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = html;
+  }
+
+  function updateSecondModels(device) {
+    const manuEl = document.getElementById('spec-category');
+    const nameSelect = document.getElementById('spec-name');
+    if (!manuEl || !nameSelect) return;
+    const manu = manuEl.value;
+    const models = getSecondModels(device, manu);
+    nameSelect.innerHTML = '<option value="">선택해주세요</option>' + models.map(n => `<option value="${n}">${n}</option>`).join('');
+  }
+
+  function updateNames(typeValue) {
+    const catSelect = document.getElementById('spec-category');
+    const nameSelect = document.getElementById('spec-name');
+    if(!catSelect || !nameSelect) return;
+    
+    const cat = catSelect.value;
+    const names = getNames(typeValue, cat);
+    nameSelect.innerHTML = '<option value="">선택해주세요</option>' + names.map(n => `<option value="${n}">${n}</option>`).join('');
+  }
+
+  function updatePartCategories() {
+    const typeValue = document.getElementById('spec-part-type').value;
+    const catSelect = document.getElementById('spec-category');
+    const nameSelect = document.getElementById('spec-name');
+    
+    if(!typeValue) {
+      catSelect.innerHTML = '<option value="">종류를 먼저 선택해주세요</option>';
+      nameSelect.innerHTML = '<option value="">분류를 먼저 선택해주세요</option>';
+      return;
+    }
+    
+    const cats = getCategories(typeValue);
+    catSelect.innerHTML = '<option value="">선택해주세요</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    nameSelect.innerHTML = '<option value="">분류를 먼저 선택해주세요</option>';
+  }
+
+  // Device Selection
+  function selectDevice(type, label) {
+    state.device = label;
+    
+    // Update UI Tabs
+    document.querySelectorAll('.device-selector').forEach(el => {
+      el.classList.remove('border-2', 'border-primary', 'bg-primary/5', 'dark:bg-primary/10');
+      el.classList.add('border', 'border-gray-200', 'dark:border-gray-700', 'opacity-60');
+      el.querySelector('.check-icon').classList.add('hidden');
+    });
+    
+    const selected = document.getElementById(`device-${type}`);
+    if(selected) {
+      selected.classList.remove('border', 'border-gray-200', 'dark:border-gray-700', 'opacity-60');
+      selected.classList.add('border-2', 'border-primary', 'bg-primary/5', 'dark:bg-primary/10');
+      selected.querySelector('.check-icon').classList.remove('hidden');
+    }
+
+    renderDynamicSpecs();
+    updateSummary();
+  }
+
+  // Condition Selection
+  function updateCondition(element, label) {
+    state.condition = label;
+    document.querySelectorAll('.condition-label').forEach(lbl => {
+      lbl.classList.remove('border-primary', 'bg-primary/5', 'dark:bg-primary/10');
+      lbl.classList.add('border-gray-200', 'dark:border-gray-700');
+    });
+
+    const labelEl = element.closest('label');
+    if(labelEl) {
+      labelEl.classList.remove('border-gray-200', 'dark:border-gray-700');
+      labelEl.classList.add('border-primary', 'bg-primary/5', 'dark:bg-primary/10');
+    }
+    updateSummary();
+  }
+
+  // Lookup price based on selection
+  function computePriceFor(s) {
+    let basePrice = 0;
+    
+    if (s.device === '노트북' || s.device === '데스크탑') {
+      const val = getSecondPrice(s.device, s.specs.category, s.specs.name);
+      if (typeof val === 'number') basePrice = val;
+    } else if (s.device === '모니터') {
+      const item = priceDB.find(d => d.type === s.device && d.category === s.specs.category && d.name === s.specs.name);
+      if (item) basePrice = item.price;
+    } else if (s.device === '부품') {
+      const item = priceDB.find(d => d.type === s.specs.part_type && d.category === s.specs.category && d.name === s.specs.name);
+      if (item) basePrice = item.price;
+    }
+    
+    // Simple condition penalty logic
+    // If B급: -15% or fixed amount
+    // If C급: -40% or fixed amount
+    if (s.condition.includes('B급')) {
+      basePrice = Math.floor(basePrice * 0.85); 
+    } else if (s.condition.includes('C급')) {
+      basePrice = Math.floor(basePrice * 0.60);
+    }
+    
+    return basePrice;
+  }
+
+  // Summary Update
+  function updateSummary() {
+    // Collect current state from DOM
+    if (state.device === '노트북' || state.device === '데스크탑' || state.device === '모니터') {
+      const catEl = document.getElementById('spec-category');
+      const nameEl = document.getElementById('spec-name');
+      state.specs.category = catEl ? catEl.value : '';
+      state.specs.name = nameEl ? nameEl.value : '';
+    } else if (state.device === '부품') {
+      const pTypeEl = document.getElementById('spec-part-type');
+      const catEl = document.getElementById('spec-category');
+      const nameEl = document.getElementById('spec-name');
+      state.specs.part_type = pTypeEl ? pTypeEl.value : '';
+      state.specs.category = catEl ? catEl.value : '';
+      state.specs.name = nameEl ? nameEl.value : '';
+    }
+    
+    // Update Sidebar Text
+    document.getElementById('summary-device').textContent = state.device;
+    
+    // Manufacturer and CPU area
+    let manuText = '-';
+    let cpuText = '-';
+    let memText = '';
+    
+    if (state.device === '노트북' || state.device === '데스크탑' || state.device === '모니터') {
+      manuText = state.specs.category || '-';
+      cpuText = state.specs.name || '-';
+    } else if (state.device === '부품') {
+      manuText = state.specs.category || '-';
+      cpuText = (state.specs.part_type || '') + ' ' + (state.specs.name || '-');
+    }
+    
+    document.getElementById('summary-manufacturer').textContent = manuText;
+    document.getElementById('summary-cpu').textContent = cpuText;
+    const memEl = document.getElementById('summary-memory');
+    if(memEl) memEl.innerHTML = memText ? memText : '';
+    
+    document.getElementById('summary-condition').textContent = state.condition;
+    
+    // Pricing
+    const price = computePriceFor(state);
+    if ((state.device === '노트북' || state.device === '데스크탑') && state.specs.category && state.specs.name) {
+      const raw = getSecondPrice(state.device, state.specs.category, state.specs.name);
+      document.getElementById('summary-price').textContent = typeof raw === 'number' ? `₩ ${price.toLocaleString()} ~` : '가격 문의';
+    } else {
+      document.getElementById('summary-price').textContent = price > 0 ? `₩ ${price.toLocaleString()} ~` : '₩ 0 ~';
+    }
+  }
+
+  let devices = [];
+
+
+  function renderAddedDevices() {
+    const section = document.getElementById('added-devices-section');
+    const list = document.getElementById('added-device-list');
+    const countEl = document.getElementById('added-count');
+    const totalEl = document.getElementById('added-total');
+    if (!section || !list) return;
+    if (devices.length === 0) {
+      section.classList.add('hidden');
+      list.innerHTML = '';
+      countEl.textContent = '0대';
+      totalEl.textContent = '₩ 0';
+      return;
+    }
+    section.classList.remove('hidden');
+    const totalUnits = devices.reduce((n, d) => n + (d.qty || 1), 0);
+    countEl.textContent = totalUnits + '대';
+    let total = 0;
+    list.innerHTML = devices.map((d, idx) => {
+      const priceVal = d.price_value || computePriceFor(d);
+      const qty = d.qty || 1;
+      const lineTotal = priceVal * qty;
+      total += lineTotal;
+      
+      let specDetail = '';
+      if (d.device === '노트북' || d.device === '데스크탑' || d.device === '모니터') {
+        specDetail = d.specs.name;
+      } else if (d.device === '부품') {
+        specDetail = d.specs.part_type + ' / ' + d.specs.name;
+      }
+      
+      let manu = d.specs.category || '-';
+
+      const editingBadge = (editingIndex === idx) ? '<span class="ml-2 text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary align-middle">수정중</span>' : '';
+      
+      return `
+        <div class="p-3 rounded-xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm ring-1 ring-primary/10 ${editingIndex === idx ? 'border-primary' : ''}">
+         <div class="flex items-start justify-between">
+          <div class="flex-1">
+           <div class="text-sm font-bold text-gray-900 dark:text-white">${d.device} · ${manu}${editingBadge}</div>
+           <div class="text-xs text-gray-500 mt-1">${specDetail || '상세 미선택'} · ${d.condition}</div>
+          </div>
+         </div>
+         <div class="mt-2 flex items-center justify-between gap-2 flex-wrap">
+          <div class="flex items-center gap-2">
+           <button onclick="decQty(${idx})" class="px-2 h-7 rounded bg-red-50 border border-red-300 text-red-700 hover:bg-red-100 dark:bg-red-900/40 dark:border-red-700 dark:text-red-200 dark:hover:bg-red-800/50">-</button>
+           <span class="text-xs text-gray-600 dark:text-gray-300">x${qty}</span>
+           <button onclick="incQty(${idx})" class="px-2 h-7 rounded bg-red-50 border border-red-300 text-red-700 hover:bg-red-100 dark:bg-red-900/40 dark:border-red-700 dark:text-red-200 dark:hover:bg-red-800/50">+</button>
+           <span class="mx-1">·</span>
+           <button onclick="removeDevice(${idx})" class="text-xs text-red-500 hover:underline">제거</button>
+          </div>
+          <div class="text-right">
+           <div class="text-base font-extrabold text-primary">₩ ${lineTotal.toLocaleString()} ~</div>
+          </div>
+         </div>
+        </div>
+       `;
+    }).join('');
+    totalEl.textContent = '₩ ' + total.toLocaleString();
+  }
+
+  let editingIndex = null;
+
+  function incQty(index) {
+    devices[index].qty = (devices[index].qty || 1) + 1;
+    
+    renderAddedDevices();
+  }
+
+  function decQty(index) {
+    const current = devices[index];
+    const qty = (current.qty || 1) - 1;
+    if (qty <= 0) {
+      devices.splice(index, 1);
+    } else {
+      current.qty = qty;
+    }
+    
+    renderAddedDevices();
+  }
+
+  function addCurrentDevice() {
+    const price = computePriceFor(state);
+    if ((state.device === '노트북' || state.device === '데스크탑') && (!state.specs.category || !state.specs.name)) {
+      alert('제조사와 세대/모델을 선택해주세요.');
+      return;
+    }
+    if (state.device === '노트북' || state.device === '데스크탑') {
+      const raw = getSecondPrice(state.device, state.specs.category, state.specs.name);
+      if (raw === null) {
+        alert('해당 모델은 매입가가 없어 추가할 수 없습니다.');
+        return;
+      }
+    }
+    // Copy state deeply for adding
+    const device = {
+      device: state.device,
+      manufacturer: state.specs && state.specs.category ? state.specs.category : '',
+      model: state.specs && state.specs.name ? state.specs.name : '',
+      specs: JSON.parse(JSON.stringify(state.specs)),
+      condition: state.condition,
+      price_value: price,
+      qty: 1
+    };
+    devices.push(device);
+    
+    renderAddedDevices();
+    alert('기기가 추가되었습니다.');
+  }
+
+  function removeDevice(index) {
+    devices.splice(index, 1);
+    
+    renderAddedDevices();
+  }
+
+  function goToCollection() {
+	  if (!devices || devices.length === 0) {
+		addCurrentDevice();
+	  }
+
+	  if (!devices || devices.length === 0) {
+		alert('추가된 기기가 없습니다.');
+		return;
+	  }
+
+	  const total = devices.reduce(function(sum, d) {
+		return sum + (d.price_value || 0) * (d.qty || 1);
+	  }, 0);
+
+	  fetch('<?php echo site_url('sell/save-devices'); ?>', {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+		},
+		body: new URLSearchParams({
+		  devices: JSON.stringify(devices),
+		  total_price: '₩ ' + total.toLocaleString()
+		})
+	  })
+	  .then(function(response) {
+		return response.json();
+	  })
+	  .then(function(data) {
+		if (data.result === 'ok') {
+		  location.href = '<?php echo site_url('sell/pickup'); ?>';
+		} else {
+		  alert(data.message || '처리 중 오류가 발생했습니다.');
+		}
+	  })
+	  .catch(function() {
+		alert('서버 통신 중 오류가 발생했습니다.');
+	  });
+  }
+
+  // Initialize 
+  renderDynamicSpecs();
+  updateSummary();
+  renderAddedDevices();
+
+</script>
