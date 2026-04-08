@@ -1,83 +1,121 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-/**
- * Class Buyback_model
- *
- * buyback 관련 핵심 비즈니스 데이터 접근 모델.
- *
- * 중요:
- * - 관리자 조회/상세/API 전송 대상 조회에는 partner_id 조건을 강제한다.
- */
 class Buyback_model extends CI_Model
 {
-    protected $request_table = 'buyback_requests';
-    protected $device_table = 'buyback_request_devices';
-    protected $api_log_table = 'buyback_api_logs';
+    protected $table_request = 'buyback_request';
+    protected $table_device  = 'buyback_request_device';
 
-    /**
-     * 일반 회원 매입요청 생성.
-     */
-    public function create_request($data)
+    public function insert_request_with_devices($request_data, $devices)
     {
-        $this->db->insert($this->request_table, $data);
-        return (int) $this->db->insert_id();
+        $this->db->trans_begin();
+
+        $this->db->insert($this->table_request, $request_data);
+        $request_id = $this->db->insert_id();
+
+        if (!$request_id) {
+            $this->db->trans_rollback();
+            return false;
+        }
+
+        foreach ($devices as $device) {
+            $row = array(
+                'request_id'       => $request_id,
+                'device_type'      => isset($device['device_type']) ? $device['device_type'] : '',
+                'manufacturer'     => isset($device['manufacturer']) ? $device['manufacturer'] : '',
+                'model_name'       => isset($device['model_name']) ? $device['model_name'] : '',
+                'part_type'        => isset($device['part_type']) ? $device['part_type'] : '',
+                'category_name'    => isset($device['category_name']) ? $device['category_name'] : '',
+                'condition_grade'  => isset($device['condition_grade']) ? $device['condition_grade'] : '',
+                'qty'              => isset($device['qty']) ? (int)$device['qty'] : 1,
+                'unit_price_value' => isset($device['unit_price_value']) ? (int)$device['unit_price_value'] : 0,
+                'unit_price_text'  => isset($device['unit_price_text']) ? $device['unit_price_text'] : '',
+                'spec_json'        => isset($device['spec_json']) ? $device['spec_json'] : null,
+                'sort_order'       => isset($device['sort_order']) ? (int)$device['sort_order'] : 1
+            );
+
+            $this->db->insert($this->table_device, $row);
+        }
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+            return false;
+        }
+
+        $this->db->trans_commit();
+        return $request_id;
     }
 
-    /**
-     * 매입요청 디바이스 행 추가.
-     */
-    public function add_request_device($data)
+    public function get_request_list()
     {
-        $this->db->insert($this->device_table, $data);
-        return (int) $this->db->insert_id();
-    }
+        $this->db->select('r.*');
+        $this->db->from($this->table_request . ' r');
+        $this->db->order_by('r.id', 'DESC');
 
-    /**
-     * 관리자 목록 조회(반드시 partner_id 제한).
-     */
-    public function get_requests_by_partner($partner_id, $limit = 50, $offset = 0)
-    {
-        return $this->db
-            ->where('partner_id', (int) $partner_id)
-            ->order_by('id', 'DESC')
-            ->limit((int) $limit, (int) $offset)
-            ->get($this->request_table)
-            ->result_array();
-    }
+        $requests = $this->db->get()->result_array();
 
-    /**
-     * 관리자 상세 조회(반드시 partner_id + request_id 동시 제한).
-     */
-    public function get_request_detail_for_partner($partner_id, $request_id)
-    {
-        $request = $this->db
-            ->where('partner_id', (int) $partner_id)
-            ->where('id', (int) $request_id)
-            ->limit(1)
-            ->get($this->request_table)
-            ->row_array();
-
-        if (!$request) {
+        if (empty($requests)) {
             return array();
         }
 
-        $devices = $this->db
-            ->where('buyback_request_id', (int) $request_id)
-            ->order_by('id', 'ASC')
-            ->get($this->device_table)
-            ->result_array();
+        $request_ids = array_column($requests, 'id');
+        $devices_map = $this->get_devices_grouped($request_ids);
 
-        $request['devices'] = $devices;
-        return $request;
+        foreach ($requests as &$request) {
+            $request['devices'] = isset($devices_map[$request['id']]) ? $devices_map[$request['id']] : array();
+        }
+        unset($request);
+
+        return $requests;
     }
 
-    /**
-     * API 전송 로그 기록.
-     */
-    public function insert_api_log($data)
+    public function get_devices_grouped($request_ids)
     {
-        $this->db->insert($this->api_log_table, $data);
-        return (int) $this->db->insert_id();
+        if (empty($request_ids)) {
+            return array();
+        }
+
+        $this->db->select('*');
+        $this->db->from($this->table_device);
+        $this->db->where_in('request_id', $request_ids);
+        $this->db->order_by('request_id', 'ASC');
+        $this->db->order_by('sort_order', 'ASC');
+
+        $rows = $this->db->get()->result_array();
+        $grouped = array();
+
+        foreach ($rows as $row) {
+            if (!isset($grouped[$row['request_id']])) {
+                $grouped[$row['request_id']] = array();
+            }
+
+            $specs = array();
+            if (!empty($row['spec_json'])) {
+                $decoded = json_decode($row['spec_json'], true);
+                if (is_array($decoded)) {
+                    $specs = $decoded;
+                }
+            }
+
+            $grouped[$row['request_id']][] = array(
+                'id'          => (int)$row['id'],
+                'device'      => $row['device_type'],
+                'manufacturer'=> $row['manufacturer'],
+                'model'       => $row['model_name'],
+                'specs'       => $specs,
+                'condition'   => $row['condition_grade'],
+                'price_value' => (int)$row['unit_price_value'],
+                'price_text'  => $row['unit_price_text'],
+                'qty'         => (int)$row['qty']
+            );
+        }
+
+        return $grouped;
+    }
+
+    public function delete_request($id)
+    {
+        $this->db->where('id', (int)$id);
+        return $this->db->delete($this->table_request);
     }
 }

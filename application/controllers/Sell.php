@@ -14,6 +14,17 @@ class Sell extends CI_Controller {
 		
 		load_css('<link rel="stylesheet" href="'.CSS_DIR.'/page_buyback.css?v=260326" />');
 
+
+		/*
+		$this->load->library('tank_auth');
+        $this->load->model('Buyback_model');
+        $this->load->library(['session', 'form_validation']);
+        $this->load->helper(['url', 'form']);
+		
+		load_css('<link rel="stylesheet" href="'.CSS_DIR.'/page_buyback.css?v=260326" />');
+		*/
+
+
 	}
 
 	// 매입 신청 페이지
@@ -130,7 +141,7 @@ class Sell extends CI_Controller {
                 'total_price_value' => (int)$total_price_value
             );
 
-            $this->load->view('sell/pickup', $data);
+            $this->load->view('sell/pickup_view', $data);
             return;
         }
 

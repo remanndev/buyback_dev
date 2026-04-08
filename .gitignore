@@ -1,0 +1,15 @@
+# logs
+application/logs/*
+!application/logs/index.html
+
+# cache
+application/cache/*
+
+# uploads
+uploads/
+
+# editor / system
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
