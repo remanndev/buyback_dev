@@ -1,15 +1,76 @@
-# logs
+############################
+# CodeIgniter 3
+############################
+
+# logs (로그는 절대 버전관리 X)
 application/logs/*
 !application/logs/index.html
 
-# cache
+# cache (캐시도 제외)
 application/cache/*
+!application/cache/index.html
 
-# uploads
+############################
+# Uploads / 사용자 파일
+############################
+
 uploads/
+files/
+assets/uploads/
 
-# editor / system
+############################
+# Environment / 민감정보
+############################
+
+.env
+.env.*
+config.php
+
+############################
+# IDE / Editor
+############################
+
 .vscode/
 .idea/
+
+############################
+# OS 파일
+############################
+
 Thumbs.db
 .DS_Store
+
+############################
+# Node / Front build (혹시 사용 시)
+############################
+
+node_modules/
+dist/
+build/
+
+############################
+# Logs (기타)
+############################
+
+*.log
+
+############################
+# Composer (사용 시)
+############################
+
+vendor/
+composer.lock
+
+############################
+# 기타
+############################
+
+*.tmp
+*.bak
+*.swp
+
+
+public_html/assets/captcha/
+public_html/assets/lib/_pma/_pma_504/tmp/
+db_backups/
+tmp_*.php

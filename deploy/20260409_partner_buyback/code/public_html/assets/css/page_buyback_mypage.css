@@ -1,0 +1,405 @@
+.buyback-my-side-card,
+.buyback-my-panel,
+.buyback-my-stat-card,
+.buyback-my-hero,
+.buyback-my-device-card {
+	background: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: 16px;
+}
+
+.buyback-my-side-card,
+.buyback-my-panel,
+.buyback-my-hero,
+.buyback-my-device-card {
+	padding: 24px;
+}
+
+.buyback-my-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
+	gap: 24px;
+	align-items: start;
+}
+
+.buyback-my-content {
+	min-width: 0;
+}
+
+.buyback-my-side {
+	position: sticky;
+	top: 92px;
+}
+
+.buyback-my-side-badge {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 999px;
+	background: #eef3ff;
+	color: #2448a8;
+	font-size: 12px;
+	font-weight: 700;
+	margin-bottom: 14px;
+}
+
+.buyback-my-side-name {
+	font-size: 22px;
+	font-weight: 700;
+	color: #111827;
+}
+
+.buyback-my-side-email {
+	margin-top: 8px;
+	font-size: 13px;
+	color: #6b7280;
+	word-break: break-all;
+}
+
+.buyback-my-nav {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	margin-top: 18px;
+}
+
+.buyback-my-nav-item,
+.buyback-my-mobile-item {
+	display: block;
+	padding: 12px 14px;
+	border-radius: 12px;
+	border: 1px solid #e5e7eb;
+	background: #ffffff;
+	color: #374151;
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.buyback-my-nav-item.active,
+.buyback-my-mobile-item.active {
+	background: #121212;
+	border-color: #121212;
+	color: #ffffff;
+}
+
+.buyback-my-mobile {
+	margin-bottom: 20px;
+}
+
+.buyback-my-mobile-scroll {
+	display: flex;
+	gap: 10px;
+	overflow-x: auto;
+	padding-bottom: 4px;
+}
+
+.buyback-my-hero {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	margin-bottom: 24px;
+}
+
+.buyback-my-eyebrow {
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	color: #6b7280;
+	margin-bottom: 10px;
+}
+
+.buyback-my-title {
+	margin: 0 0 10px;
+	font-size: 32px;
+	font-weight: 800;
+	color: #111827;
+}
+
+.buyback-my-desc {
+	margin: 0;
+	font-size: 15px;
+	color: #6b7280;
+}
+
+.buyback-my-primary,
+.buyback-my-link,
+.buyback-my-link-button {
+	text-decoration: none;
+}
+
+.buyback-my-primary,
+.buyback-my-link-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 18px;
+	border-radius: 12px;
+	background: #121212;
+	color: #ffffff;
+	font-size: 14px;
+	font-weight: 700;
+	white-space: nowrap;
+}
+
+.buyback-my-stats {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 16px;
+	margin-bottom: 24px;
+}
+
+.buyback-my-stat-card {
+	padding: 20px;
+}
+
+.buyback-my-stat-label {
+	font-size: 13px;
+	color: #6b7280;
+	margin-bottom: 10px;
+}
+
+.buyback-my-stat-value {
+	font-size: 24px;
+	font-weight: 800;
+	color: #111827;
+}
+
+.buyback-my-panel-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 18px;
+}
+
+.buyback-my-panel-title {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 800;
+	color: #111827;
+}
+
+.buyback-my-link {
+	font-size: 14px;
+	font-weight: 700;
+	color: #2448a8;
+}
+
+.buyback-my-request-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.buyback-my-request-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 16px 18px;
+	border-radius: 14px;
+	border: 1px solid #e5e7eb;
+	background: #fcfcfc;
+	text-decoration: none;
+}
+
+.buyback-my-request-no {
+	font-size: 14px;
+	font-weight: 800;
+	color: #111827;
+	margin-bottom: 6px;
+}
+
+.buyback-my-request-summary {
+	font-size: 14px;
+	color: #4b5563;
+}
+
+.buyback-my-request-meta {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	font-size: 13px;
+	color: #6b7280;
+}
+
+.buyback-my-chip {
+	display: inline-block;
+	padding: 4px 10px;
+	border-radius: 999px;
+	background: #eef3ff;
+	color: #2448a8;
+	font-weight: 700;
+}
+
+.buyback-my-empty,
+.buyback-my-note {
+	padding: 20px;
+	border-radius: 14px;
+	background: #f9fafb;
+	font-size: 14px;
+	color: #6b7280;
+}
+
+.buyback-my-info-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.buyback-my-info-table th,
+.buyback-my-info-table td {
+	padding: 14px 12px;
+	border-bottom: 1px solid #e5e7eb;
+	text-align: left;
+	font-size: 14px;
+	line-height: 22px;
+	vertical-align: top;
+}
+
+.buyback-my-info-table th {
+	width: 160px;
+	background: #fafafa;
+	color: #4b5563;
+	font-weight: 700;
+}
+
+.buyback-my-section + .buyback-my-section {
+	margin-top: 24px;
+}
+
+.buyback-my-section-title {
+	margin: 0 0 14px;
+	font-size: 18px;
+	font-weight: 800;
+	color: #111827;
+}
+
+.buyback-my-device-list {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.buyback-my-device-title {
+	font-size: 16px;
+	font-weight: 800;
+	color: #111827;
+	margin-bottom: 10px;
+}
+
+.buyback-my-device-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	margin-bottom: 12px;
+	font-size: 14px;
+	color: #4b5563;
+}
+
+.buyback-my-spec-list {
+	margin: 0;
+	padding-left: 20px;
+	color: #4b5563;
+	font-size: 14px;
+	line-height: 1.7;
+}
+
+.buyback-my-table-wrap {
+	overflow-x: auto;
+}
+
+.buyback-my-table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.buyback-my-table th,
+.buyback-my-table td {
+	padding: 14px 12px;
+	border-bottom: 1px solid #e5e7eb;
+	text-align: left;
+	vertical-align: top;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.buyback-my-table th {
+	color: #4b5563;
+	font-weight: 700;
+	background: #fafafa;
+}
+
+@media screen and (max-width: 1199px) {
+	.buyback-my-layout {
+		grid-template-columns: 1fr;
+	}
+
+	.buyback-my-stats {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.buyback-my-hero,
+	.buyback-my-request-item {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.buyback-my-stats {
+		grid-template-columns: 1fr;
+	}
+
+	.buyback-my-title {
+		font-size: 28px;
+	}
+
+	.buyback-my-info-table,
+	.buyback-my-info-table tbody,
+	.buyback-my-info-table tr,
+	.buyback-my-info-table th,
+	.buyback-my-info-table td,
+	.buyback-my-table,
+	.buyback-my-table thead,
+	.buyback-my-table tbody,
+	.buyback-my-table tr,
+	.buyback-my-table th,
+	.buyback-my-table td {
+		display: block;
+		width: 100%;
+	}
+
+	.buyback-my-info-table th {
+		padding-bottom: 4px;
+	}
+
+	.buyback-my-info-table td {
+		padding-top: 0;
+	}
+
+	.buyback-my-table thead {
+		display: none;
+	}
+
+	.buyback-my-table tbody tr {
+		padding: 10px 0;
+		border-bottom: 1px solid #e5e7eb;
+	}
+
+	.buyback-my-table td {
+		padding: 6px 0;
+		border-bottom: none;
+	}
+
+	.buyback-my-table td::before {
+		content: attr(data-label);
+		display: block;
+		margin-bottom: 4px;
+		font-size: 12px;
+		font-weight: 700;
+		color: #6b7280;
+	}
+}
